@@ -1,0 +1,60 @@
+.login-box{
+    display: block;
+    position: absolute;
+    top: 32%;
+    left: 50%;
+    width: 35vw;
+    height: 50vh;
+    background: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    opacity: 0;
+    animation: slideIn 1s 0.5s forwards;
+    z-index: 300;
+
+}
+
+
+.textbox {
+    margin-bottom: 20px;
+}
+
+.textbox input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.message.hidden{
+    display: none;
+    color: red;
+}
+
+.message.show{
+    display: block;
+}
+
+.btn {
+    width: 100%;
+    padding: 10px;
+    background: #6a5acd;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background: #483d8b;
+}
+
+@keyframes slideIn {
+    from {left: -50%;}
+    to {left: 45%; opacity: 1;}
+}

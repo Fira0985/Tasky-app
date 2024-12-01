@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="test.css">
+</head>
+<body>
+    <div class="task-card">
+        <div class="task-header">
+            <h3 class="task-title">Task Name: Build UI for App</h3>
+            <span class="task-status">Status: <strong>Not Complete</strong></span>
+        </div>
+        <div class="task-body">
+            <p><strong>Details:</strong> Create a professional and responsive UI for the new application.</p>
+            <p><strong>Deadline:</strong> 2024-09-30</p>
+            <p><strong>Priority:</strong> High</p>
+            <p><strong>Dependencies:</strong> Design mockups from the design team</p>
+        </div>
+        <div class="task-footer">
+            <label class="complete-checkbox">
+                <input type="checkbox" class="checkbox">
+                <span>Mark as Complete</span>
+            </label>
+            <div class="action-buttons">
+                <button class="edit-btn">Edit</button>
+                <button class="delete-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+task
+  .then((result) => {
+    const message = result.message;
+    console.log(message);
+
+    // Access individual objects in the array
+    message.forEach((task, index) => {
+      console.log(`Task ${index + 1}:`);
+      console.log(`ID: ${task._id}`);
+      console.log(`Email: ${task.email}`);
+      console.log(`Task Name: ${task.taskName}`);
+      console.log(`Details: ${task.detail}`);
+      console.log(`Priority: ${task.priority}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });

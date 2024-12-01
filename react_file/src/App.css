@@ -1,0 +1,159 @@
+html {
+    scroll-behavior: smooth;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+#overlay{
+    display: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background-color: #999;
+    width: 100%;
+    height: 226%;
+    opacity: 0.8;
+    z-index: 100;
+}
+
+
+.container{
+    display: flex;
+    flex-direction: column;
+    background-color: #ecf0f1;
+    height: 600px;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    background-color: #ecf0f1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    width: 100%;
+    height: 15vh;
+    border-radius: 7px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#logo img {
+    width: 10vw;
+    height: 13vh;
+    cursor: pointer;
+    margin-left: 4vw;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: #34495e;
+    text-decoration: none;
+    font-size: 1em;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-links a:hover {
+    background-color: white;
+}
+
+#login, #signup {
+    background-color: #2980b9;
+    padding: 8px 15px;
+    color: white;
+}
+
+#signup {
+    background-color: #e67e22;
+}
+
+#login:hover, #signup:hover{
+    background-color: black;
+}
+
+/* .dashboard {
+    margin-left: 220px;
+    padding: 40px;
+    flex: 1;
+    background-color: #ecf0f1;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* } */
+
+/* .dashboard h2 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+    font-size: 28px;
+    border-bottom: 2px solid #2c3e50;
+    padding-bottom: 10px;
+}
+
+.dashboard p {
+    font-size: 16px;
+    color: #7f8c8d;
+} */
+.close{
+    display: "none";
+    margin-left: 2%;
+    position: absolute;
+    top: 34%;
+    z-index: 500;
+    opacity: 0;
+    animation: slideIn 1s 0.5s forwards;
+}
+
+.account-link a {
+    position: absolute;
+    top: 70%;
+    left: 45%;
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
+    margin-top: 10px;
+    text-align: center;
+    transition: color 0.3s ease;
+    opacity: 0;
+    z-index: 500;
+    animation: slideInLink 1s 0.5s forwards;
+}
+
+.account-link a:hover {
+    color: black;
+    text-decoration: underline;
+}
+
+#registerLink{
+    position: absolute;
+    top: 64%;
+    left: 24%;
+    width: 33%;
+}
+
+.register-link.error{
+   margin-top: 10vh;
+}
+
+.login-link.error{
+    margin-top: 12vh;
+ }
+
+@keyframes slideInLink {
+    from {left: -50%;}
+    to {left: 45%; opacity: 1;}
+}

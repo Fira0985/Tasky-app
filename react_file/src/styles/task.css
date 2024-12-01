@@ -1,0 +1,117 @@
+.task-card {
+    font-family: 'Poppins', sans-serif;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    padding: 20px;
+    margin: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.task-card:hover{
+    transform: translateY(-10px);
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.task-title {
+    font-size: 20px;
+    color: #333;
+    font-weight: 600;
+}
+
+.task-status {
+    background-color: #34495e;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.task-status strong {
+    font-weight: 700;
+}
+
+.task-body p {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #555;
+}
+
+.task-body strong {
+    font-weight: 600;
+    color: #333;
+}
+
+.task-footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.complete-checkbox {
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.complete-checkbox input {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.checkbox:checked + span {
+    text-decoration: line-through;
+    color: #28a745;
+}
+
+.task-card.completed .task-status {
+    background-color: #28a745;
+}
+
+/* Action buttons (Edit, Delete) */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-btn {
+    background-color: #ffc107;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #e0a800;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
