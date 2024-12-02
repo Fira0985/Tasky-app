@@ -28,9 +28,11 @@ function User(props){
         setIsExpanded(!isExpanded);
     }
 
+    // Function used to get data from child component
     function GetFormData(check){
         setShowForm(check)
         setOverStyle({display: "none"})
+        console.log(check)
     }
 
     function ShowForm(){
@@ -65,7 +67,6 @@ function User(props){
     useEffect(() => {
       async function fetchUserInfo() {
         const result = await GetUserInfo(email);
-        console.log(result.message)
         setName(result.message);
       }
       fetchUserInfo();
@@ -73,7 +74,7 @@ function User(props){
 
     async function GetTask() {
 
-        const url = "http://localhost:3002/get-task"
+        const url = "http://localhost:3002/get-task?email=" + email
         const option = {
             method: "GET",
             headers: {
@@ -173,6 +174,8 @@ function User(props){
         </div>):(
         <div></div>)}
     </aside>
+
+    {/* Changing the icon */}
     {isExpanded?( <button className="toggle-btn" onClick={toggleSidebar}>
         {isExpanded ? '<' : '>'}
     </button>):( <button className="toggle-btn" onClick={toggleSidebar} style={toggleStyle}>
@@ -191,7 +194,7 @@ function User(props){
       ))}
         </div>
 
-        {showForm?(<Add GetData = {GetFormData} />):(<dvi></dvi>)}
+        {showForm?(<Add email = {email} GetData = {GetFormData} />):(<dvi></dvi>)}
     </main>):( <main className="dashboard-shrink">
         <h2>Dashboard</h2>
         <div className="task-container">
@@ -202,7 +205,7 @@ function User(props){
       ))}
       </div>
 
-        {showForm?(<Add GetData = {GetFormData} />):(<dvi></dvi>)}
+        {showForm?(<Add email = {email} GetData = {GetFormData} />):(<dvi></dvi>)}
     </main>)}
 </div>
 

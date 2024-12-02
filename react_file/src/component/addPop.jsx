@@ -5,7 +5,7 @@ import '../styles/addPop.css';
 function Add(props){
     const [taskName,setTaskName] = useState("")
     const [detail, setDetail] = useState("")
-    const [email, setEmail] = useState("f@gmail.com")
+    const email = props.email
     const [priority, setPriority] = useState("")
     const [deadline, setDeadline] = useState("")
     const [dependency, setDependency] = useState("")
@@ -43,6 +43,7 @@ function Add(props){
         setDependency(event.target.value)
     }
 
+    // Used to close the form
     function closeForm(){
         props.GetData(false)
     }
@@ -61,11 +62,11 @@ function Add(props){
         try{
             const response = await fetch(url, option)
             if (!response.ok) {
-                console.log("hhh")
                 const errorData = await response.json();
                 throw new Error(`Request failed with status ${response.status}: ${errorData.message}`);
             }
             const result = await response.json();
+            closeForm()
         } catch(error){
             const response = await fetch(url, option)
             const result = await response.json();

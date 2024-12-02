@@ -70,9 +70,14 @@ route.post('/add-task', async (req, res) => {
 });
 
 route.get('/get-task', async (req,res) => {
+    const { email } = req.query
+
+    if (!email){
+        return res.status(400).json({message: "Email not Found"})
+    }
     try {
-    // Find all tasks
-    const tasks = await Task.find();
+    // Find all tasks with email
+    const tasks = await Task.find({email: email});
     // console.log('Tasks', tasks);
     return res.status(200).json({ message: tasks });
 } catch (error) {
