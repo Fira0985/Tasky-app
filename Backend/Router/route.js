@@ -117,7 +117,6 @@ route.post('/set-status', async (req,res) =>{
     const {task_name,task_status} = req.body
 
     if (!task_name || !task_status){
-        console.log("this is")
         return res.status(400).json({message: "task name and task status required for this operation"})
     }
 
