@@ -1,8 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import '../styles/task.css';
 
 function Task (props){
-    const [status, setStatus] = useState("")
+    // console.log(localStorage.getItem(props.TName))
+    // const [status, setStatus] = useState(() =>{
+    //     return (localStorage.getItem(props.TName) === 'true')
+    // })
+
+
+    function HandleStatus(event){
+        // setStatus(event.target.checked)
+        localStorage.setItem(props.TName, event.target.checked)
+        props.StatusData(props.TName, event.target.checked)
+    }
 
     return(
         <div className="task-card">
@@ -18,7 +28,7 @@ function Task (props){
         </div>
         <div className="task-footer">
             <label className="complete-checkbox">
-                <input type="checkbox" className="checkbox" />
+                <input type="checkbox" checked={(localStorage.getItem(props.TName) === 'true')} className="checkbox" onChange={HandleStatus} />
                 <span>Mark as Complete</span>
             </label>
             <div class="action-buttons">

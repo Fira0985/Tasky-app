@@ -113,6 +113,22 @@ route.post('/remove-task',async (req,res) =>{
     }
 })
 
+route.post('/set-status', async (req,res) =>{
+    const {task_name,task_status} = req.body
+
+    if (!task_name || !task_status){
+        console.log("this is")
+        return res.status(400).json({message: "task name and task status required for this operation"})
+    }
+
+    try {
+        const task = await Task.findOneAndUpdate({taskName: task_name},{$set: {status: task_status}},{new: true})
+        return res.status(200).json({message: "Task status updated successfully"})
+    } catch (error){
+        return res.status(500).json({message : "Failed to update the task" + error})
+    }
+})
+
 // route.get('/get-complete', async (req,res) => {
 //     try{
 

@@ -9,7 +9,7 @@ function Add(props){
     const [priority, setPriority] = useState("")
     const [deadline, setDeadline] = useState("")
     const [dependency, setDependency] = useState("")
-    const [status, setStatus] = useState("Not complete")
+    const [status, setStatus] = useState("Not Completed")
 
     const data = {
     email,

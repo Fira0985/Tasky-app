@@ -40,6 +40,34 @@ function User(props){
         setShowForm(true)
     }
 
+    async function GetStatus(TaskName, status) {
+      var data = ""
+
+      if (status){
+        data = "Completed"
+      } else {
+        data = "Not Completed"
+      }
+      const url = "http://localhost:3002/set-status"
+      const option = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({task_name: TaskName, task_status:data})
+      }
+
+      try {
+        const response = await fetch(url,option)
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return await response.json()
+      } catch (error) {
+        return { message: error};
+      }
+    }
+
     async function GetUserInfo(email) {
 
       const url = "http://localhost:3002/get-name";
@@ -58,7 +86,6 @@ function User(props){
         }
         return await response.json();
       } catch (error) {
-        console.error("There was an error during the request:", error.message);
         return { message: "Failed to retrieve user information" };
       }
     }
@@ -189,7 +216,7 @@ function User(props){
         {
         message.map((task, index) => (
         <div key={index}>
-         <Task TName={TName[index]} detail ={detail[index]} priority={priority[index]} status={status[index]} dependency={dependency[index]} deadline={deadline[index]} />
+         <Task StatusData = {GetStatus} TName={TName[index]} detail ={detail[index]} priority={priority[index]} status={status[index]} dependency={dependency[index]} deadline={deadline[index]} />
         </div>
       ))}
         </div>
@@ -200,7 +227,7 @@ function User(props){
         <div className="task-container">
         {message.map((task, index) => (
         <div key={index}>
-          <Task TName={TName[index]} detail ={detail[index]} priority={priority[index]} status={status[index]} dependency={dependency[index]} deadline={deadline[index]} />
+          <Task StatusData = {GetStatus} TName={TName[index]} detail ={detail[index]} priority={priority[index]} status={status[index]} dependency={dependency[index]} deadline={deadline[index]} />
         </div>
       ))}
       </div>
