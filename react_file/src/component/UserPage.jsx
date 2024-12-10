@@ -12,13 +12,10 @@ function User(props){
     const [overlayStyle, setOverStyle] = useState({display: "none"})
     const [showForm, setShowForm] = useState(false)
 
-    const [TName, setTName] = useState([])
-    const [status, setStatus] = useState([])
-    const [detail, setDetail] = useState([])
-    const [deadline, setDeadline] = useState([])
-    const [priority, setPriority] = useState([])
-    const [dependency, setDependency] = useState([])
+    const [completedTap, setCompletedTap] = useState(false)
+    const [IncompletedTap, setInCompletedTap] = useState(false)
     const [message, setMessage] = useState([])
+    const [filteredTasks, setFilteredTasks] = useState([]); // Filtered tasks
     const email = props.email
     const [name, setName] = useState("")
 
@@ -120,55 +117,52 @@ function User(props){
         }
     }
 
-    useEffect(() =>{
-      async function fetchTask(){
-        GetTask().then((result) => {
-          setMessage(result.message);
-      
-          message.forEach((task, index) => {
-            setTName((prevDetail) => [
-              ...prevDetail.slice(0, index),
-              task.taskName,
-              ...prevDetail.slice(index),
-            ]);
-            setDetail((prevDetail) => [
-              ...prevDetail.slice(0, index),
-              task.detail,
-              ...prevDetail.slice(index),
-            ]);
-      
-            setStatus((prevDetail) => [
-              ...prevDetail.slice(0, index),
-              task.status,
-              ...prevDetail.slice(index),
-            ]);
-            setDeadline((prevDetail) => [
-              ...prevDetail.slice(0, index),
-              task.deadline,
-              ...prevDetail.slice(index),
-            ]);
-      
-            setPriority((prevDetail) => [
-              ...prevDetail.slice(0, index),
-              task.priority,
-              ...prevDetail.slice(index),
-            ]);
-      
-            setDependency((prevDetail) => [
-              ...prevDetail.slice(0, index),
-              task.dependency,
-              ...prevDetail.slice(index),
-            ]);
-          });
-      
-        })
-        .catch((err) => {
-          console.error("Error:", err);
-        });
+    useEffect(() => {
+      async function fetchTask() {
+        const result = await GetTask();
+        setMessage(result.message);
+        setFilteredTasks(result.message); // Initialize with all tasks
       }
-      fetchTask()
+
+      // Filter completed tasks
+      function GetCompleted(message) {
+        const completedTasks = message.filter((task) => task.status === "Completed");
+        setFilteredTasks(completedTasks);
+      }
+
+      // Filter completed tasks
+      function GetInCompleted(message) {
+        const IncompletedTasks = message.filter((task) => task.status === "Not Completed");
+        setFilteredTasks(IncompletedTasks);
+      }
+
+
+      if (completedTap == false){
+        if (IncompletedTap == false){
+          fetchTask();
+        } else{
+          GetInCompleted(message)
+        }
+      } else {
+        GetCompleted(message);
+      }
+    });
+    
+    function ChangeTap(event){
+      // Get the element that triggered the event
+      const clickedElement = event.target;
+
+      if (clickedElement.textContent == "All Tasks"){
+        setCompletedTap(false)
+        setInCompletedTap(false)
+      } else if (clickedElement.textContent == "Completed Tasks"){
+        setCompletedTap(true)
+        setInCompletedTap(false)
+      } else {
+        setCompletedTap(false)
+        setInCompletedTap(true)
+      }
     }
-  )
 
     return(
     <div className="container">
@@ -192,9 +186,9 @@ function User(props){
         {isExpanded?(
         <div>
         <ul>
-            <li><a href="#">All Tasks</a></li>
-            <li><a href="#">Completed Tasks</a></li>
-            <li><a href="#">Incomplete Tasks</a></li>
+            <li><a href="#" onClick={ChangeTap}>All Tasks</a></li>
+            <li><a href="#" onClick={ChangeTap}>Completed Tasks</a></li>
+            <li><a href="#" onClick={ChangeTap}>Incomplete Tasks</a></li>
         </ul>
         <div className="add-task-btn" onClick={ShowForm}>+</div>
         <h3>Add Task</h3>
@@ -213,23 +207,36 @@ function User(props){
     {isExpanded?( <main className="dashboard">
         <h2>Dashboard</h2>
         <div className="task-container">
-        {
-        message.map((task, index) => (
-        <div key={index}>
-         <Task StatusData = {GetStatus} TName={TName[index]} detail ={detail[index]} priority={priority[index]} status={status[index]} dependency={dependency[index]} deadline={deadline[index]} />
-        </div>
-      ))}
+        {filteredTasks.map((task, index) => (
+      <Task
+        key={index}
+        StatusData={GetStatus}
+        TName={task.taskName}
+        detail={task.detail}
+        priority={task.priority}
+        status={task.status}
+        dependency={task.dependency}
+        deadline={task.deadline}
+      />
+    ))}
         </div>
 
         {showForm?(<Add email = {email} GetData = {GetFormData} />):(<dvi></dvi>)}
     </main>):( <main className="dashboard-shrink">
         <h2>Dashboard</h2>
         <div className="task-container">
-        {message.map((task, index) => (
-        <div key={index}>
-          <Task StatusData = {GetStatus} TName={TName[index]} detail ={detail[index]} priority={priority[index]} status={status[index]} dependency={dependency[index]} deadline={deadline[index]} />
-        </div>
-      ))}
+        {filteredTasks.map((task, index) => (
+      <Task
+        key={index}
+        StatusData={GetStatus}
+        TName={task.taskName}
+        detail={task.detail}
+        priority={task.priority}
+        status={task.status}
+        dependency={task.dependency}
+        deadline={task.deadline}
+      />
+    ))}
       </div>
 
         {showForm?(<Add email = {email} GetData = {GetFormData} />):(<dvi></dvi>)}
