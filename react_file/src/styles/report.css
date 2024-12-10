@@ -1,0 +1,53 @@
+/* Overlay to center the report card */
+.overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f3f4f6; /* Light gray background */
+    margin: 0;
+  }
+  
+  /* The main container for the report card */
+  .report-container {
+    padding: 40px; /* Increased padding for larger card */
+    border: 1px solid #e5e7eb;
+    border-radius: 16px; /* More rounded corners */
+    width: 450px; /* Wider card */
+    height: 500px; /* Taller card */
+    background-color: #ffffff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    overflow: hidden;
+  }
+  
+  /* Title style for the report */
+  .title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #1f2937; /* Dark gray color */
+  }
+  
+  /* List style for the report items */
+  .report-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 20px;
+  }
+  
+  /* Style for each report item */
+  .report-item {
+    margin-bottom: 12px;
+    font-size: 18px;
+    color: #374151; /* Medium gray color */
+  }
+  
+  /* Style for the "coming soon" message */
+  .coming-soon {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #6b7280; /* Gray color for "coming soon" text */
+    font-style: italic;
+  }
+  

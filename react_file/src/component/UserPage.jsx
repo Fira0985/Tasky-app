@@ -3,6 +3,7 @@ import image from '../asset/69KTbX-LogoMakr.png';
 import ProfileImage from '../asset/profile.png';
 import '../styles/UserPage.css';
 import Add from './addPop';
+import Report from "./report";
 import Task from "./task";
 
 function User(props){
@@ -14,6 +15,7 @@ function User(props){
 
     const [completedTap, setCompletedTap] = useState(false)
     const [IncompletedTap, setInCompletedTap] = useState(false)
+    const [reportTap, setReportTap] = useState(false)
     const [message, setMessage] = useState([])
     const [filteredTasks, setFilteredTasks] = useState([]); // Filtered tasks
     const email = props.email
@@ -147,7 +149,7 @@ function User(props){
         GetCompleted(message);
       }
     });
-    
+
     function ChangeTap(event){
       // Get the element that triggered the event
       const clickedElement = event.target;
@@ -155,12 +157,17 @@ function User(props){
       if (clickedElement.textContent == "All Tasks"){
         setCompletedTap(false)
         setInCompletedTap(false)
+        setReportTap(false)
       } else if (clickedElement.textContent == "Completed Tasks"){
         setCompletedTap(true)
         setInCompletedTap(false)
-      } else {
+        setReportTap(false)
+      } else if(clickedElement.textContent == "Incomplete Tasks") {
         setCompletedTap(false)
         setInCompletedTap(true)
+        setReportTap(false)
+      } else{
+        setReportTap(true)
       }
     }
 
@@ -172,7 +179,7 @@ function User(props){
         <div className="logo"><img src={image} alt="company-log" /></div>
         <div className="navbar-links">
         <a href="#" className="project-link">Projects</a>
-        <a href="#" className="report-link">Reports</a>
+        <a href="#" className="report-link" onClick={ChangeTap}>Reports</a>
         <a href="#" className="contact-link">Contact Us</a>
         </div>
         <div className="profile">
@@ -204,7 +211,7 @@ function User(props){
     </button>)}
 
     {/* <!-- Dashboard Section --> */}
-    {isExpanded?( <main className="dashboard">
+    {isExpanded?(reportTap? (<Report tasks = {message} />):(<main className="dashboard">
         <h2>Dashboard</h2>
         <div className="task-container">
         {filteredTasks.map((task, index) => (
@@ -222,7 +229,7 @@ function User(props){
         </div>
 
         {showForm?(<Add email = {email} GetData = {GetFormData} />):(<dvi></dvi>)}
-    </main>):( <main className="dashboard-shrink">
+    </main>) ):(reportTap? (<Report tasks = {message} />):(<main className="dashboard-shrink">
         <h2>Dashboard</h2>
         <div className="task-container">
         {filteredTasks.map((task, index) => (
@@ -237,10 +244,10 @@ function User(props){
         deadline={task.deadline}
       />
     ))}
-      </div>
+        </div>
 
         {showForm?(<Add email = {email} GetData = {GetFormData} />):(<dvi></dvi>)}
-    </main>)}
+    </main>) )}
 </div>
 
     )
