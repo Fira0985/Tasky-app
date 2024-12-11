@@ -1,0 +1,47 @@
+/* Center the entire content on the page */
+.project-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f3f4f6; /* Light gray background */
+    margin: 0;
+  }
+  
+  /* The main container for the project page */
+  .project-container {
+    padding: 40px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px; /* More rounded corners */
+    width: 500px; /* Wider card */
+    height: 350px; /* Adjusted height */
+    background-color: #ffffff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    overflow: hidden;
+  }
+  
+  /* Title style for the page */
+  .project-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #1f2937; /* Dark gray color */
+  }
+  
+  /* Description text style */
+  .project-description {
+    font-size: 18px;
+    color: #4b5563; /* Medium gray color */
+    margin-bottom: 20px;
+  }
+  
+  /* Style for the "coming soon" message */
+  .coming-soon {
+    margin-top: 30px;
+    font-size: 16px;
+    color: #6b7280; /* Gray color for "coming soon" text */
+    font-style: italic;
+    font-weight: bold;
+  }
+  

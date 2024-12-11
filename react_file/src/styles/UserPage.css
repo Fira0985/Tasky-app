@@ -210,3 +210,15 @@
     grid-template-columns: repeat(3, 1fr);
     max-width: 60vw;
 }
+
+.completed.active{
+    background-color: #1abc9c;
+}
+
+.incompleted.active{
+    background-color: #1abc9c;
+}
+
+.All.active {
+    background-color: #1abc9c;
+}

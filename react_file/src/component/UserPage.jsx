@@ -3,6 +3,7 @@ import image from '../asset/69KTbX-LogoMakr.png';
 import ProfileImage from '../asset/profile.png';
 import '../styles/UserPage.css';
 import Add from './addPop';
+import Project from "./Project";
 import Report from "./report";
 import Task from "./task";
 
@@ -16,6 +17,7 @@ function User(props){
     const [completedTap, setCompletedTap] = useState(false)
     const [IncompletedTap, setInCompletedTap] = useState(false)
     const [reportTap, setReportTap] = useState(false)
+    const [projectTap, setProjectTap] = useState(false)
     const [message, setMessage] = useState([])
     const [filteredTasks, setFilteredTasks] = useState([]); // Filtered tasks
     const email = props.email
@@ -127,13 +129,17 @@ function User(props){
       }
 
       // Filter completed tasks
-      function GetCompleted(message) {
+      async function GetCompleted(message) {
+        const result = await GetTask();
+        setMessage(result.message);
         const completedTasks = message.filter((task) => task.status === "Completed");
         setFilteredTasks(completedTasks);
       }
 
       // Filter completed tasks
-      function GetInCompleted(message) {
+      async function GetInCompleted(message) {
+        const result = await GetTask();
+        setMessage(result.message);
         const IncompletedTasks = message.filter((task) => task.status === "Not Completed");
         setFilteredTasks(IncompletedTasks);
       }
@@ -158,16 +164,23 @@ function User(props){
         setCompletedTap(false)
         setInCompletedTap(false)
         setReportTap(false)
+        setProjectTap(false)
       } else if (clickedElement.textContent == "Completed Tasks"){
         setCompletedTap(true)
         setInCompletedTap(false)
         setReportTap(false)
+        setProjectTap(false)
       } else if(clickedElement.textContent == "Incomplete Tasks") {
         setCompletedTap(false)
         setInCompletedTap(true)
         setReportTap(false)
-      } else{
+        setProjectTap(false)
+      } else if (clickedElement.textContent == "Reports"){
         setReportTap(true)
+        setProjectTap(false)
+      } else {
+        setProjectTap(true)
+        setReportTap(false)
       }
     }
 
@@ -178,7 +191,7 @@ function User(props){
     <header class="navbar">
         <div className="logo"><img src={image} alt="company-log" /></div>
         <div className="navbar-links">
-        <a href="#" className="project-link">Projects</a>
+        <a href="#" className="project-link" onClick={ChangeTap}>Projects</a>
         <a href="#" className="report-link" onClick={ChangeTap}>Reports</a>
         <a href="#" className="contact-link">Contact Us</a>
         </div>
@@ -193,9 +206,9 @@ function User(props){
         {isExpanded?(
         <div>
         <ul>
-            <li><a href="#" onClick={ChangeTap}>All Tasks</a></li>
-            <li><a href="#" onClick={ChangeTap}>Completed Tasks</a></li>
-            <li><a href="#" onClick={ChangeTap}>Incomplete Tasks</a></li>
+            <li><a href="#" onClick={ChangeTap} className={`All ${(!completedTap&& !IncompletedTap) ? 'active' : 'inactive'}`}>All Tasks</a></li>
+            <li><a href="#" onClick={ChangeTap} className={`completed ${completedTap ? 'active' : 'inactive'}`}>Completed Tasks</a></li>
+            <li><a href="#" onClick={ChangeTap}className={`incompleted ${IncompletedTap ? 'active' : 'inactive'}`}>Incomplete Tasks</a></li>
         </ul>
         <div className="add-task-btn" onClick={ShowForm}>+</div>
         <h3>Add Task</h3>
@@ -211,7 +224,7 @@ function User(props){
     </button>)}
 
     {/* <!-- Dashboard Section --> */}
-    {isExpanded?(reportTap? (<Report tasks = {message} />):(<main className="dashboard">
+    {isExpanded?(reportTap? (<Report tasks = {message} />):( projectTap? (<Project />): <main className="dashboard">
         <h2>Dashboard</h2>
         <div className="task-container">
         {filteredTasks.map((task, index) => (
@@ -229,7 +242,7 @@ function User(props){
         </div>
 
         {showForm?(<Add email = {email} GetData = {GetFormData} />):(<dvi></dvi>)}
-    </main>) ):(reportTap? (<Report tasks = {message} />):(<main className="dashboard-shrink">
+    </main>) ):(reportTap? (<Report tasks = {message} />):(projectTap? (<Project />):<main className="dashboard-shrink">
         <h2>Dashboard</h2>
         <div className="task-container">
         {filteredTasks.map((task, index) => (

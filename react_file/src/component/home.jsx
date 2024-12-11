@@ -41,15 +41,6 @@ function Home(){
         </div>
     </div>
 
-    {/* <!-- Support Us Section --> */}
-    {/* <section className="support-us">
-        <h2>Support Us</h2>
-        <p>We’re a growing platform! If you enjoy using Tasky App, consider
-            supporting us through donations or spreading the word. Together,
-            we can make task management more efficient for everyone.</p>
-        <a href="#" className="btn-support">Support Us</a>
-    </section> */}
-
     {/* <!-- Download Section --> */}
     <div className="download" id="download">
         <h2>Download the Tasky App</h2>
