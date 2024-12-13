@@ -101,18 +101,6 @@ route.post('/get-name', async (req, res) => {
     }
   });
 
-route.post('/remove-task',async (req,res) =>{
-    const { task_name } = req.body;
-
-    try {
-        // Find all tasks
-        const task = await Task.deleteOne({task_name});
-    } catch (error) {
-        console.error('Error deleting the task', error);
-        return res.status(404).json({ message: "Failed to delete the task" });
-    }
-})
-
 route.post('/set-status', async (req,res) =>{
     const {task_name,task_status} = req.body
 
@@ -128,12 +116,41 @@ route.post('/set-status', async (req,res) =>{
     }
 })
 
-// route.get('/get-complete', async (req,res) => {
-//     try{
+route.delete('/delete', async (req, res) => {
+    const { name } = req.body; // Destructure taskName from the request body
+    try {
+        // Check if the task exists in the database
+        const taskExist = await Task.findOne({taskName: name });
 
-//     } catch(err){
+        if (taskExist) {
+            // Delete the task
+            await Task.deleteOne({taskName: name });
+            return res.status(200).json({ message: "Task deleted successfully" });
+        }
 
-//     }
-// })
+        // If task does not exist
+        return res.status(404).json({ message: "Task not found" });
+    } catch (err) {
+        // Handle unexpected errors
+        return res.status(500).json({ message: err.message });
+    }
+});
+
+route.post("/update", async (req, res) =>{
+    const {  initialName,
+        taskName,
+        detail,
+        priority,
+        deadline,
+        dependency} = req.body
+
+    try{
+        const task = await Task.findOneAndUpdate({taskName: initialName},{$set: {taskName: taskName, detail: detail, priority: priority, deadline: deadline,dependency: dependency}},{new: true})
+        return res.status(200).json({message: "Task Updated Successfully"})
+    } catch (error){
+        return res.status(500).json({message: "Internal server error" + error})
+    }
+
+})
 
 module.exports = route;

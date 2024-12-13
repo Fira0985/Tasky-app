@@ -31,12 +31,10 @@ function Add(props){
 
     function priorityValue(event){
         setPriority(event.target.value)
-        console.log(event.target.value)
     }
 
     function deadlineValue(event){
         setDeadline(event.target.value)
-        console.log(event.target.value)
     }
 
     function dependencyValue(event){

@@ -3,25 +3,28 @@ import image from '../asset/69KTbX-LogoMakr.png';
 import ProfileImage from '../asset/profile.png';
 import '../styles/UserPage.css';
 import Add from './addPop';
+import Edit from "./editForm";
 import Project from "./Project";
 import Report from "./report";
 import Task from "./task";
 
 function User(props){
 
-    const [isExpanded, setIsExpanded] = useState(true);
+    const [isExpanded, setIsExpanded] = useState(true); // decide if the sidebar is expanded or not
     const [toggleStyle, setToggleStyle] = useState({left: 10})
-    const [overlayStyle, setOverStyle] = useState({display: "none"})
-    const [showForm, setShowForm] = useState(false)
+    const [overlayStyle, setOverStyle] = useState({display: "none"}) // decide visibility of overlay
+    const [showForm, setShowForm] = useState(false) // decide visibility of Add form
+    const [showEdit, setShowEdit] = useState(false) // decide visibility of edit form
+    const [beforeEdit, setBeforeEdit] = useState([])  // Array holding task name,detail,priority,deadline and dependency of the target task to be edited
 
-    const [completedTap, setCompletedTap] = useState(false)
-    const [IncompletedTap, setInCompletedTap] = useState(false)
-    const [reportTap, setReportTap] = useState(false)
-    const [projectTap, setProjectTap] = useState(false)
-    const [message, setMessage] = useState([])
+    const [completedTap, setCompletedTap] = useState(false) // Boolean that tells us if completed link is clicked or not
+    const [IncompletedTap, setInCompletedTap] = useState(false) // Boolean that tells us if Incompleted link is clicked or not
+    const [reportTap, setReportTap] = useState(false) // Boolean that tells us if report link is clicked or not
+    const [projectTap, setProjectTap] = useState(false) // Boolean that tells us if project link is clicked or not
+    const [message, setMessage] = useState([])  // Used to hold the request message
     const [filteredTasks, setFilteredTasks] = useState([]); // Filtered tasks
-    const email = props.email
-    const [name, setName] = useState("")
+    const email = props.email // Email of the current user
+    const [name, setName] = useState("")  // used to holds the name of the current user
 
 
     // Function to toggle the sidebar's state
@@ -32,8 +35,8 @@ function User(props){
     // Function used to get data from child component
     function GetFormData(check){
         setShowForm(check)
+        setShowEdit(check)
         setOverStyle({display: "none"})
-        console.log(check)
     }
 
     function ShowForm(){
@@ -184,6 +187,12 @@ function User(props){
       }
     }
 
+    function GetEvent(edit,name,detail,priority,deadline,dependency){
+      setOverStyle({display: "block"})
+      setShowEdit(edit)
+      setBeforeEdit([name,detail,priority,deadline,dependency])
+    }
+
     return(
     <div className="container">
     <div id="overlay" style={overlayStyle}></div>
@@ -229,6 +238,7 @@ function User(props){
         <div className="task-container">
         {filteredTasks.map((task, index) => (
       <Task
+        editEvent = {GetEvent}
         key={index}
         StatusData={GetStatus}
         TName={task.taskName}
@@ -242,12 +252,14 @@ function User(props){
         </div>
 
         {showForm?(<Add email = {email} GetData = {GetFormData} />):(<dvi></dvi>)}
+        {showEdit?(<Edit name = {beforeEdit[0]} detail = {beforeEdit[1]} priority = {beforeEdit[2]} deadline={beforeEdit[3]} dependency={beforeEdit[4]} GetData = {GetFormData} />):(<div></div>)}
     </main>) ):(reportTap? (<Report tasks = {message} />):(projectTap? (<Project />):<main className="dashboard-shrink">
         <h2>Dashboard</h2>
         <div className="task-container">
         {filteredTasks.map((task, index) => (
       <Task
         key={index}
+        editEvent = {GetEvent}
         StatusData={GetStatus}
         TName={task.taskName}
         detail={task.detail}
@@ -260,6 +272,7 @@ function User(props){
         </div>
 
         {showForm?(<Add email = {email} GetData = {GetFormData} />):(<dvi></dvi>)}
+        {showEdit?(<Edit name = {beforeEdit[0]} detail = {beforeEdit[1]} priority = {beforeEdit[2]} deadline={beforeEdit[3]} dependency={beforeEdit[4]} GetData = {GetFormData} />):(<div></div>)}
     </main>) )}
 </div>
 

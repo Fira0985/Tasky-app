@@ -2,11 +2,32 @@ import React from 'react';
 import '../styles/task.css';
 
 function Task (props){
-    // console.log(localStorage.getItem(props.TName))
-    // const [status, setStatus] = useState(() =>{
-    //     return (localStorage.getItem(props.TName) === 'true')
-    // })
 
+    async function DeleteTask(){
+        const url = "http://localhost:3002/delete"
+        const option = {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({name: props.TName})
+        }
+
+        try{
+            const response = await fetch(url,option)
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error){
+            return {message: error}
+        }
+    }
+
+    function sendEvent(){
+        props.editEvent(true,props.TName,props.detail,props.priority,props.deadline,props.dependency)
+    }
 
     function HandleStatus(event){
         // setStatus(event.target.checked)
@@ -32,8 +53,8 @@ function Task (props){
                 <span>Mark as Complete</span>
             </label>
             <div class="action-buttons">
-                <button className="edit-btn">Edit</button>
-                <button className="delete-btn">Delete</button>
+                <button className="edit-btn" onClick={sendEvent}>Edit</button>
+                <button className="delete-btn" onClick={DeleteTask}>Delete</button>
             </div>
         </div>
     </div>
