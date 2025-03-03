@@ -191,7 +191,7 @@ function User(props) {
       setCompletedTap(false);
       setInCompletedTap(false);
     }
-}
+  }
 
   function GetEvent(edit, name, detail, priority, deadline, dependency) {
     setOverStyle({ display: "block" })
@@ -240,7 +240,7 @@ function User(props) {
                 </a>
               </li>
             </ul>
-            <div className="add-task-btn" onClick={ShowForm}>+</div>
+            <div className="add-task-btn" onClick={ShowForm}><a href="#dash">+</a></div>
             <h3>Add Task</h3>
             <span className="profile">
               <img src={ProfileImage} alt="Profile" class="profile-img" />
@@ -258,7 +258,13 @@ function User(props) {
       </button>)}
 
       {/* <!-- Dashboard Section --> */}
-      {isExpanded ? (reportTap ? (<Report tasks={message} />) : (projectTap ? (<Project />) : <main className="dashboard">
+      {isExpanded ? (reportTap ? (<main>
+        <Report tasks={message} />
+        {showForm ? (<Add email={email} GetData={GetFormData} />) : (<dvi></dvi>)}
+      </main>) : (projectTap ? (<main>
+        <Project />
+        {showForm ? (<Add email={email} GetData={GetFormData} />) : (<dvi></dvi>)}
+      </main>) : <main className="dashboard" id="dash">
         <h2>Dashboard</h2>
         <div className="task-container">
           {filteredTasks.map((task, index) => (
@@ -278,7 +284,7 @@ function User(props) {
 
         {showForm ? (<Add email={email} GetData={GetFormData} />) : (<dvi></dvi>)}
         {showEdit ? (<Edit name={beforeEdit[0]} detail={beforeEdit[1]} priority={beforeEdit[2]} deadline={beforeEdit[3]} dependency={beforeEdit[4]} GetData={GetFormData} />) : (<div></div>)}
-      </main>)) : (reportTap ? (<Report tasks={message} />) : (projectTap ? (<Project />) : <main className="dashboard-shrink">
+      </main>)) : (reportTap ? (<Report tasks={message} />) : (projectTap ? (<Project />) : <main className="dashboard-shrink" id="dash">
         <h2>Dashboard</h2>
         <div className="task-container">
           {filteredTasks.map((task, index) => (

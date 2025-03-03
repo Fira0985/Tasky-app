@@ -129,8 +129,6 @@ body {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 5;
     overflow-y: auto;
-    /* display: flex;
-    flex-direction: column; */
     border-right: 1px solid var(--gray-100);
 }
 
@@ -208,6 +206,11 @@ body {
     margin: 1.25rem auto 0.75rem;
     box-shadow: var(--shadow-md), 0 0 0 5px rgba(59, 130, 246, 0.1);
     transition: all 0.2s ease;
+}
+
+.add-task-btn a{
+    text-decoration: none;
+    color: white;
 }
 
 .add-task-btn:hover {

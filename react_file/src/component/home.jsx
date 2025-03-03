@@ -7,7 +7,7 @@ function Home() {
     return (
         <div className="home">
             {/* <!-- Overview Section --> */}
-            <div className="overview">
+            <div className="overview" id="overview">
                 <h1>Tasky App: Simplify Your Task Management</h1>
                 <p>Tasky App is designed to help you efficiently manage tasks,
                     collaborate with teams, and stay productive. Whether you're

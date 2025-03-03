@@ -1,7 +1,8 @@
 #register-box {
     display: none;
     position: absolute;
-    top: 32%;
+    top: 43%;
+    left: 40%;
     width: 40vw;
     height: 56vh;
     background: #fff;

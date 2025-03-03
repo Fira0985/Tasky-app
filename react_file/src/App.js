@@ -71,8 +71,8 @@ function App() {
                   <a href="#howItWorks">How It Works</a>
                   <a href="#">Support Us</a>
                   <a href="#download">Download App</a>
-                  <a href="#" id="login" onClick={LoginForm}>Login</a>
-                  <a href="#" id="signup" onClick={RegisterForm}>Sign Up</a>
+                  <a href="#overview" id="login" onClick={LoginForm}>Login</a>
+                  <a href="#overview" id="signup" onClick={RegisterForm}>Sign Up</a>
                 </div>
               </div>
             </header>

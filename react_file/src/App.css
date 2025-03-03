@@ -7,7 +7,6 @@ html {
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
-    font-size: smaller;
 }
 
 #overlay {
@@ -28,11 +27,6 @@ html {
     flex-direction: column;
     background-color: #ecf0f1;
     height: 600px;
-}
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
 }
 
 /* Navigation Header */
@@ -61,7 +55,8 @@ header {
 }
 
 #logo img {
-    height: 40px;
+    height: 80px;
+    width: 100px;
     transition: transform 0.3s ease;
 }
 
@@ -138,15 +133,21 @@ header {
     display: "none";
     margin-left: 2%;
     position: absolute;
-    top: 34%;
+    top: 45%;
+    left: 39%;
     z-index: 500;
     opacity: 0;
     animation: slideIn 1s 0.5s forwards;
+    cursor: pointer;
+}
+
+.close:hover{
+    background-color: red;
 }
 
 .account-link a {
     position: absolute;
-    top: 70%;
+    top: 81%;
     left: 45%;
     color: #3498db;
     text-decoration: none;
@@ -168,8 +169,8 @@ header {
 
 #registerLink {
     position: absolute;
-    top: 64%;
-    left: 24%;
+    top: 77%;
+    left: 34%;
     width: 33%;
 }
 
