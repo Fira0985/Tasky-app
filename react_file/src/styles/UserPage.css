@@ -1,4 +1,3 @@
-
 /* Base Styles & Typography */
 :root {
     --primary: #3b82f6;
@@ -154,7 +153,7 @@ body {
     transform: translateX(-100%);
 }
 
-.sidebar div{
+.sidebar div {
     display: flex;
     flex-direction: column;
 }
@@ -208,7 +207,7 @@ body {
     transition: all 0.2s ease;
 }
 
-.add-task-btn a{
+.add-task-btn a {
     text-decoration: none;
     color: white;
 }
@@ -244,7 +243,7 @@ body {
     z-index: 6;
     box-shadow: var(--shadow-md);
     transition: all 0.2s ease;
-    
+
 }
 
 .toggle-btn:hover {
@@ -315,72 +314,6 @@ body {
     opacity: 1;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 1200px) {
-    .task-container {
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    }
-}
-
-@media (max-width: 992px) {
-    .navbar {
-        padding: 0.75rem 1.5rem;
-    }
-
-    .dashboard,
-    .dashboard-shrink {
-        padding: 2rem 1.5rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .navbar {
-        padding: 0.75rem 1rem;
-    }
-
-    .navbar-links {
-        gap: 1.5rem;
-    }
-
-    .dashboard,
-    .dashboard-shrink {
-        padding: 1.5rem 1rem;
-    }
-
-    .task-container {
-        grid-template-columns: 1fr;
-    }
-
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .form-container {
-        width: 95%;
-        padding: 1.75rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .navbar-links {
-        gap: 1rem;
-    }
-
-    .profile-img {
-        width: 36px;
-        height: 36px;
-    }
-
-    .username {
-        font-size: 0.875rem;
-    }
-
-    .dashboard h2,
-    .dashboard-shrink h2 {
-        font-size: 1.5rem;
-    }
-}
-
 /* Animations */
 @keyframes fadeIn {
     from {
@@ -443,32 +376,174 @@ dvi {
     border-width: 0;
 }
 
-/* Print Styles */
-@media print {
-    .sidebar,
-    .navbar,
-    .toggle-btn,
-    .add-task-btn,
-    .task-actions {
-        display: none !important;
+/* Mobile specific styles */
+@media (max-width: 768px) {
+    .sidebar.expanded {
+        width: 85%;
+        max-width: 300px;
     }
 
+    .dashboard {
+        margin-left: 0;
+        padding: 1rem;
+    }
+
+    .task-container {
+        grid-template-columns: 1fr;
+    }
+
+    .toggle-btn {
+        top: 0.75rem;
+    }
+
+    /* Adjust form positioning for mobile */
+    .add-form,
+    .edit-form {
+        width: 90%;
+        max-width: none;
+        padding: 1.25rem;
+    }
+
+    /* Make sure task cards are full width on mobile */
+    .task-card {
+        width: 100%;
+    }
+
+    /* Adjust dashboard header for mobile */
+    .dashboard h2,
+    .dashboard-shrink h2 {
+        font-size: 1.25rem;
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+        padding-left: 2.5rem;
+        /* Make room for the toggle button */
+    }
+
+    /* Ensure proper spacing when sidebar is collapsed */
+    .dashboard-shrink {
+        padding-top: 1rem;
+    }
+
+    /* Adjust profile section for smaller screens */
+    .profile {
+        padding: 1rem;
+    }
+
+    .profile-img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .username {
+        font-size: 0.875rem;
+    }
+
+    /* Make sidebar links more touch-friendly */
+    .sidebar a {
+        padding: 0.875rem 1.25rem;
+    }
+
+    /* Ensure the add task button is properly sized */
+    .add-task-btn {
+        margin: 1rem auto;
+        width: 45px;
+        height: 45px;
+    }
+
+    /* Fix for iOS Safari bottom bar */
+    .sidebar {
+        padding-bottom: 5rem;
+    }
+
+    /* Improve scrolling on mobile */
+    .task-container {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Adjust form inputs for better mobile experience */
+    input,
+    select,
+    textarea {
+        font-size: 16px !important;
+        /* Prevents iOS zoom on focus */
+    }
+
+    /* Ensure buttons are large enough for touch */
+    button {
+        min-height: 44px;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .sidebar.expanded {
+        width: 85%;
+    }
+
+    .task-container {
+        gap: 1rem;
+    }
+
+    /* Further reduce padding to maximize content space */
     .dashboard,
     .dashboard-shrink {
-        margin-left: 0 !important;
-        padding: 0 !important;
+        padding: 0.75rem;
     }
 
-    .task-card,
-    .project-card,
-    .stat-card,
-    .chart-container {
-        box-shadow: none !important;
-        border: 1px solid #ddd !important;
-        break-inside: avoid;
+    /* Make task cards more compact */
+    .task-card {
+        margin-bottom: 1rem;
     }
 
-    body {
-        background-color: white !important;
+    /* Ensure the toggle button is visible but not intrusive */
+    .toggle-btn {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+    .sidebar {
+        padding-bottom: 1rem;
+    }
+
+    .profile {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .add-task-btn {
+        margin: 0.5rem auto;
+    }
+
+    .sidebar h3 {
+        margin-top: -0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .sidebar ul {
+        padding: 0.5rem 0;
+    }
+
+    .sidebar li {
+        margin-bottom: 0.125rem;
+    }
+}
+
+/* Fix for notched phones */
+@supports (padding: max(0px)) {
+
+    .sidebar,
+    .dashboard,
+    .dashboard-shrink {
+        padding-left: max(1rem, env(safe-area-inset-left));
+        padding-right: max(1rem, env(safe-area-inset-right));
+    }
+
+    .sidebar {
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
     }
 }

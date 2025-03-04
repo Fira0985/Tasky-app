@@ -2,9 +2,14 @@ const express = require("express")
 // const Signup = require("../controller/control")
 const User = require("../models/user")
 const Task = require("../models/task");
-
+const bcrypt = require("bcryptjs")
+const jwt = require("jsonwebtoken")
+const dotenv = require("dotenv");
+const task = require("../models/task");
 
 const route = express.Router()
+
+dotenv.config();
 
 route.post('/signup', async (req, res) => {
     const { name, email, password } = req.body;
@@ -34,8 +39,11 @@ route.post('/login', async (req,res) => {
         
 
         if(userExist){
-            if (userExist.password == password){
+            const IsPasswordValid = bcrypt.compare(password,userExist.password)
+            if (IsPasswordValid){
+                const token = jwt.sign({id: userExist._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
                 return res.status(200).json({message: "User loged in successfully"})
+
             }
             return res.status(400).json({message: "Incorrect Password"})
         }
