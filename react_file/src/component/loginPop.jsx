@@ -34,7 +34,7 @@ function LoginPop(props){
     // The function that make the request
     async function loginRequest(event) {
         event.preventDefault()
-        const url = "http://localhost:3002/login"
+        const url = "https://tasky-app-backend.vercel.app/login"
         const option = {
             method: "POST",
             headers: {

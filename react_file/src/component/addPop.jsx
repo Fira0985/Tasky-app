@@ -48,7 +48,7 @@ function Add(props){
 
     async function TaskFormRequest(event) {
         event.preventDefault()
-        const url = "http://localhost:3002/add-task"
+        const url = "https://tasky-app-backend.vercel.app/add-task"
         const option = {
             method: "POST",
             headers: {

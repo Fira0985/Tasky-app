@@ -46,7 +46,7 @@ function EditTaskForm(props) {
 
     async function UpdateTask(event){
         event.preventDefault()
-        const url = "http://localhost:3002/update"
+        const url = "https://tasky-app-backend.vercel.app/update"
         const option = {
             method: "POST",
             headers: {

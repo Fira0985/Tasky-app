@@ -4,7 +4,7 @@ import '../styles/task.css';
 function Task (props){
 
     async function DeleteTask(){
-        const url = "http://localhost:3002/delete"
+        const url = "https://tasky-app-backend.vercel.app/delete"
         const option = {
             method: "DELETE",
             headers: {

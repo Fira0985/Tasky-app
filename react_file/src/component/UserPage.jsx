@@ -54,7 +54,7 @@ function User(props) {
     } else {
       data = "Not Completed"
     }
-    const url = "http://localhost:3002/set-status"
+    const url = "https://tasky-app-backend.vercel.app/set-status"
     const option = {
       method: "POST",
       headers: {
@@ -76,7 +76,7 @@ function User(props) {
 
   async function GetUserInfo(email) {
 
-    const url = "http://localhost:3002/get-name";
+    const url = "https://tasky-app-backend.vercel.app/get-name";
     const option = {
       method: "POST",
       headers: {
@@ -107,7 +107,7 @@ function User(props) {
 
   async function GetTask() {
 
-    const url = "http://localhost:3002/get-task?email=" + email
+    const url = "https://tasky-app-backend.vercel.app/get-task?email=" + email
     const option = {
       method: "GET",
       headers: {

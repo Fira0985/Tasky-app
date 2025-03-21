@@ -35,7 +35,7 @@ function Pop(props){
     async function registerRequest(event) {
         setSuccess(true)
         event.preventDefault()
-        const url = "http://localhost:3002/signup"
+        const url = "https://tasky-app-backend.vercel.app/signup"
         const option = {
             method: "POST",
             headers: {
