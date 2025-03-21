@@ -1,10 +1,12 @@
+/* Fundamental Styles - Improved */
 .login-box {
     display: block;
     position: absolute;
     top: 43%;
-    left: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 35vw;
-    height: 50vh;
+    height: auto;
     background: #fff;
     padding: 40px;
     border-radius: 12px;
@@ -13,176 +15,94 @@
     opacity: 0;
     animation: slideIn 1s 0.5s forwards;
     z-index: 300;
-
 }
 
-.login-box.active {
-    opacity: 1;
-    visibility: visible;
-    transform: translate(-50%, -50%) scale(1);
+/* Animation */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -55%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
 }
 
+/* Heading */
 .login-box h2 {
-    color: #1e293b;
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin-bottom: 1.75rem;
-    text-align: center;
-    position: relative;
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
 }
 
-.login-box h2::after {
-    content: '';
-    position: absolute;
-    bottom: -0.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 50px;
-    height: 3px;
-    background-color: #0f766e;
-    border-radius: 1.5px;
-}
-
+/* Input Fields */
 .textbox {
-    position: relative;
-    margin-bottom: 1.5rem;
+    margin-bottom: 20px;
 }
 
 .textbox input {
     width: 100%;
-    padding: 0.875rem 1rem;
+    padding: 12px;
     font-size: 1rem;
-    color: #334155;
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    transition: 0.3s ease-in-out;
 }
 
 .textbox input:focus {
-    outline: none;
-    border-color: #0f766e;
-    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
-    background-color: white;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
 }
 
-.textbox input::placeholder {
-    color: #94a3b8;
-}
-
+/* Error Message */
 .message {
-    margin-bottom: 1.5rem;
-    padding: 0.75rem;
-    border-radius: 6px;
-    background-color: rgba(239, 68, 68, 0.1);
-    border-left: 3px solid #ef4444;
-    font-size: 0.875rem;
-    color: #ef4444;
-    transition: all 0.3s ease;
-    transform-origin: top;
-}
-
-.message.hidden {
-    display: none;
-    height: 0;
-    margin: 0;
-    padding: 0;
-    transform: scaleY(0);
+    font-size: 0.9rem;
+    color: #d9534f;
+    margin-bottom: 15px;
+    visibility: hidden;
 }
 
 .message.show {
-    display: block;
-    transform: scaleY(1);
-}
-
-.btn {
-    width: 100%;
-    padding: 0.875rem;
-    background-color: #0f766e;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 6px rgba(15, 118, 110, 0.1);
-}
-
-.btn:hover {
-    background-color: #0e6b63;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(15, 118, 110, 0.15);
-}
-
-.btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(15, 118, 110, 0.1);
-}
-
-/* Overlay for background dimming */
-.login-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(3px);
-    z-index: 999;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.login-overlay.active {
-    opacity: 1;
     visibility: visible;
 }
 
-/* Close button */
-.close-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: none;
+/* Login Button */
+.btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    color: white;
+    background: #007bff;
     border: none;
-    color: #94a3b8;
-    font-size: 1.5rem;
+    border-radius: 6px;
     cursor: pointer;
-    transition: color 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
+    transition: background 0.3s ease-in-out;
 }
 
-.close-btn:hover {
-    color: #ef4444;
-    background-color: rgba(239, 68, 68, 0.1);
+.btn:hover {
+    background: #0056b3;
 }
 
-/* Responsive adjustments */
-@media (max-width: 480px) {
+/* Mobile View */
+@media (max-width: 768px) {
     .login-box {
-        width: 90%;
-        padding: 2rem 1.5rem;
+        width: 80vw;
+        padding: 30px;
     }
 
     .login-box h2 {
         font-size: 1.5rem;
     }
-}
 
-@keyframes slideIn {
-    from {
-        left: -50%;
+    .textbox input {
+        padding: 10px;
+        font-size: 0.95rem;
     }
 
-    to {
-        left: 30%;
-        opacity: 1;
+    .btn {
+        font-size: 1rem;
     }
 }

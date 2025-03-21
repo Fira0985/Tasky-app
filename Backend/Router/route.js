@@ -41,7 +41,6 @@ route.post('/login', async (req,res) => {
         if(userExist){
             const IsPasswordValid = bcrypt.compare(password,userExist.password)
             if (IsPasswordValid){
-                const token = jwt.sign({id: userExist._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
                 return res.status(200).json({message: "User loged in successfully"})
 
             }
