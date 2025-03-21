@@ -8,7 +8,7 @@ function Footer(){
     <div className="footer-container">
         <div className="footer-logo">
             <a href="#"><img src={image} alt="Tasky App Logo" /></a>
-            <p>Tasky App: Your Personal Task Manager</p>
+            <p>Tasky App: Your Personal Task Managers</p>
         </div>
 
         <div className="footer-links">
