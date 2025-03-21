@@ -130,20 +130,37 @@ header {
 }
 
 .close {
-    display: "none";
-    margin-left: 2%;
+    display: none;
     position: absolute;
-    top: 45%;
-    left: 39%;
+    top: 44%;
+    left: 30%;
+    transform: translate(-50%, -50%);
     z-index: 500;
     opacity: 0;
     animation: slideIn 1s 0.5s forwards;
     cursor: pointer;
+    padding: 8px 12px;
+    background: rgba(255, 0, 0, 0.8);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 50%;
+    /* Circular button */
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease-in-out;
 }
 
-.close:hover{
-    background-color: red;
+.close:hover {
+    background: rgba(200, 0, 0, 1);
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
+
 
 .account-link a {
     position: absolute;
@@ -170,7 +187,7 @@ header {
 #registerLink {
     position: absolute;
     top: 77%;
-    left: 34%;
+    left: 28%;
     width: 33%;
 }
 
