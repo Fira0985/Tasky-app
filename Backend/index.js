@@ -12,6 +12,10 @@ Connect();
 
 app.use('/', require('./Router/route'));
 
+app.get("/", (req, res) => {
+  res.send("Backend is running successfully!");
+});
+
 
 app.listen(port,()=>{
   console.log('connected to a port')}
