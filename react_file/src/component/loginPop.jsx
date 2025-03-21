@@ -74,7 +74,7 @@ function LoginPop(props){
                 <div className={`message ${success ? 'hidden' : 'show'}`}>
                     <label htmlFor="message" style={color}>Incorrect Password or email</label>
                 </div>
-                <button type="submit" className="btn">Login</button>
+                <button type="submit" className="login-btn">Login</button>
             </form>
         </div>
     )

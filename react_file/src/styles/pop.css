@@ -4,7 +4,7 @@
     top: 43%;
     left: 30%;
     width: 40vw;
-    height: 56vh;
+    height: 59vh;
     background: #fff;
     padding: 40px;
     border-radius: 12px;
@@ -37,9 +37,10 @@
     font-size: 16px;
     cursor: pointer;
     transition: background 0.3s ease;
+    margin-top: 3vh;
 }
 
-.message{
+.message {
     display: block;
     color: red;
 }
@@ -49,6 +50,38 @@
 }
 
 @keyframes slideIn {
-    from {left: -50%;}
-    to {left: 30%; opacity: 1;}
+    from {
+        left: -50%;
+    }
+
+    to {
+        left: 30%;
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    #register-box {
+        width: 90vw;
+        height: 45vh;
+        padding: 25px;
+        left: 5%;
+        top: 60%;
+    }
+
+    .textbox input {
+        padding: 12px;
+        font-size: 14px;
+        border-radius: 6px;
+    }
+
+    .btn {
+        padding: 12px;
+        font-size: 14px;
+        margin-top: 3vh;
+    }
+
+    .message {
+        font-size: 0.9rem;
+    }
 }

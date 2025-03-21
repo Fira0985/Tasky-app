@@ -70,7 +70,7 @@
 }
 
 /* Login Button */
-.btn {
+.login-btn {
     width: 100%;
     padding: 12px;
     font-size: 1.1rem;
@@ -82,27 +82,47 @@
     transition: background 0.3s ease-in-out;
 }
 
-.btn:hover {
+.login-btn:hover {
     background: #0056b3;
 }
 
 /* Mobile View */
 @media (max-width: 768px) {
     .login-box {
-        width: 80vw;
-        padding: 30px;
+        width: 90vw;
+        height: 40vh;
+        padding: 25px;
+        left: 5%;
+        top: 60%;
     }
 
     .login-box h2 {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
+        margin-bottom: 15px;
+    }
+
+    .textbox {
+        margin-bottom: 15px;
     }
 
     .textbox input {
         padding: 10px;
         font-size: 0.95rem;
+        border-radius: 5px;
     }
 
-    .btn {
+    .textbox input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    }
+
+    .login-btn {
+        padding: 12px;
         font-size: 1rem;
+    }
+
+    .message {
+        font-size: 0.85rem;
+        margin-bottom: 12px;
     }
 }

@@ -81,7 +81,7 @@ function App() {
               <Home />
               <button className="close" style={closeStyle} onClick={close}>X</button>
               <Pop style={registerStyle} />
-              <p class="account-link">
+              <p class="account-link" id='loginLink'>
                 <a className={`login-link ${status ? 'normal' : 'error'}`} href="#" style={registerStyle} onClick={LoginForm}>Already have an account</a></p>
               <LoginPop style={loginStyle} SendDataToParent={GetLoginData} GetMessage={message} getEmail={GetUserEmail} />
               <p class="account-link" id='registerLink'>
