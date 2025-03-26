@@ -25,6 +25,7 @@ function App() {
   }
 
   function GetLoginData(data) {
+    console.log(data.message)
     if (data.message == "User loged in successfully") {
       navigate("/user")
     }
