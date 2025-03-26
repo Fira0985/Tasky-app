@@ -1,5 +1,8 @@
+import dotenv from "dotenv";
 import React, { useState } from "react";
 import '../styles/loginPop.css';
+
+dotenv.config()
 
 function LoginPop(props){
 
@@ -34,7 +37,7 @@ function LoginPop(props){
     // The function that make the request
     async function loginRequest(event) {
         event.preventDefault()
-        const url = "https://tasky-app-backend.vercel.app/login"
+        const url = "login"
         const option = {
             method: "POST",
             headers: {
@@ -48,6 +51,7 @@ function LoginPop(props){
             const answer = await response.json();
             GetData(answer)
 
+            console.log(answer.message)
             if (answer.message == "User loged in successfully"){
                 setSuccess(true)
             } else {
