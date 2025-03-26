@@ -8,7 +8,7 @@ function LoginPop(props){
 
     const [password, setPassword] = useState("")
     const [email, setEmail] = useState("")
-    const [success, setSuccess] = useState(true)
+    const [success, setSuccess] = useState(false)
     const color = {color: "red"}
 
     function GetData(data){  // sending the status and the email to parent component
