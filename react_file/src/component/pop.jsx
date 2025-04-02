@@ -9,6 +9,8 @@ function Pop(props){
     const [success, setSuccess] = useState(false)
     const color = {color: "red"}
     const [message, setMessage] = useState("This email already exists")
+    const api_url = process.env.REACT_APP_API_URL
+    const api_url_vercel = process.env.REACT_APP_API_URL_vercel
 
     const data = {
     name,
@@ -35,7 +37,7 @@ function Pop(props){
     async function registerRequest(event) {
         setSuccess(true)
         event.preventDefault()
-        const url = "https://tasky-app-backend.vercel.app/signup"
+        const url = api_url + "signup"
         const option = {
             method: "POST",
             headers: {
@@ -76,7 +78,9 @@ function Pop(props){
             </div>
             {success?(<div className="message">
                 <label htmlFor="message" style={color}>{message}</label>
-            </div>):(<div></div>)}
+            </div>):(<div className="message">
+                <label htmlFor="message" style={color}></label>
+            </div>)}
             <button type="submit" className="btn">Register</button>
         </form>
         </div>

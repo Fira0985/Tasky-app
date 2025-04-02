@@ -27,7 +27,8 @@ function User(props) {
   const [filteredTasks, setFilteredTasks] = useState([]); // Filtered tasks
   const email = props.email // Email of the current user
   const [name, setName] = useState("")  // used to holds the name of the current user
-
+  const api_url = process.env.REACT_APP_API_URL
+  const api_url_vercel = process.env.REACT_APP_API_URL_vercel
 
   // Function to toggle the sidebar's state
   const toggleSidebar = () => {
@@ -54,7 +55,7 @@ function User(props) {
     } else {
       data = "Not Completed"
     }
-    const url = "https://tasky-app-backend.vercel.app/set-status"
+    const url = api_url + "set-status"
     const option = {
       method: "POST",
       headers: {
@@ -76,7 +77,7 @@ function User(props) {
 
   async function GetUserInfo(email) {
 
-    const url = "https://tasky-app-backend.vercel.app/get-name";
+    const url = api_url + "get-name";
     const option = {
       method: "POST",
       headers: {
@@ -107,7 +108,7 @@ function User(props) {
 
   async function GetTask() {
 
-    const url = "https://tasky-app-backend.vercel.app/get-task?email=" + email
+    const url = api_url + "get-task?email=" + email
     const option = {
       method: "GET",
       headers: {

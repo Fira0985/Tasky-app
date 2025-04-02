@@ -11,6 +11,9 @@ function Add(props){
     const [dependency, setDependency] = useState("")
     const [status, setStatus] = useState("Not Completed")
 
+    const api_url = process.env.REACT_APP_API_URL
+    const api_url_vercel = process.env.REACT_APP_API_URL_vercel
+
     const data = {
     email,
     taskName,
@@ -48,7 +51,7 @@ function Add(props){
 
     async function TaskFormRequest(event) {
         event.preventDefault()
-        const url = "https://tasky-app-backend.vercel.app/add-task"
+        const url = api_url + "add-task"
         const option = {
             method: "POST",
             headers: {

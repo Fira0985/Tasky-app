@@ -42,6 +42,7 @@
 
 .message {
     display: block;
+    height: 1.4vh;
     color: red;
 }
 
@@ -63,7 +64,7 @@
 @media (max-width: 768px) {
     #register-box {
         width: 90vw;
-        height: 45vh;
+        height: 53vh;
         padding: 25px;
         left: 5%;
         top: 60%;

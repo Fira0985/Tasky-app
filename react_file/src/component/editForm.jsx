@@ -9,6 +9,8 @@ function EditTaskForm(props) {
     const [priority, setPriority] = useState(props.priority || "")
     const [deadline, setDeadline] = useState(props.deadline || "")
     const [dependency, setDependency] = useState(props.dependency || "")
+    const api_url = process.env.REACT_APP_API_URL
+    const api_url_vercel = process.env.REACT_APP_API_URL_vercel
 
     const data = {
     initialName,
@@ -46,7 +48,7 @@ function EditTaskForm(props) {
 
     async function UpdateTask(event){
         event.preventDefault()
-        const url = "https://tasky-app-backend.vercel.app/update"
+        const url = api_url + "update"
         const option = {
             method: "POST",
             headers: {

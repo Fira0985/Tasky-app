@@ -134,25 +134,15 @@ header {
     position: absolute;
     top: 44%;
     left: 30%;
-    transform: translate(-50%, -50%);
     z-index: 500;
     opacity: 0;
     animation: slideIn 1s 0.5s forwards;
     cursor: pointer;
     padding: 8px 12px;
-    background: rgba(255, 0, 0, 0.8);
-    color: white;
+    background: white;
+    color: red;
     font-size: 16px;
     font-weight: bold;
-    border: none;
-    border-radius: 50%;
-    /* Circular button */
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease-in-out;
 }
 
 .close:hover {
@@ -232,14 +222,14 @@ header {
     }
 
     #registerLink{
-        top: 83%;
+        top: 89%;
         left: -19%;
         width: 100%;
     }
 
     #loginLink{
         position: absolute;
-        top: 86%;
+        top: 88%;
         left: -19%;
         width: 100%;
     }

@@ -2,9 +2,11 @@ import React from 'react';
 import '../styles/task.css';
 
 function Task (props){
+    const api_url = process.env.REACT_APP_API_URL
+    const api_url_vercel = process.env.REACT_APP_API_URL_vercel
 
     async function DeleteTask(){
-        const url = "https://tasky-app-backend.vercel.app/delete"
+        const url = api_url + "delete"
         const option = {
             method: "DELETE",
             headers: {

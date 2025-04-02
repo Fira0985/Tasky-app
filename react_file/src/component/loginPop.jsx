@@ -1,8 +1,5 @@
-import dotenv from "dotenv";
 import React, { useState } from "react";
 import '../styles/loginPop.css';
-
-dotenv.config()
 
 function LoginPop(props){
 
@@ -10,6 +7,8 @@ function LoginPop(props){
     const [email, setEmail] = useState("")
     const [success, setSuccess] = useState(false)
     const color = {color: "red"}
+    const api_url = process.env.REACT_APP_API_URL
+    const api_url_vercel = process.env.REACT_APP_API_URL_vercel
 
     function GetData(data){  // sending the status and the email to parent component
         props.SendDataToParent(data)
@@ -37,7 +36,7 @@ function LoginPop(props){
     // The function that make the request
     async function loginRequest(event) {
         event.preventDefault()
-        const url = "login"
+        const url = api_url + "login"
         const option = {
             method: "POST",
             headers: {
@@ -53,9 +52,9 @@ function LoginPop(props){
 
             console.log(answer.message)
             if (answer.message == "User loged in successfully"){
-                setSuccess(true)
-            } else {
                 setSuccess(false)
+            } else {
+                setSuccess(true)
             }
 
             props.GetMessage(success)
@@ -75,7 +74,7 @@ function LoginPop(props){
                 <div className="textbox">
                     <input type="password" placeholder="Password" required onChange={passwordValue} />
                 </div>
-                <div className={`message ${success ? 'hidden' : 'show'}`}>
+                <div className={`message ${success ? 'show' : 'hidden'}`}>
                     <label htmlFor="message" style={color}>Incorrect Password or email</label>
                 </div>
                 <button type="submit" className="login-btn">Login</button>

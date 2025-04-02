@@ -6,7 +6,7 @@
     left: 30%;
     transform: translate(-50%, -50%);
     width: 40vw;
-    height: auto;
+    height: 57vh;
     background: #fff;
     padding: 40px;
     border-radius: 12px;
@@ -58,7 +58,7 @@
 }
 
 /* Error Message */
-.message {
+.message.hidden {
     font-size: 0.9rem;
     color: #d9534f;
     margin-bottom: 15px;
@@ -66,7 +66,7 @@
 }
 
 .message.show {
-    visibility: visible;
+   visibility: visible;
 }
 
 /* Login Button */
@@ -90,7 +90,7 @@
 @media (max-width: 768px) {
     .login-box {
         width: 90vw;
-        height: 40vh;
+        height: 45vh;
         padding: 25px;
         left: 5%;
         top: 60%;

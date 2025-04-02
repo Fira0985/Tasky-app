@@ -24,7 +24,6 @@ route.post('/signup', async (req, res) => {
         const newUser = new User({ name, email, password });
         
         await newUser.save();
-
         return res.status(201).json({ message: 'User registered successfully' });
     } catch (err) {
         return res.status(500).json({ message: 'Failed to register user', error: err.message });
@@ -33,13 +32,11 @@ route.post('/signup', async (req, res) => {
 
 route.post('/login', async (req,res) => {
     const {email, password} = req.body
-    userEmail = email
     try{
-        const userExist = await User.findOne({email})
+        const userExist = await User.findOne({ email })
         
-
         if(userExist){
-            const IsPasswordValid = bcrypt.compare(password,userExist.password)
+            const IsPasswordValid =  await bcrypt.compare(password,userExist.password)
             if (IsPasswordValid){
                 return res.status(200).json({message: "User loged in successfully"})
 
