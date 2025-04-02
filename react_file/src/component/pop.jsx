@@ -37,7 +37,7 @@ function Pop(props){
     async function registerRequest(event) {
         setSuccess(true)
         event.preventDefault()
-        const url = api_url + "signup"
+        const url = api_url_vercel + "signup"
         const option = {
             method: "POST",
             headers: {

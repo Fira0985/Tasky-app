@@ -6,7 +6,7 @@ function Task (props){
     const api_url_vercel = process.env.REACT_APP_API_URL_vercel
 
     async function DeleteTask(){
-        const url = api_url + "delete"
+        const url = api_url_vercel + "delete"
         const option = {
             method: "DELETE",
             headers: {

@@ -55,7 +55,7 @@ function User(props) {
     } else {
       data = "Not Completed"
     }
-    const url = api_url + "set-status"
+    const url = api_url_vercel + "set-status"
     const option = {
       method: "POST",
       headers: {
@@ -77,7 +77,7 @@ function User(props) {
 
   async function GetUserInfo(email) {
 
-    const url = api_url + "get-name";
+    const url = api_url_vercel + "get-name";
     const option = {
       method: "POST",
       headers: {
@@ -108,7 +108,7 @@ function User(props) {
 
   async function GetTask() {
 
-    const url = api_url + "get-task?email=" + email
+    const url = api_url_vercel + "get-task?email=" + email
     const option = {
       method: "GET",
       headers: {

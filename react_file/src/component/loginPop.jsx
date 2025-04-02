@@ -36,7 +36,7 @@ function LoginPop(props){
     // The function that make the request
     async function loginRequest(event) {
         event.preventDefault()
-        const url = api_url + "login"
+        const url = api_url_vercel + "login"
         const option = {
             method: "POST",
             headers: {

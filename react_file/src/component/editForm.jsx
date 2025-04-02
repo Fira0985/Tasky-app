@@ -48,7 +48,7 @@ function EditTaskForm(props) {
 
     async function UpdateTask(event){
         event.preventDefault()
-        const url = api_url + "update"
+        const url = api_url_vercel + "update"
         const option = {
             method: "POST",
             headers: {

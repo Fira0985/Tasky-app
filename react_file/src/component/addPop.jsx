@@ -51,7 +51,7 @@ function Add(props){
 
     async function TaskFormRequest(event) {
         event.preventDefault()
-        const url = api_url + "add-task"
+        const url = api_url_vercel + "add-task"
         const option = {
             method: "POST",
             headers: {
