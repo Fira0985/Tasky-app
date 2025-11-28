@@ -1,19 +1,169 @@
-/* Home.css - Professional styling for the home page */
+/* Home.css - Complete styling for Home.jsx including navbar, modals, overlay, sections, footer */
 
+/* Navbar */
+.navbar {
+    /* make navbar fixed to top so it stays visible on scroll */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 64px; /* navbar height used to reserve page top space on desktop */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem; /* reduce vertical padding since height is fixed */
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    z-index: 1100; /* keep above modal/other content */
+}
+
+/* ensure page content is not hidden behind fixed navbar */
 .home {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    color: #334155;
-    line-height: 1.6;
-    scroll-behavior: smooth;
+    padding-top: 64px; /* match .navbar height on desktop */
+}
+
+.navbar #logo img {
+    height: 40px;
+}
+
+.nav-links a {
+    margin-left: 1.5rem;
+    font-weight: 500;
+    color: #1e293b;
+    transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+    color: #0f766e;
+}
+
+/* Navbar buttons - base */
+.nav-links .nav-btn {
+    margin-left: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease, color 0.12s ease;
+    border: 1px solid transparent;
+    text-decoration: none;
+}
+
+/* Login: subtle outline button */
+.nav-links .nav-btn--login {
+    background: transparent;
+    color: #0f766e;
+    border-color: rgba(15,118,110,0.18);
+    box-shadow: none;
+}
+
+.nav-links .nav-btn--login:hover {
+    background: rgba(15,118,110,0.06);
+    transform: translateY(-2px);
+}
+
+.nav-links .nav-btn--login:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(15,118,110,0.08);
+    border-color: rgba(15,118,110,0.28);
+}
+
+/* Sign Up: filled primary button */
+.nav-links .nav-btn--signup {
+    background: linear-gradient(180deg,#0f766e,#0b5f56);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 6px 14px rgba(15,118,110,0.16);
+}
+
+.nav-links .nav-btn--signup:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(11,95,86,0.18);
+}
+
+/* Focus (keyboard) */
+.nav-links .nav-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(15,118,110,0.08);
+}
+
+/* Overlay - full screen and centers modal content */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 900;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Wrapper to hold modal content and allow internal layout */
+.modal-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 920px; /* allows modal components to control their own width */
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Close Button for Modals */
+.close-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #0f766e;
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: none;
+    z-index: 1001;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.close-btn:hover {
+    background-color: #07565f;
+}
+
+/* Make close button visible when inside overlay */
+.modal-overlay .close-btn {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    display: block;
+    background-color: #0f766e;
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    z-index: 1001;
 }
 
 /* Overview Section */
 .overview {
     background: linear-gradient(135deg, #0f766e 0%, #0e7490 100%);
     color: white;
-    padding: 5rem 2rem;
+    padding: 6rem 2rem;
     text-align: center;
-    border-radius: 0 0 2rem 2rem;
     box-shadow: 0 4px 20px rgba(15, 118, 110, 0.2);
 }
 
@@ -21,10 +171,6 @@
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
-    line-height: 1.2;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .overview p {
@@ -38,22 +184,19 @@
 .overview button {
     background-color: white;
     color: #0f766e;
-    border: none;
     padding: 0.875rem 2rem;
-    font-size: 1rem;
     font-weight: 600;
     border-radius: 0.5rem;
-    cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .overview button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
 }
 
-/* How It Works Section */
+/* How It Works */
 .how-it-works {
     padding: 5rem 2rem;
     background-color: #f8fafc;
@@ -92,13 +235,13 @@
     background-color: white;
     padding: 2rem;
     border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .step:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
 }
 
 .step h3 {
@@ -117,8 +260,8 @@
 .download {
     background-color: #0f766e;
     color: white;
-    padding: 5rem 2rem;
     text-align: center;
+    padding: 5rem 2rem;
 }
 
 .download h2 {
@@ -142,9 +285,6 @@
 }
 
 .btn-download {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     background-color: white;
     color: #0f766e;
     padding: 0.875rem 1.5rem;
@@ -152,13 +292,12 @@
     font-weight: 600;
     text-decoration: none;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .btn-download:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-    background-color: #f8fafc;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
 }
 
 /* Footer Section */
@@ -214,7 +353,6 @@
 .footer-links ul {
     list-style: none;
     padding: 0;
-    margin: 0;
 }
 
 .footer-links li {
@@ -223,9 +361,8 @@
 
 .footer-links a {
     color: #e2e8f0;
-    text-decoration: none;
-    transition: color 0.2s ease;
     font-size: 0.9375rem;
+    transition: color 0.2s ease;
 }
 
 .footer-links a:hover {
@@ -249,40 +386,31 @@
 .footer-bottom {
     text-align: center;
     padding-top: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255,255,255,0.1);
     font-size: 0.875rem;
     opacity: 0.7;
 }
 
-/* Responsive Adjustments */
+/* Responsive */
 @media (max-width: 768px) {
-    .overview h1 {
-        font-size: 2rem;
+    .nav-links a {
+        margin-left: 1rem;
     }
 
-    .overview p,
-    .download p {
-        font-size: 1rem;
+    .overview h1 {
+        font-size: 2rem;
     }
 
     .how-it-works h2,
     .download h2 {
         font-size: 1.75rem;
     }
-
-    .footer-container {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-
-    .social-icons {
-        justify-content: flex-start;
-    }
 }
 
 @media (max-width: 480px) {
     .overview {
         padding: 3rem 1.5rem;
+        margin-top: 4vh;
     }
 
     .how-it-works,
@@ -299,4 +427,42 @@
         width: 100%;
         max-width: 280px;
     }
+}
+
+@media (max-width: 560px) {
+    /* let navbar grow naturally on mobile (no fixed height) */
+    .navbar {
+        height: auto;
+        padding: 0.75rem 1rem;
+        align-items: center;
+    }
+
+    .navbar #logo img{
+        height: 50px;
+    }
+
+    /* increase top padding to accommodate potentially taller navbar */
+    .home {
+        padding-top: 88px; /* slightly larger so content won't be covered when nav wraps */
+    }
+
+    /* tighten link spacing and allow wrapping */
+    .nav-links {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .nav-links a {
+        margin-left: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .nav-links .nav-btn {
+        padding: 0.55rem 0.9rem;
+        font-size: 0.98rem;
+    }
+
 }

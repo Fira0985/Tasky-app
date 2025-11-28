@@ -2,15 +2,17 @@ import { CheckCircle, CircleOff, FileText, Folder, ListChecks, Mail } from "luci
 import React, { useEffect, useState } from "react";
 import image from '../asset/69KTbX-LogoMakr.png';
 import ProfileImage from '../asset/profile.png';
+import { useNavigate } from 'react-router-dom';
 import '../styles/UserPage.css';
-import Add from './addPop';
-import Edit from "./editForm";
-import Project from "./Project";
-import Report from "./report";
-import Task from "./task";
+import AddForm from '../component/addForm';
+import Edit from "../component/editForm";
+import Project from "../component/Project";
+import Report from "../component/report";
+import Task from "../component/task";
 
 function User(props) {
-
+  const navigate = useNavigate();
+  
   const [isExpanded, setIsExpanded] = useState(true); // decide if the sidebar is expanded or not
   const [toggleStyle, setToggleStyle] = useState({ left: 10 })
   const [overlayStyle, setOverStyle] = useState({ display: "none" }) // decide visibility of overlay
@@ -45,6 +47,10 @@ function User(props) {
   function ShowForm() {
     setOverStyle({ display: "block" })
     setShowForm(true)
+  }
+
+  function ShowProfilePage(){
+     navigate("/Profile");
   }
 
   async function GetStatus(TaskName, status) {
@@ -243,7 +249,7 @@ function User(props) {
             </ul>
             <div className="add-task-btn" onClick={ShowForm}><a href="#dash">+</a></div>
             <h3>Add Task</h3>
-            <span className="profile">
+            <span className="profile" onClick={ShowProfilePage}>
               <img src={ProfileImage} alt="Profile" class="profile-img" />
               <h1 className="username">{name}</h1>
             </span>
@@ -261,10 +267,10 @@ function User(props) {
       {/* <!-- Dashboard Section --> */}
       {isExpanded ? (reportTap ? (<main>
         <Report tasks={message} />
-        {showForm ? (<Add email={email} GetData={GetFormData} />) : (<dvi></dvi>)}
+        {showForm ? (<AddForm email={email} GetData={GetFormData} />) : (<dvi></dvi>)}
       </main>) : (projectTap ? (<main>
         <Project />
-        {showForm ? (<Add email={email} GetData={GetFormData} />) : (<dvi></dvi>)}
+        {showForm ? (<AddForm email={email} GetData={GetFormData} />) : (<dvi></dvi>)}
       </main>) : <main className="dashboard" id="dash">
         <h2>Dashboard</h2>
         <div className="task-container">
@@ -283,7 +289,7 @@ function User(props) {
           ))}
         </div>
 
-        {showForm ? (<Add email={email} GetData={GetFormData} />) : (<dvi></dvi>)}
+        {showForm ? (<AddForm email={email} GetData={GetFormData} />) : (<dvi></dvi>)}
         {showEdit ? (<Edit name={beforeEdit[0]} detail={beforeEdit[1]} priority={beforeEdit[2]} deadline={beforeEdit[3]} dependency={beforeEdit[4]} GetData={GetFormData} />) : (<div></div>)}
       </main>)) : (reportTap ? (<Report tasks={message} />) : (projectTap ? (<Project />) : <main className="dashboard-shrink" id="dash">
         <h2>Dashboard</h2>
@@ -303,7 +309,7 @@ function User(props) {
           ))}
         </div>
 
-        {showForm ? (<Add email={email} GetData={GetFormData} />) : (<dvi></dvi>)}
+        {showForm ? (<AddForm email={email} GetData={GetFormData} />) : (<dvi></dvi>)}
         {showEdit ? (<Edit name={beforeEdit[0]} detail={beforeEdit[1]} priority={beforeEdit[2]} deadline={beforeEdit[3]} dependency={beforeEdit[4]} GetData={GetFormData} />) : (<div></div>)}
       </main>))}
     </div>

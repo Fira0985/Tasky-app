@@ -1,0 +1,121 @@
+/* PAGE WRAPPER - center content but NOT fullscreen */
+.profile-page {
+  display: flex;
+  justify-content: center;
+  padding-top: 60px;
+  padding-bottom: 60px;
+  background: #f7f9fc;
+  font-family: "Inter", sans-serif;
+}
+
+/* WHITE CARD */
+.profile-card {
+  width: 100%;
+  max-width: 520px;
+  background: white;
+  padding: 32px;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+/* TITLE */
+.profile-title {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 22px;
+  color: #1e293b;
+}
+
+/* FORM */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* LABELS */
+.profile-form label {
+  font-weight: 500;
+  color: #334155;
+  margin-bottom: 4px;
+}
+
+/* INPUTS */
+.profile-form input {
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.profile-form input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* SECTION HEADER */
+.section-title {
+  margin-top: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  color: #475569;
+}
+
+/* DIVIDER */
+.divider {
+  border: none;
+  height: 1px;
+  background: #e2e8f0;
+  margin: 8px 0;
+}
+
+/* MESSAGE */
+.msg {
+  font-size: 14px;
+  margin-top: -4px;
+}
+
+.msg.success { color: green; }
+.msg.error { color: red; }
+
+/* BUTTON ROW */
+.btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* SAVE BUTTON */
+.save-btn {
+  flex: 1;
+  padding: 12px;
+  background: #2563eb;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.2s;
+}
+
+.save-btn:hover {
+  background: #1d4ed8;
+}
+
+/* CANCEL BUTTON */
+.cancel-btn {
+  padding: 12px 20px;
+  border: 1px solid #cbd5e1;
+  background: white;
+  color: #475569;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+.cancel-btn:hover {
+  background: #f1f5f9;
+}

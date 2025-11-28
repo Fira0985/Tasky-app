@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import '../styles/addPop.css';
 
 
-function Add(props){
+function AddForm(props){
     const [taskName,setTaskName] = useState("")
     const [detail, setDetail] = useState("")
     const email = props.email
@@ -112,4 +112,4 @@ function Add(props){
 }
 
 
-export default Add
+export default AddForm

@@ -1,128 +1,93 @@
-/* Fundamental Styles - Improved */
+/* Login Box with glass effect */
 .login-box {
-    display: block;
-    position: absolute;
-    top: 43%;
-    left: 30%;
-    transform: translate(-50%, -50%);
-    width: 40vw;
-    height: 57vh;
-    background: #fff;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    opacity: 0;
-    animation: slideIn 1s 0.5s forwards;
-    z-index: 300;
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 1rem;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: popIn 0.25s ease-out;
 }
 
-/* Animation */
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -55%);
-    }
-
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-    }
+/* Close button (inside modal content) */
+.login-box .close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #334155;
+  background: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 /* Heading */
 .login-box h2 {
-    font-size: 1.8rem;
-    color: #333;
-    margin-bottom: 20px;
+  margin-bottom: 1.25rem;
+  font-size: 1.5rem;
+  color: #0f766e;
 }
 
-/* Input Fields */
+/* Textbox */
 .textbox {
-    margin-bottom: 20px;
+  margin-bottom: 1rem;
 }
 
 .textbox input {
-    width: 100%;
-    padding: 12px;
-    font-size: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    outline: none;
-    transition: 0.3s ease-in-out;
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border-radius: 0.5rem;
+  border: 1px solid #cbd5e1;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .textbox input:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  border-color: #0f766e; /* teal */
+  /* teal primary glow + subtle purple accent to match signup */
+  box-shadow: 0 0 8px rgba(15,118,110,0.18), 0 0 10px rgba(124,58,237,0.04);
 }
 
-/* Error Message */
-.message.hidden {
-    font-size: 0.9rem;
-    color: #d9534f;
-    margin-bottom: 15px;
-    visibility: hidden;
+/* Error message */
+.message {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: red;
 }
 
-.message.show {
-   visibility: visible;
-}
-
-/* Login Button */
+/* Button */
 .login-btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 1.1rem;
-    color: white;
-    background: #007bff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s ease-in-out;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #0f766e;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .login-btn:hover {
-    background: #0056b3;
+  background-color: #075f54;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
 }
 
-/* Mobile View */
-@media (max-width: 768px) {
-    .login-box {
-        width: 90vw;
-        height: 45vh;
-        padding: 25px;
-        left: 5%;
-        top: 60%;
-    }
-
-    .login-box h2 {
-        font-size: 1.6rem;
-        margin-bottom: 15px;
-    }
-
-    .textbox {
-        margin-bottom: 15px;
-    }
-
-    .textbox input {
-        padding: 10px;
-        font-size: 0.95rem;
-        border-radius: 5px;
-    }
-
-    .textbox input:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-    }
-
-    .login-btn {
-        padding: 12px;
-        font-size: 1rem;
-    }
-
-    .message {
-        font-size: 0.85rem;
-        margin-bottom: 12px;
-    }
+/* Pop animation */
+@keyframes popIn {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
