@@ -120,14 +120,6 @@
     gap: 0.5rem;
 }
 
-/* Close button is handled by parent Home component in the updated design, 
-   but keeping a fallback just in case or for standalone use */
 .signup-modal .close-btn {
     display: none;
-}
-
-@media (max-width: 480px) {
-    .signup-modal {
-        padding: 2.5rem 1.5rem;
-    }
 }
