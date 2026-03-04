@@ -1,98 +1,133 @@
-.signup-modal {
-    position: relative;
-    background-color: #ffffff;
-    border-radius: 1rem;
-    width: 100%;
-    max-width: 420px;
-    padding: 2rem;
-    z-index: 1000;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-    display: flex;
-    flex-direction: column;
-    animation: slide-in 0.35s ease-out forwards;
+@keyframes modalReveal {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
-/* Slide-in animation */
-@keyframes slide-in {
-    0% {
-        transform: translateY(-10px);
-        opacity: 0;
-    }
-
-    100% {
-        transform: translateY(0);
-        opacity: 1;
-    }
+.signup-modal {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    background: var(--white);
+    border-radius: var(--radius-2xl);
+    padding: 3rem 2.5rem;
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--secondary-100);
+    animation: modalReveal var(--transition-base);
 }
 
 .signup-modal h2 {
-    text-align: center;
-    font-size: 1.5rem;
+    font-family: var(--font-heading);
+    font-size: 2rem;
     font-weight: 700;
-    margin-bottom: 1rem;
-    color: #0f766e;
-    /* was #1f2937 */
-}
-
-/* Form inputs */
-.signup-modal input {
-    width: 100%;
-    padding: 0.75rem 1rem;
+    color: var(--secondary-900);
     margin-bottom: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    font-size: 0.95rem;
+    text-align: left;
 }
 
-.signup-modal input:focus {
-    outline: none;
-    border-color: #0f766e;
-    /* teal */
-    /* teal primary glow + subtle purple accent */
-    box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.08), 0 0 8px rgba(124, 58, 237, 0.04);
+.signup-modal::after {
+    content: "Join Tasky today and start managing tasks like a pro.";
+    display: block;
+    font-size: 0.9375rem;
+    color: var(--secondary-500);
+    margin-bottom: 2.5rem;
+    text-align: left;
 }
 
-/* Submit button */
-.signup-modal button {
-    width: 100%;
-    background-color: #0f766e;
-    /* changed from purple to teal to match login */
-    color: #ffffff;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 1rem;
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.signup-form .input-group {
+    position: relative;
+}
+
+.signup-form label {
+    display: block;
+    font-size: 0.875rem;
     font-weight: 600;
-    transition: background-color 0.15s ease, transform 0.15s ease;
+    color: var(--secondary-700);
+    margin-bottom: 0.5rem;
 }
 
-.signup-modal button:hover {
-    background-color: #075f54;
-    /* darker teal hover */
-    transform: translateY(-2px);
+.signup-form input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    background: var(--secondary-50);
+    border: 1px solid var(--secondary-200);
+    border-radius: var(--radius-lg);
+    font-size: 1rem;
+    color: var(--secondary-900);
+    transition: var(--transition-fast);
 }
 
-.signup-modal .close-btn {
+.input-icon {
     position: absolute;
-    top: 12px;
-    left: 23vw;
-    width: 5px;
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: #334155;
-    background: transparent;
-    border: none;
-    cursor: pointer;
+    left: 1rem;
+    top: 2.5rem;
+    color: var(--secondary-400);
+    pointer-events: none;
+    transition: var(--transition-fast);
 }
 
+.signup-form input:focus {
+    background: var(--white);
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 4px var(--primary-50);
+    outline: none;
+}
 
-/* Responsive */
+.signup-form input:focus+.input-icon {
+    color: var(--primary-600);
+}
+
+.signup-modal button[type="submit"] {
+    width: 100%;
+    padding: 0.875rem;
+    background: var(--primary-600);
+    color: var(--white);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    font-size: 1rem;
+    margin-top: 1rem;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-base);
+}
+
+.signup-modal button[type="submit"]:hover {
+    background: var(--primary-700);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.error-message {
+    padding: 0.75rem 1rem;
+    background: #fef2f2;
+    border: 1px solid #fee2e2;
+    border-radius: var(--radius-md);
+    color: var(--danger);
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Close button is handled by parent Home component in the updated design, 
+   but keeping a fallback just in case or for standalone use */
+.signup-modal .close-btn {
+    display: none;
+}
+
 @media (max-width: 480px) {
     .signup-modal {
-        width: 90%;
-        padding: 1.25rem;
-    }
-
-    .signup-modal .close-btn{
-        left: 70vw;
+        padding: 2.5rem 1.5rem;
     }
 }

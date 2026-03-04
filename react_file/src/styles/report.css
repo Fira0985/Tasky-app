@@ -1,53 +1,286 @@
-/* Overlay to center the report card */
+/* report.css - Modern Analytics Reporting Styling */
+
 .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    background-color: #f3f4f6; /* Light gray background */
-    margin: 0;
-  }
-  
-  /* The main container for the report card */
-  .report-container {
-    padding: 40px; /* Increased padding for larger card */
-    border: 1px solid #e5e7eb;
-    border-radius: 16px; /* More rounded corners */
-    width: 450px; /* Wider card */
-    height: 500px; /* Taller card */
-    background-color: #ffffff;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+    z-index: 2000;
+    padding: 2rem;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.report-container {
+    background: var(--white);
+    border-radius: var(--radius-2xl);
+    width: 100%;
+    max-width: 1100px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 3rem;
+    box-shadow: var(--shadow-2xl);
+    position: relative;
+    animation: modalReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.report-header {
+    margin-bottom: 3rem;
     text-align: center;
-    overflow: hidden;
-  }
-  
-  /* Title style for the report */
-  .title {
-    font-size: 24px;
+}
+
+.report-header h2 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--secondary-900);
+    letter-spacing: -0.025em;
+    margin-bottom: 0.75rem;
+}
+
+.report-header .subtitle {
+    font-size: 1.125rem;
+    color: var(--secondary-500);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Stats Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: var(--secondary-50);
+    padding: 1.5rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--secondary-100);
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    transition: var(--transition-base);
+}
+
+.stat-card:hover {
+    background: var(--white);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-200);
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stat-card.total .stat-icon {
+    background: var(--primary-50);
+    color: var(--primary-600);
+}
+
+.stat-card.completed .stat-icon {
+    background: #f0fdf4;
+    color: var(--success);
+}
+
+.stat-card.incomplete .stat-icon {
+    background: #fffbeb;
+    color: var(--warning);
+}
+
+.stat-card.percentage .stat-icon {
+    background: #fef2f2;
+    color: var(--danger);
+}
+
+.stat-content h3 {
+    font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 20px;
-    color: #1f2937; /* Dark gray color */
-  }
-  
-  /* List style for the report items */
-  .report-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0 0 20px;
-  }
-  
-  /* Style for each report item */
-  .report-item {
-    margin-bottom: 12px;
-    font-size: 18px;
-    color: #374151; /* Medium gray color */
-  }
-  
-  /* Style for the "coming soon" message */
-  .coming-soon {
-    margin-top: 20px;
-    font-size: 16px;
-    color: #6b7280; /* Gray color for "coming soon" text */
-    font-style: italic;
-  }
-  
+    color: var(--secondary-900);
+    margin-bottom: 0.25rem;
+}
+
+.stat-content p {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--secondary-500);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+/* Charts & Tasks Layout */
+.report-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+}
+
+.chart-section,
+.recent-tasks-section,
+.insights-section {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--secondary-200);
+}
+
+.chart-section h3,
+.recent-tasks-section h3,
+.insights-section h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--secondary-900);
+    margin-bottom: 1.5rem;
+}
+
+/* Priority Chart */
+.priority-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.priority-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.priority-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--secondary-700);
+}
+
+.priority-progress {
+    height: 10px;
+    background: var(--secondary-100);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Recent Tasks List */
+.recent-tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.recent-task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem;
+    background: var(--secondary-50);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--secondary-100);
+    transition: var(--transition-fast);
+}
+
+.recent-task-item:hover {
+    background: var(--white);
+    border-color: var(--primary-200);
+    box-shadow: var(--shadow-sm);
+}
+
+.task-info h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--secondary-900);
+    margin-bottom: 0.25rem;
+}
+
+.task-info p {
+    font-size: 0.875rem;
+    color: var(--secondary-500);
+}
+
+.task-meta {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Insights */
+.insights-section {
+    grid-column: 1 / -1;
+}
+
+.insights-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+}
+
+.insight-item {
+    padding: 1.25rem;
+    border-radius: var(--radius-lg);
+    display: flex;
+    gap: 1rem;
+    border-left: 4px solid transparent;
+}
+
+.insight-item.warning {
+    background: #fffbeb;
+    border-left-color: var(--warning);
+    color: #92400e;
+}
+
+.insight-item.success {
+    background: #f0fdf4;
+    border-left-color: var(--success);
+    color: #166534;
+}
+
+.insight-item.info {
+    background: var(--primary-50);
+    border-left-color: var(--primary-500);
+    color: var(--primary-800);
+}
+
+.insight-item.tip {
+    background: #f5f3ff;
+    border-left-color: #8b5cf6;
+    color: #5b21b6;
+}
+
+.insight-item p {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+    .report-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .report-container {
+        padding: 1.5rem;
+    }
+
+    .report-header h2 {
+        font-size: 1.75rem;
+    }
+}

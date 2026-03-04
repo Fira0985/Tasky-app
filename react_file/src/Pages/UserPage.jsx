@@ -1,43 +1,59 @@
-import { CheckCircle, CircleOff, FileText, Folder, ListChecks, Mail } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import {
+  CheckCircle,
+  CircleOff,
+  FileText,
+  Folder,
+  ListChecks,
+  Plus,
+  Search,
+  LogOut,
+  Settings,
+  HelpCircle,
+  Bell,
+  ChevronLeft,
+  ChevronRight
+} from "lucide-react";
+import React, { useEffect, useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import image from '../asset/69KTbX-LogoMakr.png';
 import ProfileImage from '../asset/profile.png';
-import { useNavigate } from 'react-router-dom';
 import '../styles/UserPage.css';
 import AddForm from '../component/addForm';
 import Edit from "../component/editForm";
 import Project from "../component/Project";
 import Report from "../component/report";
 import Task from "../component/task";
+import ProfilePage from "../component/ProfilePage";
+import SupportModal from "../component/SupportModal";
 
 function User(props) {
   const navigate = useNavigate();
-  
-  const [isExpanded, setIsExpanded] = useState(true); // decide if the sidebar is expanded or not
-  const [toggleStyle, setToggleStyle] = useState({ left: 10 })
-  const [overlayStyle, setOverStyle] = useState({ display: "none" }) // decide visibility of overlay
-  const [showForm, setShowForm] = useState(false) // decide visibility of Add form
-  const [showEdit, setShowEdit] = useState(false) // decide visibility of edit form
-  const [beforeEdit, setBeforeEdit] = useState([])  // Array holding task name,detail,priority,deadline and dependency of the target task to be edited
+  console.log("Rendering UserPage for email:", props.email);
+  const [isExpanded, setIsExpanded] = useState(true);
+  const [overlayStyle, setOverStyle] = useState({ display: "none" })
+  const [showForm, setShowForm] = useState(false)
+  const [showEdit, setShowEdit] = useState(false)
+  const [showSupport, setShowSupport] = useState(false)
+  const [beforeEdit, setBeforeEdit] = useState([])
 
-  const [completedTap, setCompletedTap] = useState(false) // Boolean that tells us if completed link is clicked or not
-  const [ContactTap, setContactTap] = useState(false)
-  const [IncompletedTap, setInCompletedTap] = useState(false) // Boolean that tells us if Incompleted link is clicked or not
-  const [reportTap, setReportTap] = useState(false) // Boolean that tells us if report link is clicked or not
-  const [projectTap, setProjectTap] = useState(false) // Boolean that tells us if project link is clicked or not
-  const [message, setMessage] = useState([])  // Used to hold the request message
-  const [filteredTasks, setFilteredTasks] = useState([]); // Filtered tasks
-  const email = props.email // Email of the current user
-  const [name, setName] = useState("")  // used to holds the name of the current user
-  const api_url = process.env.REACT_APP_API_URL
+  const [currentView, setCurrentView] = useState('all')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [message, setMessage] = useState([])
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const email = props.email
+  const [name, setName] = useState("")
   const api_url_vercel = process.env.REACT_APP_API_URL_vercel
 
-  // Function to toggle the sidebar's state
+  const handleLogout = () => {
+    localStorage.removeItem("email");
+    navigate("/");
+  };
+
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
   }
 
-  // Function used to get data from child component
   function GetFormData(check) {
     setShowForm(check)
     setShowEdit(check)
@@ -49,272 +65,269 @@ function User(props) {
     setShowForm(true)
   }
 
-  function ShowProfilePage(){
-     navigate("/Profile");
-  }
-
-  async function GetStatus(TaskName, status) {
-    var data = ""
-
-    if (status) {
-      data = "Completed"
-    } else {
-      data = "Not Completed"
-    }
-    const url = api_url_vercel + "set-status"
-    const option = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ task_name: TaskName, task_status: data })
-    }
+  async function updateTaskStatus(taskName, isCompleted) {
+    const status = isCompleted ? "Completed" : "Not Completed";
+    const url = api_url_vercel + "set-status";
 
     try {
-      const response = await fetch(url, option)
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return await response.json()
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ task_name: taskName, task_status: status })
+      });
+
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+      setMessage(prevTasks =>
+        prevTasks.map(task =>
+          task.taskName === taskName ? { ...task, status } : task
+        )
+      );
+
+      return await response.json();
     } catch (error) {
+      console.error("Failed to update task status:", error);
       return { message: error };
     }
   }
 
-  async function GetUserInfo(email) {
-
-    const url = api_url_vercel + "get-name";
-    const option = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: email }),
-    };
-
-    try {
-      const response = await fetch(url, option);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return await response.json();
-    } catch (error) {
-      return { message: "Failed to retrieve user information" };
-    }
-  }
-
-
   useEffect(() => {
     async function fetchUserInfo() {
-      const result = await GetUserInfo(email);
-      setName(result.message);
+      if (!email) return;
+      try {
+        const base_url = api_url_vercel?.endsWith("/") ? api_url_vercel.slice(0, -1) : api_url_vercel;
+        const response = await fetch(`${base_url}/get-name`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        const result = await response.json();
+        setName(result.message);
+      } catch (error) {
+        console.error("Failed to fetch user info", error);
+      }
     }
     fetchUserInfo();
-  });
+  }, [email, api_url_vercel]);
 
-  async function GetTask() {
-
-    const url = api_url_vercel + "get-task?email=" + email
-    const option = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      },
-    }
-
+  async function fetchTasks() {
+    if (!email) return;
+    setLoading(true);
+    setError(null);
     try {
-      const response = await fetch(url, option)
-      return await response.json();
-
-    } catch (error) {
-      const response = await fetch(url, option)
-      console.error("There was an error during the request:", error.message);
-      return await response.json();
+      const base_url = api_url_vercel?.endsWith("/") ? api_url_vercel.slice(0, -1) : api_url_vercel;
+      const response = await fetch(`${base_url}/get-task?email=${email}`);
+      const result = await response.json();
+      setMessage(result.message || []);
+    } catch (err) {
+      setError("Failed to load tasks. Please try again.");
+    } finally {
+      setLoading(false);
     }
   }
 
   useEffect(() => {
-    async function fetchTask() {
-      const result = await GetTask();
-      setMessage(result.message);
-      setFilteredTasks(result.message); // Initialize with all tasks
+    fetchTasks();
+  }, [email, api_url_vercel]);
+
+  const refreshTasks = () => {
+    fetchTasks();
+  };
+
+  const filteredTasks = useMemo(() => {
+    if (!message.length) return [];
+    let tasks = [...message];
+
+    // Filter by view
+    if (currentView === 'completed') tasks = tasks.filter(t => t.status === "Completed");
+    if (currentView === 'incomplete') tasks = tasks.filter(t => t.status === "Not Completed");
+
+    // Filter by search term
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      tasks = tasks.filter(t =>
+        t.taskName.toLowerCase().includes(term) ||
+        (t.detail && t.detail.toLowerCase().includes(term))
+      );
     }
 
-    // Filter completed tasks
-    async function GetCompleted(message) {
-      const result = await GetTask();
-      setMessage(result.message);
-      const completedTasks = message.filter((task) => task.status === "Completed");
-      setFilteredTasks(completedTasks);
-    }
-
-    // Filter completed tasks
-    async function GetInCompleted(message) {
-      const result = await GetTask();
-      setMessage(result.message);
-      const IncompletedTasks = message.filter((task) => task.status === "Not Completed");
-      setFilteredTasks(IncompletedTasks);
-    }
-
-
-    if (completedTap == false) {
-      if (IncompletedTap == false) {
-        fetchTask();
-      } else {
-        GetInCompleted(message)
-      }
-    } else {
-      GetCompleted(message);
-    }
-  });
-
-  function ChangeTap(event) {
-    // Ensure we get the correct text from the <a> tag
-    const clickedElement = event.currentTarget.textContent.trim();
-
-    if (clickedElement.includes("All Tasks")) {
-      setCompletedTap(false);
-      setInCompletedTap(false);
-      setReportTap(false);
-      setProjectTap(false);
-    } else if (clickedElement.includes("Completed Tasks")) {
-      setCompletedTap(true);
-      setInCompletedTap(false);
-      setReportTap(false);
-      setProjectTap(false);
-    } else if (clickedElement.includes("Incomplete Tasks")) {
-      setCompletedTap(false);
-      setInCompletedTap(true);
-      setReportTap(false);
-      setProjectTap(false);
-    } else if (clickedElement.includes("Reports")) {
-      setReportTap(true);
-      setProjectTap(false);
-      setCompletedTap(false);
-      setInCompletedTap(false);
-    } else if (clickedElement.includes("Projects")) {
-      setProjectTap(true);
-      setReportTap(false);
-      setCompletedTap(false);
-      setInCompletedTap(false);
-    }
-  }
-
-  function GetEvent(edit, name, detail, priority, deadline, dependency) {
-    setOverStyle({ display: "block" })
-    setShowEdit(edit)
-    setBeforeEdit([name, detail, priority, deadline, dependency])
-  }
+    return tasks;
+  }, [message, currentView, searchTerm]);
 
   return (
     <div className="container">
       <div id="overlay" style={overlayStyle}></div>
 
-      {/* <!-- Sidebar --> */}
+      {/* Sidebar */}
       <aside className={`sidebar ${isExpanded ? 'expanded' : 'collapsed'}`}>
-        {isExpanded ? (
-          <div>
-            <div className="logo"><img src={image} alt="company-log" /></div>
-            <ul>
-              <li>
-                <a href="#" onClick={(e) => ChangeTap(e)} className={`All ${(!completedTap && !IncompletedTap && !projectTap && !reportTap) ? 'active' : 'inactive'}`}>
-                  <ListChecks size={16} className="inline-block mr-2" /> All Tasks
-                </a>
-              </li>
-              <li>
-                <a href="#" onClick={(e) => ChangeTap(e)} className={`completed ${completedTap ? 'active' : 'inactive'}`}>
-                  <CheckCircle size={16} className="inline-block mr-2" /> Completed Tasks
-                </a>
-              </li>
-              <li>
-                <a href="#" onClick={(e) => ChangeTap(e)} className={`incompleted ${IncompletedTap ? 'active' : 'inactive'}`}>
-                  <CircleOff size={16} className="inline-block mr-2" /> Incomplete Tasks
-                </a>
-              </li>
-              <li>
-                <a href="#" onClick={(e) => ChangeTap(e)} className={`Project ${projectTap ? 'active' : 'inactive'}`}>
-                  <Folder size={16} className="inline-block mr-2" /> Projects
-                </a>
-              </li>
-              <li>
-                <a href="#" onClick={(e) => ChangeTap(e)} className={`Report ${reportTap ? 'active' : 'inactive'}`}>
-                  <FileText size={16} className="inline-block mr-2" /> Reports
-                </a>
-              </li>
-              <li>
-                <a href="#" className="contact-link">
-                  <Mail size={16} className="inline-block mr-2" /> Contact Us
-                </a>
-              </li>
-            </ul>
-            <div className="add-task-btn" onClick={ShowForm}><a href="#dash">+</a></div>
-            <h3>Add Task</h3>
-            <span className="profile" onClick={ShowProfilePage}>
-              <img src={ProfileImage} alt="Profile" class="profile-img" />
-              <h1 className="username">{name}</h1>
-            </span>
-          </div>) : (
-          <div></div>)}
+        <div className="logo">
+          <img src={image} alt="Tasky" />
+        </div>
+
+        <ul>
+          <li>
+            <button onClick={() => setCurrentView('all')} className={currentView === 'all' ? 'active' : ''}>
+              <ListChecks size={20} />
+              <span>All Tasks</span>
+            </button>
+          </li>
+          <li>
+            <button onClick={() => setCurrentView('completed')} className={currentView === 'completed' ? 'active' : ''}>
+              <CheckCircle size={20} />
+              <span>Completed</span>
+            </button>
+          </li>
+          <li>
+            <button onClick={() => setCurrentView('incomplete')} className={currentView === 'incomplete' ? 'active' : ''}>
+              <CircleOff size={20} />
+              <span>Incomplete</span>
+            </button>
+          </li>
+          <li>
+            <button onClick={() => setCurrentView('projects')} className={currentView === 'projects' ? 'active' : ''}>
+              <Folder size={20} />
+              <span>Projects</span>
+            </button>
+          </li>
+          <li>
+            <button onClick={() => setCurrentView('reports')} className={currentView === 'reports' ? 'active' : ''}>
+              <FileText size={20} />
+              <span>Reports</span>
+            </button>
+          </li>
+          <li>
+            <button onClick={() => setShowSupport(true)}>
+              <HelpCircle size={20} />
+              <span>Support</span>
+            </button>
+          </li>
+        </ul>
+
+        <button className="add-task-sidebar-btn" onClick={ShowForm}>
+          <Plus size={20} />
+          {isExpanded && <span>New Task</span>}
+        </button>
+
+        <div className="sidebar-account">
+          <div className="account-profile" onClick={() => setCurrentView('profile')}>
+            <img src={ProfileImage} alt="Profile" className="profile-img" />
+            <div className="profile-info">
+              <span className="username">{name || 'User'}</span>
+              <span className="user-email">{email}</span>
+            </div>
+            <Settings size={18} className="settings-icon" />
+          </div>
+          <button className="logout-btn" onClick={handleLogout}>
+            <LogOut size={20} />
+            {isExpanded && <span>Logout</span>}
+          </button>
+        </div>
       </aside>
 
-      {/* Changing the icon */}
-      {isExpanded ? (<button className="toggle-btn" onClick={toggleSidebar}>
-        {isExpanded ? '<' : '>'}
-      </button>) : (<button className="toggle-btn" onClick={toggleSidebar} style={toggleStyle}>
-        {isExpanded ? '<' : '>'}
-      </button>)}
+      <button className="toggle-btn" onClick={toggleSidebar}>
+        {isExpanded ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
+      </button>
 
-      {/* <!-- Dashboard Section --> */}
-      {isExpanded ? (reportTap ? (<main>
-        <Report tasks={message} />
-        {showForm ? (<AddForm email={email} GetData={GetFormData} />) : (<dvi></dvi>)}
-      </main>) : (projectTap ? (<main>
-        <Project />
-        {showForm ? (<AddForm email={email} GetData={GetFormData} />) : (<dvi></dvi>)}
-      </main>) : <main className="dashboard" id="dash">
-        <h2>Dashboard</h2>
-        <div className="task-container">
-          {filteredTasks.map((task, index) => (
-            <Task
-              editEvent={GetEvent}
-              key={index}
-              StatusData={GetStatus}
-              TName={task.taskName}
-              detail={task.detail}
-              priority={task.priority}
-              status={task.status}
-              dependency={task.dependency}
-              deadline={task.deadline}
+      {/* Main Content */}
+      <main className="dashboard">
+        <header className="dashboard-header">
+          <div className="header-search">
+            <Search size={20} />
+            <input
+              type="text"
+              placeholder="Search tasks or descriptions..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
-          ))}
-        </div>
+          </div>
+          <div className="header-actions">
+            <button className="icon-btn"><Bell size={20} /></button>
+            <div className="header-profile" onClick={() => setCurrentView('profile')}>
+              <img src={ProfileImage} alt="User" />
+            </div>
+          </div>
+        </header>
 
-        {showForm ? (<AddForm email={email} GetData={GetFormData} />) : (<dvi></dvi>)}
-        {showEdit ? (<Edit name={beforeEdit[0]} detail={beforeEdit[1]} priority={beforeEdit[2]} deadline={beforeEdit[3]} dependency={beforeEdit[4]} GetData={GetFormData} />) : (<div></div>)}
-      </main>)) : (reportTap ? (<Report tasks={message} />) : (projectTap ? (<Project />) : <main className="dashboard-shrink" id="dash">
-        <h2>Dashboard</h2>
-        <div className="task-container">
-          {filteredTasks.map((task, index) => (
-            <Task
-              key={index}
-              editEvent={GetEvent}
-              StatusData={GetStatus}
-              TName={task.taskName}
-              detail={task.detail}
-              priority={task.priority}
-              status={task.status}
-              dependency={task.dependency}
-              deadline={task.deadline}
-            />
-          ))}
-        </div>
+        {currentView === 'reports' ? (
+          <Report tasks={message} />
+        ) : currentView === 'projects' ? (
+          <Project />
+        ) : currentView === 'profile' ? (
+          <ProfilePage email={email} />
+        ) : (
+          <section>
+            <div className="view-header">
+              <h2>
+                {currentView === 'all' ? 'All Tasks' :
+                  currentView === 'completed' ? 'Completed Tasks' : 'Incomplete Tasks'}
+              </h2>
+              <div className="task-count">{filteredTasks.length} tasks</div>
+            </div>
 
-        {showForm ? (<AddForm email={email} GetData={GetFormData} />) : (<dvi></dvi>)}
-        {showEdit ? (<Edit name={beforeEdit[0]} detail={beforeEdit[1]} priority={beforeEdit[2]} deadline={beforeEdit[3]} dependency={beforeEdit[4]} GetData={GetFormData} />) : (<div></div>)}
-      </main>))}
+            {error && (
+              <div className="error-message">
+                <p>{error}</p>
+                <button onClick={() => window.location.reload()}>Retry</button>
+              </div>
+            )}
+
+            <div className="task-container">
+              {loading ? (
+                Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="task-skeleton animate-pulse">
+                    <div className="skeleton-header"></div>
+                    <div className="skeleton-line"></div>
+                    <div className="skeleton-line short"></div>
+                  </div>
+                ))
+              ) : filteredTasks.length === 0 ? (
+                <div className="empty-state">
+                  <p>
+                    {currentView === 'completed' ? "No completed tasks yet!" :
+                      currentView === 'incomplete' ? "No incomplete tasks!" :
+                        "No tasks found. Create your first task!"}
+                  </p>
+                </div>
+              ) : (
+                filteredTasks.map((task, index) => (
+                  <Task
+                    key={task._id || index}
+                    editEvent={(edit, n, d, p, dl, dp) => {
+                      setOverStyle({ display: "block" });
+                      setShowEdit(edit);
+                      setBeforeEdit([n, d, p, dl, dp]);
+                    }}
+                    onRefresh={refreshTasks}
+                    StatusData={updateTaskStatus}
+                    TName={task.taskName}
+                    detail={task.detail}
+                    priority={task.priority}
+                    status={task.status}
+                    dependency={task.dependency}
+                    deadline={task.deadline}
+                  />
+                ))
+              )}
+            </div>
+          </section>
+        )}
+
+        {showForm && <AddForm email={email} GetData={GetFormData} onRefresh={refreshTasks} />}
+        {showEdit && (
+          <Edit
+            name={beforeEdit[0]}
+            detail={beforeEdit[1]}
+            priority={beforeEdit[2]}
+            deadline={beforeEdit[3]}
+            dependency={beforeEdit[4]}
+            GetData={GetFormData}
+            onRefresh={refreshTasks}
+          />
+        )}
+        {showSupport && <SupportModal onClose={() => setShowSupport(false)} />}
+      </main>
     </div>
-
-  )
+  );
 }
 
-export default User
+export default User;

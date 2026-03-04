@@ -1,54 +1,56 @@
-import React, { useState } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import React, { useState, Suspense, lazy } from 'react';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
-import Home from './Pages/home';
-import User from './Pages/UserPage';
-import ProfilePage from './Pages/ProfilePage';
+
+// Lazy load components for better performance
+const Home = lazy(() => import('./Pages/home'));
+const User = lazy(() => import('./Pages/UserPage'));
+const ProfilePage = lazy(() => import('./component/ProfilePage'));
+
+// Loading component
+const LoadingSpinner = () => (
+  <div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    fontSize: '1.1rem',
+    color: 'var(--primary-600)'
+  }}>
+    Loading...
+  </div>
+);
 
 function App() {
   const [userEmail, setUserEmail] = useState(() => {
     return localStorage.getItem("email") || "";
   });
 
-  function GetUserEmail(name) {
-    setUserEmail(name);
-    localStorage.setItem("email", name);
-  }
+  const handleUserEmail = (email) => {
+    console.log("Setting user email:", email);
+    setUserEmail(email);
+    localStorage.setItem("email", email);
+  };
 
   return (
-    <Routes>
-      <Route path="/"
-        element={
-          <div className='container'>
-            <div id="overlay" style={overlayStyle}></div>
-            <header>
-              <div className="navbar">
-                <a id="logo"><img src={image} alt="Company-logo" /></a>
-                <div className="nav-links">
-                  <a href="#howItWorks">How It Works</a>
-                  <a href="#">Support Us</a>
-                  <a href="#download">Download App</a>
-                  <a href="#overview" id="login" onClick={LoginForm}>Login</a>
-                  <a href="#overview" id="signup" onClick={RegisterForm}>Sign Up</a>
-                </div>
-              </div>
-            </header>
-
-            <main className='main'>
-              <Home />
-              <button className="close" style={closeStyle} onClick={close}>X</button>
-              <Pop style={registerStyle} GetMessage={message} />
-              <p class="account-link" id='loginLink'>
-                <a className={`login-link ${status ? 'normal' : 'error'}`} href="#" style={registerStyle} onClick={LoginForm}>Already have an account</a></p>
-              <LoginPop style={loginStyle} SendDataToParent={GetLoginData} GetMessage={message} getEmail={GetUserEmail} />
-              <p class="account-link" id='registerLink'>
-                <a className={`register-link ${status ? 'normal' : 'error'}`} href="#" style={loginStyle} onClick={RegisterForm}>Don't have an account? Register here</a></p>
-            </main>
-          </div>
-        } />
-      <Route path="/user" element={<User email={userEmail} />} />
-      <Route path="/profile" element={<ProfilePage />} />
-    </Routes>
+    <Suspense fallback={<LoadingSpinner />}>
+      <Routes>
+        <Route
+          path="/"
+          element={<Home GetUserEmail={handleUserEmail} />}
+        />
+        <Route
+          path="/user"
+          element={(userEmail || localStorage.getItem("email")) ? <User email={userEmail || localStorage.getItem("email")} /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/profile"
+          element={(userEmail || localStorage.getItem("email")) ? <ProfilePage email={userEmail || localStorage.getItem("email")} /> : <Navigate to="/" />}
+        />
+        {/* Catch-all redirect */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Suspense>
   );
 }
 

@@ -1,115 +1,180 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
+import { X, Type, AlignLeft, Calendar, Flag, Link, Loader2 } from "lucide-react";
 import '../styles/addPop.css';
 
+function AddForm(props) {
+    const [taskName, setTaskName] = useState("");
+    const [detail, setDetail] = useState("");
+    const [priority, setPriority] = useState("");
+    const [deadline, setDeadline] = useState("");
+    const [dependency, setDependency] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
-function AddForm(props){
-    const [taskName,setTaskName] = useState("")
-    const [detail, setDetail] = useState("")
-    const email = props.email
-    const [priority, setPriority] = useState("")
-    const [deadline, setDeadline] = useState("")
-    const [dependency, setDependency] = useState("")
-    const [status, setStatus] = useState("Not Completed")
+    const email = props.email;
+    const api_url_vercel = process.env.REACT_APP_API_URL_vercel;
 
-    const api_url = process.env.REACT_APP_API_URL
-    const api_url_vercel = process.env.REACT_APP_API_URL_vercel
+    const closeForm = useCallback(() => {
+        props.GetData(false);
+    }, [props.GetData]);
 
-    const data = {
-    email,
-    taskName,
-    detail,
-    priority,
-    deadline,
-    dependency,
-    status
-    }
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') closeForm();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [closeForm]);
 
-    function taskNameValue(event){
-        setTaskName(event.target.value)
-    }
+    const taskFormRequest = useCallback(async (event) => {
+        event.preventDefault();
+        setLoading(true);
+        setError("");
 
-    function detailValue(event){
-        setDetail(event.target.value)
-    }
+        const data = {
+            email,
+            taskName,
+            detail,
+            priority,
+            deadline,
+            dependency,
+            status: "Not Completed"
+        };
 
-    function priorityValue(event){
-        setPriority(event.target.value)
-    }
+        try {
+            const response = await fetch(api_url_vercel + "add-task", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
 
-    function deadlineValue(event){
-        setDeadline(event.target.value)
-    }
-
-    function dependencyValue(event){
-        setDependency(event.target.value)
-    }
-
-    // Used to close the form
-    function closeForm(){
-        props.GetData(false)
-    }
-
-    async function TaskFormRequest(event) {
-        event.preventDefault()
-        const url = api_url_vercel + "add-task"
-        const option = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        }
-  
-        try{
-            const response = await fetch(url, option)
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(`Request failed with status ${response.status}: ${errorData.message}`);
+                throw new Error(errorData.message || "Failed to add task");
             }
-            const result = await response.json();
-            closeForm()
-        } catch(error){
-            const response = await fetch(url, option)
-            const result = await response.json();
-            console.error("There was an error during the request:", error.message);
-        }
-    }
 
-    return(
-        <div className="form-container">
-        <span class="close-btn" onClick={closeForm}>&times;</span>
-        <h2>Add New Task</h2>
-        <form action="#" onSubmit={TaskFormRequest}>
-            <div className="form-group">
-                <label for="taskName">Task Name</label>
-                <input type="text" id="taskName" placeholder="Enter task name" required onChange={taskNameValue} />
+            closeForm();
+            if (props.onRefresh) props.onRefresh();
+        } catch (error) {
+            console.error("Error adding task:", error);
+            setError(error.message || "Failed to add task. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    }, [api_url_vercel, email, taskName, detail, priority, deadline, dependency, closeForm]);
+
+    return (
+        <div className="modal-backdrop" onClick={(e) => e.target === e.currentTarget && closeForm()}>
+            <div className="form-container">
+                <button className="close-btn" onClick={closeForm} title="Close">
+                    <X size={20} />
+                </button>
+
+                <h2>Add New Task</h2>
+
+                {error && (
+                    <div className="error-message">
+                        <p>{error}</p>
+                    </div>
+                )}
+
+                <form onSubmit={taskFormRequest}>
+                    <div className="form-group">
+                        <label htmlFor="taskName">Task Name</label>
+                        <div className="input-wrapper">
+                            <Type size={18} />
+                            <input
+                                type="text"
+                                id="taskName"
+                                placeholder="What needs to be done?"
+                                required
+                                onChange={(e) => setTaskName(e.target.value)}
+                                value={taskName}
+                                disabled={loading}
+                                autoFocus
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="taskDetail">Description</label>
+                        <div className="input-wrapper">
+                            <AlignLeft size={18} style={{ top: '0.85rem' }} />
+                            <textarea
+                                id="taskDetail"
+                                rows="3"
+                                placeholder="Add more details..."
+                                required
+                                onChange={(e) => setDetail(e.target.value)}
+                                value={detail}
+                                disabled={loading}
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="form-group">
+                            <label htmlFor="taskDeadline">Deadline</label>
+                            <div className="input-wrapper">
+                                <Calendar size={18} />
+                                <input
+                                    type="date"
+                                    id="taskDeadline"
+                                    required
+                                    onChange={(e) => setDeadline(e.target.value)}
+                                    value={deadline}
+                                    disabled={loading}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="taskPriority">Priority</label>
+                            <div className="input-wrapper">
+                                <Flag size={18} />
+                                <select
+                                    id="taskPriority"
+                                    required
+                                    onChange={(e) => setPriority(e.target.value)}
+                                    value={priority}
+                                    disabled={loading}
+                                >
+                                    <option value="" disabled>Select</option>
+                                    <option value="High">High</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Low">Low</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="taskDependencies">Project / Dependency</label>
+                        <div className="input-wrapper">
+                            <Link size={18} />
+                            <input
+                                type="text"
+                                id="taskDependencies"
+                                placeholder="Link to project or other task"
+                                onChange={(e) => setDependency(e.target.value)}
+                                value={dependency}
+                                disabled={loading}
+                            />
+                        </div>
+                    </div>
+
+                    <button type="submit" className="submit-btn" disabled={loading}>
+                        {loading ? (
+                            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                                <Loader2 size={18} className="animate-spin" />
+                                Adding...
+                            </span>
+                        ) : "Add Task"}
+                    </button>
+                </form>
             </div>
-            <div className="form-group">
-                <label for="taskDetail">Task Details</label>
-                <textarea id="taskDetail" rows="4" placeholder="Enter task details" required onChange={detailValue}></textarea>
-            </div>
-            <div className="form-group">
-                <label for="taskDeadline">Deadline</label>
-                <input type="date" id="taskDeadline" required onChange={deadlineValue} />
-            </div>
-            <div className="form-group">
-                <label for="taskPriority">Priority</label>
-                <select id="taskPriority" required onChange={priorityValue}>
-                    <option value="" disabled selected>Select priority</option>
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
-                </select>
-            </div>
-            <div className="form-group">
-                <label for="taskDependencies">Dependencies</label>
-                <input type="text" id="taskDependencies" placeholder="Enter dependencies (optional)" onChange={dependencyValue} />
-            </div>
-            <button type="submit" className="submit-btn">Add Task</button>
-        </form>
-    </div>
-    )
+        </div>
+    );
 }
 
-
-export default AddForm
+export default AddForm;

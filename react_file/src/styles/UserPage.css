@@ -1,549 +1,458 @@
-/* Base Styles & Typography */
-:root {
-    --primary: #3b82f6;
-    --primary-dark: #2563eb;
-    --primary-light: #dbeafe;
-    --primary-bg: #f0f9ff;
-    --success: #10b981;
-    --success-light: #d1fae5;
-    --warning: #f59e0b;
-    --warning-light: #fef3c7;
-    --danger: #ef4444;
-    --danger-light: #fee2e2;
-    --gray-50: #f9fafb;
-    --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
-    --gray-300: #d1d5db;
-    --gray-400: #9ca3af;
-    --gray-500: #6b7280;
-    --gray-600: #4b5563;
-    --gray-700: #374151;
-    --gray-800: #1f2937;
-    --gray-900: #111827;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --radius-sm: 0.125rem;
-    --radius: 0.25rem;
-    --radius-md: 0.375rem;
-    --radius-lg: 0.5rem;
-    --radius-xl: 0.75rem;
-    --radius-2xl: 1rem;
-    --radius-full: 9999px;
-}
+/* UserPage.css - Professional Dashboard Styling */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html {
-    font-size: 16px;
-    scroll-behavior: smooth;
-}
-
-body {
-    background-color: var(--gray-50);
-    color: var(--gray-800);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-/* Layout & Container */
 .container {
     display: flex;
-    flex-direction: column;
     min-height: 100vh;
-    position: relative;
-    overflow-x: hidden;
+    background-color: var(--secondary-50);
 }
 
-/* Overlay for Modals */
 #overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(4px);
-    z-index: 100;
-    transition: opacity 0.3s ease;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-}
-
-.logo img {
-    height: 42px;
-    width: auto;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-}
-
-.profile {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.875rem;
-    padding: 0.5rem;
-    border-radius: var(--radius-lg);
-    transition: background-color 0.2s ease;
-    cursor: pointer;
-}
-
-.profile:hover {
-    background-color: var(--gray-100);
-}
-
-.profile-img {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-full);
-    object-fit: cover;
-    border: 2px solid var(--gray-200);
-    box-shadow: var(--shadow-sm);
-}
-
-.username {
-    font-weight: 600;
-    color: var(--gray-800);
-    font-size: 0.95rem;
-}
-
-/* Sidebar */
+/* Sidebar Styling */
 .sidebar {
     position: fixed;
-    /* Height of navbar */
     left: 0;
-    height: 100vh;
-    background-color: #ffffff;
-    box-shadow: var(--shadow-md);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 5;
-    overflow-y: auto;
-    border-right: 1px solid var(--gray-100);
-}
-
-.sidebar::-webkit-scrollbar {
-    width: 4px;
-}
-
-.sidebar::-webkit-scrollbar-track {
-    background: var(--gray-100);
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-    background-color: var(--gray-300);
-    border-radius: var(--radius-full);
+    top: 0;
+    bottom: 0;
+    background: var(--white);
+    border-right: 1px solid var(--secondary-200);
+    z-index: 1100;
+    transition: width var(--transition-base), transform var(--transition-base);
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
 }
 
 .sidebar.expanded {
-    width: 260px;
+    width: 280px;
 }
 
 .sidebar.collapsed {
-    width: 0;
-    transform: translateX(-100%);
+    width: 80px;
+    padding: 2rem 1rem;
 }
 
-.sidebar div {
+.sidebar .logo {
+    margin-bottom: 3rem;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+}
+
+.sidebar .logo img {
+    height: 42px;
+    transition: var(--transition-base);
+}
+
+.sidebar.collapsed .logo img {
+    height: 32px;
 }
 
 .sidebar ul {
     list-style: none;
-    padding: 1.5rem 0;
+    flex: 1;
 }
 
 .sidebar ul li {
-    margin-bottom: 0.375rem;
+    margin-bottom: 0.5rem;
 }
 
 .sidebar ul li a {
     display: flex;
     align-items: center;
-    padding: 0.875rem 1.5rem;
-    text-decoration: none;
-    color: var(--gray-600);
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-lg);
+    color: var(--secondary-600);
     font-weight: 500;
-    transition: all 0.2s ease;
-    border-left: 3px solid transparent;
-    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    transition: var(--transition-fast);
+    gap: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .sidebar ul li a:hover {
-    background-color: var(--gray-100);
-    color: var(--primary);
+    background: var(--secondary-100);
+    color: var(--primary-600);
 }
 
 .sidebar ul li a.active {
-    background-color: var(--primary-bg);
-    color: var(--primary);
-    border-left: 3px solid var(--primary);
+    background: var(--primary-50);
+    color: var(--primary-600);
     font-weight: 600;
 }
 
-.add-task-btn {
-    width: 44px;
-    height: 44px;
-    background-color: var(--primary);
-    color: white;
-    border-radius: var(--radius-full);
+.sidebar.collapsed ul li a span {
+    display: none;
+}
+
+/* Add Task Button in Sidebar */
+.add-task-sidebar-btn {
+    margin-top: 1rem;
     display: flex;
     align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1.5rem;
+    background: var(--primary-600);
+    color: var(--white);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    transition: var(--transition-base);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.add-task-sidebar-btn:hover {
+    background: var(--primary-700);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
+.sidebar.collapsed .add-task-sidebar-btn {
+    padding: 0.875rem;
     justify-content: center;
-    font-size: 1.5rem;
+}
+
+/* Sidebar Account Section */
+.sidebar-account {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    border-top: 1px solid var(--secondary-100);
+}
+
+.account-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.75rem;
+    border-radius: var(--radius-xl);
     cursor: pointer;
-    margin: 1.25rem auto 0.75rem;
-    box-shadow: var(--shadow-md), 0 0 0 5px rgba(59, 130, 246, 0.1);
-    transition: all 0.2s ease;
+    transition: var(--transition-fast);
+    position: relative;
+    background: var(--secondary-50);
 }
 
-.add-task-btn a {
-    text-decoration: none;
-    color: white;
+.account-profile:hover {
+    background: var(--secondary-100);
 }
 
-.add-task-btn:hover {
-    transform: translateY(-2px) scale(1.05);
-    background-color: var(--primary-dark);
-    box-shadow: var(--shadow-lg), 0 0 0 5px rgba(59, 130, 246, 0.15);
+.profile-img {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-full);
+    object-fit: cover;
+    border: 2px solid var(--white);
+    flex-shrink: 0;
 }
 
-.sidebar h3 {
-    text-align: center;
-    color: var(--gray-500);
-    font-weight: 500;
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.username {
     font-size: 0.875rem;
-    margin-bottom: 1.75rem;
+    font-weight: 600;
+    color: var(--secondary-900);
+    line-height: 1.2;
 }
 
-/* Toggle Button */
+.user-email {
+    font-size: 0.75rem;
+    color: var(--secondary-500);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.settings-icon {
+    margin-left: auto;
+    color: var(--secondary-400);
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-lg);
+    color: var(--danger);
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: var(--transition-fast);
+    margin-bottom: 0.5rem;
+}
+
+.logout-btn:hover {
+    background: #fef2f2;
+}
+
+.sidebar.collapsed .account-profile {
+    justify-content: center;
+    padding: 0.5rem;
+}
+
+.sidebar.collapsed .profile-info,
+.sidebar.collapsed .settings-icon {
+    display: none;
+}
+
+.sidebar.collapsed .logout-btn {
+    justify-content: center;
+    padding: 0.75rem;
+}
+
+.sidebar.collapsed .sidebar-account {
+    border-top: none;
+}
+
+/* Toggle Sidebar Button */
 .toggle-btn {
     position: fixed;
-    top: 5%;
-    transform: translateY(-50%);
-    background-color: #ffffff;
-    border: 1px solid var(--gray-200);
+    left: 265px;
+    top: 2rem;
+    width: 32px;
+    height: 32px;
+    background: var(--white);
+    border: 1px solid var(--secondary-200);
     border-radius: var(--radius-full);
-    width: 36px;
-    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 6;
-    box-shadow: var(--shadow-md);
-    transition: all 0.2s ease;
+    z-index: 1200;
+    box-shadow: var(--shadow-sm);
+    transition: left var(--transition-base), transform var(--transition-base);
+    color: var(--secondary-400);
+}
 
+.sidebar.collapsed+.toggle-btn {
+    left: 65px;
 }
 
 .toggle-btn:hover {
-    background-color: var(--gray-100);
-    transform: translateY(-50%) scale(1.05);
-}
-
-/* Dashboard */
-.dashboard,
-.dashboard-shrink {
-    padding: 2.5rem;
-    margin-left: 260px;
-    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    min-height: calc(100vh - 74px);
-}
-
-.dashboard-shrink {
-    margin-left: 0;
-}
-
-.dashboard h2,
-.dashboard-shrink h2 {
-    font-size: 1.75rem;
-    color: var(--gray-900);
-    margin-bottom: 1.75rem;
-    font-weight: 700;
-    letter-spacing: -0.025em;
-}
-
-.task-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1.75rem;
-}
-
-/* Task Card Styles */
-.task-card {
-    background-color: #ffffff;
-    border-radius: var(--radius-xl);
+    color: var(--primary-600);
+    border-color: var(--primary-200);
     box-shadow: var(--shadow-md);
-    padding: 1.5rem;
-    transition: all 0.3s ease;
+}
+
+/* Main Dashboard Area */
+main {
+    flex: 1;
+    margin-left: 280px;
+    padding: 0;
+    /* Header takes care of initial padding */
+    transition: margin-left var(--transition-base);
     display: flex;
     flex-direction: column;
-    border: 1px solid var(--gray-100);
-    position: relative;
-    overflow: hidden;
 }
 
-.task-card::before {
-    content: '';
-    position: absolute;
+.sidebar.collapsed~main {
+    margin-left: 80px;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+    height: 80px;
+    padding: 0 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--secondary-100);
+    position: sticky;
     top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(to right, var(--primary), var(--primary-dark));
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    z-index: 100;
 }
 
-.task-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-xl);
+.header-search {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--secondary-50);
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius-full);
+    width: 400px;
+    transition: var(--transition-base);
+    border: 1px solid transparent;
 }
 
-.task-card:hover::before {
-    opacity: 1;
+.header-search:focus-within {
+    background: var(--white);
+    border-color: var(--primary-200);
+    box-shadow: var(--shadow-sm);
 }
 
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(-20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.task-card {
-    animation: fadeIn 0.4s ease forwards;
-}
-
-.sidebar ul li {
-    animation: slideIn 0.3s ease forwards;
-    animation-delay: calc(0.05s * var(--index, 0));
-    opacity: 0;
-}
-
-/* Fix for any typos in the original HTML */
-dvi {
-    display: block;
-}
-
-/* Accessibility Improvements */
-:focus {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
-}
-
-:focus:not(:focus-visible) {
+.header-search input {
+    background: none;
+    border: none;
     outline: none;
+    width: 100%;
+    font-size: 0.875rem;
+    color: var(--secondary-900);
 }
 
-.visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
+.header-search svg {
+    color: var(--secondary-400);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.icon-btn {
+    color: var(--secondary-500);
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:hover {
+    color: var(--primary-600);
+}
+
+.header-profile {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
+    cursor: pointer;
+    border: 2px solid var(--white);
+    box-shadow: var(--shadow-sm);
 }
 
-/* Mobile specific styles */
+.header-profile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dashboard section {
+    padding: 3rem 4rem;
+}
+
+.view-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+}
+
+.view-header h2 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--secondary-900);
+    margin-bottom: 0;
+    font-family: var(--font-heading);
+}
+
+.task-count {
+    padding: 0.5rem 1.25rem;
+    background: var(--primary-50);
+    color: var(--primary-700);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+/* Task Container Grid */
+.task-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+/* Empty States & Errors */
+.empty-state,
+.error-message {
+    text-align: center;
+    padding: 5rem 2rem;
+    background: var(--white);
+    border-radius: var(--radius-2xl);
+    border: 1px solid var(--secondary-200);
+    color: var(--secondary-500);
+}
+
+.error-message {
+    color: var(--danger);
+    background: #fef2f2;
+    border-color: #fee2e2;
+}
+
+.error-message button {
+    margin-top: 1.5rem;
+    padding: 0.75rem 2rem;
+    background: var(--danger);
+    color: var(--white);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+}
+
+/* Skeletons */
+.task-skeleton {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    border: 1px solid var(--secondary-100);
+}
+
+.skeleton-header {
+    height: 1.5rem;
+    background: var(--secondary-100);
+    border-radius: var(--radius-sm);
+    margin-bottom: 1rem;
+    width: 60%;
+}
+
+.skeleton-line {
+    height: 1rem;
+    background: var(--secondary-50);
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.5rem;
+}
+
+.skeleton-line.short {
+    width: 40%;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    main {
+        padding: 2rem;
+    }
+}
+
 @media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
     .sidebar.expanded {
-        width: 85%;
-        max-width: 300px;
-    }
-
-    .dashboard {
-        margin-left: 0;
-        padding: 1rem;
-    }
-
-    .task-container {
-        grid-template-columns: 1fr;
-    }
-
-    .toggle-btn {
-        top: 0.75rem;
-    }
-
-    /* Adjust form positioning for mobile */
-    .add-form,
-    .edit-form {
-        width: 90%;
-        max-width: none;
-        padding: 1.25rem;
-    }
-
-    /* Make sure task cards are full width on mobile */
-    .task-card {
+        transform: translateX(0);
         width: 100%;
     }
 
-    /* Adjust dashboard header for mobile */
-    .dashboard h2,
-    .dashboard-shrink h2 {
-        font-size: 1.25rem;
-        margin-top: 0.5rem;
-        margin-bottom: 1rem;
-        padding-left: 2.5rem;
-        /* Make room for the toggle button */
+    main {
+        margin-left: 0 !important;
+        padding: 4rem 1.5rem 1.5rem;
     }
 
-    /* Ensure proper spacing when sidebar is collapsed */
-    .dashboard-shrink {
-        padding-top: 1rem;
-    }
-
-    /* Adjust profile section for smaller screens */
-    .profile {
-        padding: 1rem;
-    }
-
-    .profile-img {
-        width: 50px;
-        height: 50px;
-    }
-
-    .username {
-        font-size: 0.875rem;
-    }
-
-    /* Make sidebar links more touch-friendly */
-    .sidebar a {
-        padding: 0.875rem 1.25rem;
-    }
-
-    /* Ensure the add task button is properly sized */
-    .add-task-btn {
-        margin: 1rem auto;
-        width: 45px;
-        height: 45px;
-    }
-
-    /* Fix for iOS Safari bottom bar */
-    .sidebar {
-        padding-bottom: 5rem;
-    }
-
-    /* Improve scrolling on mobile */
-    .task-container {
-        -webkit-overflow-scrolling: touch;
-    }
-
-    /* Adjust form inputs for better mobile experience */
-    input,
-    select,
-    textarea {
-        font-size: 16px !important;
-        /* Prevents iOS zoom on focus */
-    }
-
-    /* Ensure buttons are large enough for touch */
-    button {
-        min-height: 44px;
-    }
-}
-
-/* Small mobile devices */
-@media (max-width: 480px) {
-    .sidebar.expanded {
-        width: 85%;
-    }
-
-    .task-container {
-        gap: 1rem;
-    }
-
-    /* Further reduce padding to maximize content space */
-    .dashboard,
-    .dashboard-shrink {
-        padding: 0.75rem;
-    }
-
-    /* Make task cards more compact */
-    .task-card {
-        margin-bottom: 1rem;
-    }
-
-    /* Ensure the toggle button is visible but not intrusive */
     .toggle-btn {
-        width: 32px;
-        height: 32px;
-    }
-}
-
-/* Landscape orientation adjustments */
-@media (max-height: 500px) and (orientation: landscape) {
-    .sidebar {
-        padding-bottom: 1rem;
-    }
-
-    .profile {
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
-    }
-
-    .add-task-btn {
-        margin: 0.5rem auto;
-    }
-
-    .sidebar h3 {
-        margin-top: -0.5rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .sidebar ul {
-        padding: 0.5rem 0;
-    }
-
-    .sidebar li {
-        margin-bottom: 0.125rem;
-    }
-}
-
-/* Fix for notched phones */
-@supports (padding: max(0px)) {
-
-    .sidebar,
-    .dashboard,
-    .dashboard-shrink {
-        padding-left: max(1rem, env(safe-area-inset-left));
-        padding-right: max(1rem, env(safe-area-inset-right));
-    }
-
-    .sidebar {
-        padding-bottom: max(1rem, env(safe-area-inset-bottom));
+        left: 1rem !important;
+        top: 1rem;
     }
 }

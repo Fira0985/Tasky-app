@@ -1,9 +1,26 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaInstagram,
+  FaLinkedin,
+  FaTwitter
+} from "react-icons/fa";
+import {
+  UserPlus,
+  PlusCircle,
+  Layers,
+  Users,
+  ArrowRight,
+  Download,
+  Zap,
+  Shield,
+  Layout
+} from "lucide-react";
 import image from "../asset/69KTbX-LogoMakr.png";
 import LoginPop from "../component/loginPop";
 import SignUp from "../component/signUp";
+import SupportModal from "../component/SupportModal";
 import "../styles/home.css";
 
 function Home({ GetUserEmail }) {
@@ -11,12 +28,23 @@ function Home({ GetUserEmail }) {
 
   const [isRegisterOpen, setRegisterOpen] = useState(false);
   const [isLoginOpen, setLoginOpen] = useState(false);
+  const [showSupport, setShowSupport] = useState(false);
 
   function GetLoginData(data) {
-    if (data?.message === "User loged in successfully") {
+    const isSuccess = data?.message === "User logged in successfully" ||
+      data?.message === "User loged in successfully";
+    if (isSuccess) {
       navigate("/user");
     }
   }
+
+  // Auto-redirect if already logged in
+  React.useEffect(() => {
+    const savedEmail = localStorage.getItem("email");
+    if (savedEmail) {
+      navigate("/user");
+    }
+  }, [navigate]);
 
   function openRegister() {
     setRegisterOpen(true);
@@ -31,62 +59,98 @@ function Home({ GetUserEmail }) {
   function closeModal() {
     setRegisterOpen(false);
     setLoginOpen(false);
+    setShowSupport(false);
   }
 
   return (
-    <div className="home">
-      {/* Overlay & centered modal(s) - renders only when a modal is open */}
-      {(isRegisterOpen || isLoginOpen) && (
+    <div className="home animate-fade-in">
+      {/* Overlay & centered modal(s) */}
+      {(isRegisterOpen || isLoginOpen || showSupport) && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-wrapper" onClick={(e) => e.stopPropagation()}>
+            <button className="close-modal-btn" onClick={closeModal}>×</button>
             {isRegisterOpen && <SignUp onClose={closeModal} />}
             {isLoginOpen && (
               <LoginPop
                 SendDataToParent={GetLoginData}
                 getEmail={GetUserEmail}
-                GetMessage={() => {}}
+                GetMessage={() => { }}
                 onClose={closeModal}
               />
             )}
+            {showSupport && <SupportModal onClose={closeModal} />}
           </div>
         </div>
       )}
 
       {/* Navbar */}
       <header>
-        <div className="navbar">
-          <a id="logo"><img src={image} alt="Company-logo" /></a>
+        <nav className="navbar">
+          <a id="logo" href="/"><img src={image} alt="Tasky Logo" /></a>
           <div className="nav-links">
-            <a href="#howItWorks">How It Works</a>
-            <a href="#">Support Us</a>
-            <a href="#download">Download App</a>
+            <button className="nav-link-btn" onClick={() => document.getElementById('howItWorks').scrollIntoView({ behavior: 'smooth' })}>How It Works</button>
+            <button className="nav-link-btn" onClick={() => setShowSupport(true)}>Support</button>
+            <button className="nav-link-btn" onClick={() => document.getElementById('download').scrollIntoView({ behavior: 'smooth' })}>Download</button>
             <button className="nav-btn nav-btn--login" onClick={openLogin}>Login</button>
-            <button className="nav-btn nav-btn--signup" onClick={openRegister}>Sign Up</button>
+            <button className="nav-btn nav-btn--signup" onClick={openRegister}>Get Started</button>
           </div>
-        </div>
+        </nav>
       </header>
 
-      {/* Overview Section */}
+      {/* Hero Section */}
       <section className="overview">
-        <h1>Tasky App: Simplify Your Task Management</h1>
-        <p>
-          Tasky App is designed to help you efficiently manage tasks, collaborate with teams, and stay productive.
-          Whether you're working on a personal project or managing a large team, Tasky App is here to simplify your task management experience.
-        </p>
-        <button>Get Started</button>
+        <div className="hero-content">
+          <span className="badge animate-slide-up">v1.2 is here – Faster tasks than ever</span>
+          <h1 className="animate-slide-up" style={{ animationDelay: '100ms' }}>
+            Simplify your workflow with <span>Tasky</span>
+          </h1>
+          <p className="animate-slide-up" style={{ animationDelay: '200ms' }}>
+            The all-in-one task management platform designed for speed,
+            efficiency, and seamless collaboration. Stay organized,
+            wherever you are.
+          </p>
+          <div className="hero-actions animate-slide-up" style={{ animationDelay: '300ms' }}>
+            <button className="primary-btn" onClick={openRegister}>
+              Get Started for Free <ArrowRight size={18} />
+            </button>
+            <button className="secondary-btn" onClick={() => document.getElementById('howItWorks').scrollIntoView({ behavior: 'smooth' })}>
+              View Demo
+            </button>
+          </div>
+        </div>
       </section>
 
       {/* How It Works Section */}
       <section className="how-it-works" id="howItWorks">
-        <h2>How It Works</h2>
+        <div className="section-header">
+          <h2>How It Works</h2>
+          <p>Four simple steps to mastery</p>
+        </div>
         <div className="steps">
           {[
-            { title: "Step 1: Create an Account", desc: "Sign up to get access to all the features Tasky App has to offer. Manage your tasks and collaborate with your team easily." },
-            { title: "Step 2: Create a Task", desc: "Create a task by setting its name, detail of the task, deadline, priority and dependency." },
-            { title: "Step 3: Organize Tasks", desc: "Group your tasks into projects, set deadlines, and track progress. Tasky App provides you with a clear overview of your workflow." },
-            { title: "Step 4: Collaborate and Succeed", desc: "Invite your team members, assign tasks, and track completion to achieve goals faster." }
+            {
+              icon: <UserPlus />,
+              title: "Create Account",
+              desc: "Quick sign up to unlock powerful features tailored for your productivity needs."
+            },
+            {
+              icon: <PlusCircle />,
+              title: "Add Tasks",
+              desc: "Define task names, set priorities, and establish deadlines with our intuitive editor."
+            },
+            {
+              icon: <Layers />,
+              title: "Stay Organized",
+              desc: "Group tasks into projects and monitor progress through clear visual dashboards."
+            },
+            {
+              icon: <Users />,
+              title: "Collaborate",
+              desc: "Invite members and assign roles to achieve your goals faster with your team."
+            }
           ].map((step, i) => (
-            <div key={i} className="step">
+            <div key={i} className="step animate-slide-up" style={{ animationDelay: `${(i + 1) * 100}ms` }}>
+              <div className="step-icon">{step.icon}</div>
               <h3>{step.title}</h3>
               <p>{step.desc}</p>
             </div>
@@ -94,48 +158,76 @@ function Home({ GetUserEmail }) {
         </div>
       </section>
 
-      {/* Download Section */}
-      <section className="download" id="download">
-        <h2>Download the Tasky App</h2>
-        <p>Get Tasky App on your PC and manage your tasks on the go. Available on both Windows and Linux platforms.</p>
-        <div className="download-buttons">
-          <a href="#" className="btn-download">Download for Windows</a>
-          <a href="#" className="btn-download">Download for Linux</a>
+      {/* Features Grid (New Section) */}
+      <section className="features">
+        <div className="feature-card">
+          <Zap className="feature-icon" />
+          <h3>Fast & Fluid</h3>
+          <p>Experience zero latency with our optimized cloud backend.</p>
+        </div>
+        <div className="feature-card">
+          <Shield className="feature-icon" />
+          <h3>Secure by Design</h3>
+          <p>Your data is encrypted with military-grade security standards.</p>
+        </div>
+        <div className="feature-card">
+          <Layout className="feature-icon" />
+          <h3>Clean Interface</h3>
+          <p>Distraction-free design focused on getting things done.</p>
         </div>
       </section>
 
-      {/* Footer Section */}
+      {/* Download Section */}
+      <section className="download" id="download">
+        <div className="download-content">
+          <h2>Ready to get productive?</h2>
+          <p>Download Tasky App for your desktop and sync your data across all your devices instantly.</p>
+          <div className="download-buttons">
+            <button className="btn-download" onClick={() => alert('Windows download coming soon!')}>
+              <Download size={20} /> Download for Windows
+            </button>
+            <button className="btn-download" onClick={() => alert('Linux download coming soon!')}>
+              <Download size={20} /> Download for Linux
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
       <footer className="footer-section">
-        <div className="footer">
-          <div className="footer-container">
-            <div className="footer-logo">
-              <a href="#"><img src={image} alt="Tasky App Logo" /></a>
-              <p>Tasky App: Your Personal Task Manager</p>
-            </div>
-
-            <div className="footer-links">
-              <h4>Quick Links</h4>
-              <ul>
-                <li><a href="#howItWorks">How It Works</a></li>
-                <li><a href="#">Support Us</a></li>
-                <li><a href="#download">Download</a></li>
-              </ul>
-            </div>
-
-            <div className="footer-social">
-              <h4>Follow Us</h4>
-              <div className="social-icons">
-                <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer"><FaFacebook size={28} /></a>
-                <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer"><FaTwitter size={28} /></a>
-                <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer"><FaInstagram size={28} /></a>
-                <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer"><FaLinkedin size={28} /></a>
-              </div>
+        <div className="footer-container">
+          <div className="footer-company">
+            <img src={image} alt="Tasky" className="footer-logo" />
+            <p>Your ultimate partner in productivity and task management.</p>
+            <div className="social-icons">
+              <a href="#"><FaFacebook size={20} /></a>
+              <a href="#"><FaTwitter size={20} /></a>
+              <a href="#"><FaInstagram size={20} /></a>
+              <a href="#"><FaLinkedin size={20} /></a>
             </div>
           </div>
 
-          <div className="footer-bottom">
-            &copy; 2024 Tasky App. All Rights Reserved.
+          <div className="footer-links">
+            <h4>Product</h4>
+            <ul>
+              <li><button onClick={() => document.getElementById('howItWorks').scrollIntoView({ behavior: 'smooth' })}>Features</button></li>
+              <li><button onClick={() => alert('Pricing coming soon!')}>Pricing</button></li>
+              <li><button onClick={() => document.getElementById('download').scrollIntoView({ behavior: 'smooth' })}>Mobile App</button></li>
+            </ul>
           </div>
+
+          <div className="footer-links">
+            <h4>Support</h4>
+            <ul>
+              <li><button onClick={() => setShowSupport(true)}>Help Center</button></li>
+              <li><button onClick={() => setShowSupport(true)}>Contact Us</button></li>
+              <li><button onClick={() => alert('Privacy policy coming soon!')}>Privacy Policy</button></li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <p>&copy; 2024 Tasky Inc. All rights reserved.</p>
         </div>
       </footer>
     </div>

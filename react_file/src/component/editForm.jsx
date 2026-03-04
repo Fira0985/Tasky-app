@@ -1,140 +1,178 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
+import { X, Type, AlignLeft, Calendar, Flag, Link, Loader2 } from "lucide-react";
 import "../styles/editForm.css";
 
 function EditTaskForm(props) {
+    const initialName = props.name;
+    const [taskName, setTaskName] = useState(props.name || "");
+    const [detail, setDetail] = useState(props.detail || "");
+    const [priority, setPriority] = useState(props.priority || "");
+    const [deadline, setDeadline] = useState(props.deadline || "");
+    const [dependency, setDependency] = useState(props.dependency || "");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
-    const initialName = props.name
-    const [taskName,setTaskName] = useState(props.name || "")
-    const [detail, setDetail] = useState(props.detail || "")
-    const [priority, setPriority] = useState(props.priority || "")
-    const [deadline, setDeadline] = useState(props.deadline || "")
-    const [dependency, setDependency] = useState(props.dependency || "")
-    const api_url = process.env.REACT_APP_API_URL
-    const api_url_vercel = process.env.REACT_APP_API_URL_vercel
+    const api_url_vercel = process.env.REACT_APP_API_URL_vercel;
 
-    const data = {
-    initialName,
-    taskName,
-    detail,
-    priority,
-    deadline,
-    dependency,
-    }
+    const closeForm = useCallback(() => {
+        props.GetData(false);
+    }, [props.GetData]);
 
-    function taskNameValue(event){
-        setTaskName(event.target.value)
-    }
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') closeForm();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [closeForm]);
 
-    function detailValue(event){
-        setDetail(event.target.value)
-    }
+    async function UpdateTask(event) {
+        event.preventDefault();
+        setLoading(true);
+        setError("");
 
-    function priorityValue(event){
-        setPriority(event.target.value)
-    }
+        const data = {
+            initialName,
+            taskName,
+            detail,
+            priority,
+            deadline,
+            dependency,
+        };
 
-    function deadlineValue(event){
-        setDeadline(event.target.value)
-    }
+        try {
+            const response = await fetch(api_url_vercel + "update", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
 
-    function dependencyValue(event){
-        setDependency(event.target.value)
-    }
-
-
-    function closeForm(){
-        props.GetData(false)
-    }
-
-    async function UpdateTask(event){
-        event.preventDefault()
-        const url = api_url_vercel + "update"
-        const option = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        }
-
-        try{
-            const response = await fetch(url,option)
-
-            if (!response.ok){
-                throw new Error(`HTTP error! Status: ${response.status}`)
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Failed to update task");
             }
 
-            closeForm()
-            return await response.json()
+            closeForm();
+            if (props.onRefresh) props.onRefresh();
         } catch (error) {
-            return {message: "Failed to Update the Task"}
+            console.error("Error updating task:", error);
+            setError(error.message || "Failed to update the task");
+        } finally {
+            setLoading(false);
         }
     }
 
     return (
-        <form className="edit-task-form" onSubmit={UpdateTask}>
-            <span class="close-btn" onClick={closeForm}>&times;</span>
-            <h2>Edit Task</h2>
+        <div className="modal-backdrop" onClick={(e) => e.target === e.currentTarget && closeForm()}>
+            <div className="form-container">
+                <button className="close-btn" onClick={closeForm} title="Close">
+                    <X size={20} />
+                </button>
 
-            <div>
-                <label htmlFor="taskName">Task Name:</label>
-                <input
-                    type="text"
-                    id="taskName"
-                    name="taskName"
-                    defaultValue={props.name}
-                    onChange={taskNameValue}
-                    required
-                />
+                <h2>Edit Task</h2>
+
+                {error && (
+                    <div className="error-message">
+                        <p>{error}</p>
+                    </div>
+                )}
+
+                <form onSubmit={UpdateTask}>
+                    <div className="form-group">
+                        <label htmlFor="taskName">Task Name</label>
+                        <div className="input-wrapper">
+                            <Type size={18} />
+                            <input
+                                type="text"
+                                id="taskName"
+                                placeholder="Task name"
+                                required
+                                onChange={(e) => setTaskName(e.target.value)}
+                                value={taskName}
+                                disabled={loading}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="taskDetail">Description</label>
+                        <div className="input-wrapper">
+                            <AlignLeft size={18} style={{ top: '0.85rem' }} />
+                            <textarea
+                                id="taskDetail"
+                                rows="3"
+                                placeholder="Task description..."
+                                required
+                                onChange={(e) => setDetail(e.target.value)}
+                                value={detail}
+                                disabled={loading}
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="form-group">
+                            <label htmlFor="taskDeadline">Deadline</label>
+                            <div className="input-wrapper">
+                                <Calendar size={18} />
+                                <input
+                                    type="date"
+                                    id="taskDeadline"
+                                    required
+                                    onChange={(e) => setDeadline(e.target.value)}
+                                    value={deadline}
+                                    disabled={loading}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="taskPriority">Priority</label>
+                            <div className="input-wrapper">
+                                <Flag size={18} />
+                                <select
+                                    id="taskPriority"
+                                    required
+                                    onChange={(e) => setPriority(e.target.value)}
+                                    value={priority}
+                                    disabled={loading}
+                                >
+                                    <option value="" disabled>Select</option>
+                                    <option value="High">High</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Low">Low</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="taskDependencies">Project / Dependency</label>
+                        <div className="input-wrapper">
+                            <Link size={18} />
+                            <input
+                                type="text"
+                                id="taskDependencies"
+                                placeholder="Link to project or other task"
+                                onChange={(e) => setDependency(e.target.value)}
+                                value={dependency}
+                                disabled={loading}
+                            />
+                        </div>
+                    </div>
+
+                    <button type="submit" className="submit-btn" disabled={loading}>
+                        {loading ? (
+                            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                                <Loader2 size={18} className="animate-spin" />
+                                Updating...
+                            </span>
+                        ) : "Update Task"}
+                    </button>
+                </form>
             </div>
-
-            <div>
-                <label htmlFor="detail">Detail:</label>
-                <textarea
-                    id="detail"
-                    name="detail"
-                    defaultValue={props.detail}
-                    onChange={detailValue}
-                    required
-                ></textarea>
-            </div>
-
-            <div>
-                <label htmlFor="priority">Priority:</label>
-                <select id="priority" name="priority" required defaultValue={props.priority} onChange={priorityValue}>
-                    <option value="">Select priority</option>
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
-                </select>
-            </div>
-
-            <div>
-                <label htmlFor="deadline">Deadline:</label>
-                <input
-                    type="date"
-                    id="deadline"
-                    name="deadline"
-                    defaultValue={props.deadline}
-                    onChange={deadlineValue}
-                    required
-                />
-            </div>
-
-            <div>
-                <label htmlFor="dependency">Dependency:</label>
-                <input
-                    type="text"
-                    id="dependency"
-                    name="dependency"
-                    defaultValue={props.dependency}
-                    onChange={dependencyValue}
-                />
-            </div>
-
-            <button type="submit">Update Task</button>
-        </form>
+        </div>
     );
-};
+}
 
 export default EditTaskForm;
