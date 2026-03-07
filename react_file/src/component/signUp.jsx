@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { User, Mail, Lock, ShieldCheck, AlertCircle, X } from "lucide-react";
 import "../styles/signUp.css";
+import { fetchAPI } from "../api";
 
 function SignUp({ onClose, GetMessage }) {
     const [name, setName] = useState("");
@@ -8,8 +9,6 @@ function SignUp({ onClose, GetMessage }) {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [email, setEmail] = useState("");
     const [message, setMessage] = useState("");
-
-    const api_url_vercel = process.env.REACT_APP_API_URL_vercel;
 
     // ===== Validation Functions =====
     const validateName = (name) => {
@@ -54,35 +53,22 @@ function SignUp({ onClose, GetMessage }) {
             return;
         }
 
-        // Construct URL responsibly
-        const base_url = api_url_vercel?.endsWith("/") ? api_url_vercel.slice(0, -1) : api_url_vercel;
-        const url = `${base_url}/signup`;
-
         const requestData = { name, email, password };
-        const option = {
+
+        const result = await fetchAPI("/signup", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(requestData),
-        };
+        });
 
-        try {
-            const response = await fetch(url, option);
-            const result = await response.json();
+        setMessage(result.message);
+        if (GetMessage) GetMessage(!result.ok);
 
-            setMessage(result.message || "Signup response received");
-            if (GetMessage) GetMessage(!response.ok);
-
-            if (response.ok) {
-                // Logic for what happens after successful signup
-                // We could automatically log them in or show a success message
-                setTimeout(() => {
-                    if (onClose) onClose();
-                }, 2000);
-            }
-        } catch (error) {
-            console.error("Signup failed:", error);
-            setMessage("Network error. Please ensure the backend is reachable.");
-            if (GetMessage) GetMessage(true);
+        if (result.ok) {
+            // Logic for what happens after successful signup
+            // We could automatically log them in or show a success message
+            setTimeout(() => {
+                if (onClose) onClose();
+            }, 2000);
         }
     };
 

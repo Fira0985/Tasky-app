@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { Mail, Lock, AlertCircle, X } from "lucide-react";
 import "../styles/loginPop.css";
+import { fetchAPI } from "../api";
 
 function LoginPop({ SendDataToParent, getEmail, GetMessage, onClose }) {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [errorVisible, setErrorVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Incorrect Password or Email");
-
-  const api_url_vercel = process.env.REACT_APP_API_URL_vercel;
 
   // Send data to parent
   function sendToParent(data) {
@@ -23,42 +22,27 @@ function LoginPop({ SendDataToParent, getEmail, GetMessage, onClose }) {
     // Ensure the data object is built with the current state
     const requestData = { email, password };
 
-    // Construct URL responsibly (handle trailing slashes in env var)
-    const base_url = api_url_vercel?.endsWith("/") ? api_url_vercel.slice(0, -1) : api_url_vercel;
-    const url = `${base_url}/login`;
-
-    const option = {
+    const result = await fetchAPI("/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestData),
-    };
+    });
 
-    try {
-      const response = await fetch(url, option);
-      const answer = await response.json();
+    const ok = result.ok && (
+      result.data?.message === "User logged in successfully" ||
+      result.data?.message === "User loged in successfully"
+    );
 
-      const ok = response.ok && (
-        answer?.message === "User logged in successfully" ||
-        answer?.message === "User loged in successfully"
-      );
-
-      if (ok) {
-        // Update parent state and navigate only on success
-        sendToParent(answer);
-        if (onClose) onClose();
-      } else {
-        setErrorVisible(true);
-        setErrorMessage(answer?.message || "Incorrect Password or Email");
-      }
-
-      if (GetMessage) GetMessage(!ok);
-      if (ok && onClose) onClose();
-    } catch (error) {
-      console.error("Login attempt failed:", error);
+    if (ok) {
+      // Update parent state and navigate only on success
+      sendToParent(result.data);
+      if (onClose) onClose();
+    } else {
       setErrorVisible(true);
-      setErrorMessage("Network error. Please check your connection.");
-      if (GetMessage) GetMessage(true);
+      setErrorMessage(result.message || "Incorrect Password or Email");
     }
+
+    if (GetMessage) GetMessage(!ok);
+    if (ok && onClose) onClose();
   };
 
   return (

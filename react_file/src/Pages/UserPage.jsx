@@ -25,6 +25,7 @@ import Report from "../component/report";
 import Task from "../component/task";
 import ProfilePage from "../component/ProfilePage";
 import SupportModal from "../component/SupportModal";
+import { fetchAPI } from "../api";
 
 function User(props) {
   const navigate = useNavigate();
@@ -43,7 +44,6 @@ function User(props) {
   const [error, setError] = useState(null);
   const email = props.email
   const [name, setName] = useState("")
-  const api_url_vercel = process.env.REACT_APP_API_URL_vercel
 
   const handleLogout = () => {
     localStorage.removeItem("email");
@@ -67,68 +67,58 @@ function User(props) {
 
   async function updateTaskStatus(taskName, isCompleted) {
     const status = isCompleted ? "Completed" : "Not Completed";
-    const url = api_url_vercel + "set-status";
 
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ task_name: taskName, task_status: status })
-      });
+    const result = await fetchAPI("/set-status", {
+      method: "POST",
+      body: JSON.stringify({ task_name: taskName, task_status: status })
+    });
 
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
+    if (result.ok) {
       setMessage(prevTasks =>
         prevTasks.map(task =>
           task.taskName === taskName ? { ...task, status } : task
         )
       );
-
-      return await response.json();
-    } catch (error) {
-      console.error("Failed to update task status:", error);
-      return { message: error };
     }
+
+    return result.data;
   }
 
   useEffect(() => {
     async function fetchUserInfo() {
       if (!email) return;
-      try {
-        const base_url = api_url_vercel?.endsWith("/") ? api_url_vercel.slice(0, -1) : api_url_vercel;
-        const response = await fetch(`${base_url}/get-name`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        });
-        const result = await response.json();
-        setName(result.message);
-      } catch (error) {
-        console.error("Failed to fetch user info", error);
+      const result = await fetchAPI("/get-name", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      });
+
+      if (result.ok) {
+        setName(result.data.message);
+      } else {
+        console.error("Failed to fetch user info", result.message);
       }
     }
     fetchUserInfo();
-  }, [email, api_url_vercel]);
+  }, [email]);
 
   async function fetchTasks() {
     if (!email) return;
     setLoading(true);
     setError(null);
-    try {
-      const base_url = api_url_vercel?.endsWith("/") ? api_url_vercel.slice(0, -1) : api_url_vercel;
-      const response = await fetch(`${base_url}/get-task?email=${email}`);
-      const result = await response.json();
-      setMessage(result.message || []);
-    } catch (err) {
-      setError("Failed to load tasks. Please try again.");
-    } finally {
-      setLoading(false);
+
+    const result = await fetchAPI(`/get-task?email=${email}`);
+
+    if (result.ok) {
+      setMessage(result.data.message || []);
+    } else {
+      setError(result.message || "Failed to load tasks. Please try again.");
     }
+    setLoading(false);
   }
 
   useEffect(() => {
     fetchTasks();
-  }, [email, api_url_vercel]);
+  }, [email]);
 
   const refreshTasks = () => {
     fetchTasks();

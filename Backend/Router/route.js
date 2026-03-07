@@ -6,8 +6,6 @@ const Project = require("../models/project");
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv");
-const task = require("../models/task");
-
 const route = express.Router()
 
 dotenv.config();
@@ -211,7 +209,7 @@ route.delete('/delete', async (req, res) => {
         return res.status(404).json({ message: "Task not found" });
     } catch (err) {
         // Handle unexpected errors
-        return res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: 'Failed to delete task', error: err.message });
     }
 });
 
@@ -227,7 +225,7 @@ route.post("/update", async (req, res) => {
         const task = await Task.findOneAndUpdate({ taskName: initialName }, { $set: { taskName: taskName, detail: detail, priority: priority, deadline: deadline, dependency: dependency } }, { new: true })
         return res.status(200).json({ message: "Task Updated Successfully" })
     } catch (error) {
-        return res.status(500).json({ message: "Internal server error" + error })
+        return res.status(500).json({ message: "Internal server error", error: error.message })
     }
 
 })
@@ -239,7 +237,7 @@ route.post('/get-profile', async (req, res) => {
         if (!user) return res.status(404).json({ message: "User not found" });
         return res.status(200).json(user);
     } catch (error) {
-        return res.status(500).json({ message: "Failed to fetch profile" });
+        return res.status(500).json({ message: "Failed to fetch profile", error: error.message });
     }
 });
 
@@ -343,7 +341,7 @@ route.get('/get-projects', async (req, res) => {
         const projects = await Project.find({ email }).populate('tasks');
         return res.status(200).json({ message: projects });
     } catch (error) {
-        return res.status(500).json({ message: "Failed to fetch projects: " + error.message });
+        return res.status(500).json({ message: "Failed to fetch projects", error: error.message });
     }
 });
 
