@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import {
   FaFacebook,
@@ -18,6 +18,7 @@ import {
   Layout
 } from "lucide-react";
 import image from "../asset/69KTbX-LogoMakr.png";
+import heroMockup from "../asset/tasky_hero_mockup.png";
 import LoginPop from "../component/loginPop";
 import SignUp from "../component/signUp";
 import SupportModal from "../component/SupportModal";
@@ -39,7 +40,7 @@ function Home({ GetUserEmail }) {
   }
 
   // Auto-redirect if already logged in
-  React.useEffect(() => {
+  useEffect(() => {
     const savedEmail = localStorage.getItem("email");
     if (savedEmail) {
       navigate("/user");
@@ -99,23 +100,32 @@ function Home({ GetUserEmail }) {
 
       {/* Hero Section */}
       <section className="overview">
-        <div className="hero-content">
-          <span className="badge animate-slide-up">v1.2 is here – Faster tasks than ever</span>
-          <h1 className="animate-slide-up" style={{ animationDelay: '100ms' }}>
-            Simplify your workflow with <span>Tasky</span>
-          </h1>
-          <p className="animate-slide-up" style={{ animationDelay: '200ms' }}>
-            The all-in-one task management platform designed for speed,
-            efficiency, and seamless collaboration. Stay organized,
-            wherever you are.
-          </p>
-          <div className="hero-actions animate-slide-up" style={{ animationDelay: '300ms' }}>
-            <button className="primary-btn" onClick={openRegister}>
-              Get Started for Free <ArrowRight size={18} />
-            </button>
-            <button className="secondary-btn" onClick={() => document.getElementById('howItWorks').scrollIntoView({ behavior: 'smooth' })}>
-              View Demo
-            </button>
+        <div className="hero-container">
+          <div className="hero-content">
+            <div className="badge-glow animate-slide-up">
+              <span className="badge">v1.2 is here – Faster tasks than ever</span>
+            </div>
+            <h1 className="animate-slide-up" style={{ animationDelay: '100ms' }}>
+              Master your day with <span>Tasky</span>
+            </h1>
+            <p className="animate-slide-up" style={{ animationDelay: '200ms' }}>
+              The all-in-one task management platform built for modern teams.
+              Organize, track, and complete your projects with precision and speed.
+            </p>
+            <div className="hero-actions animate-slide-up" style={{ animationDelay: '300ms' }}>
+              <button className="primary-btn" onClick={openRegister}>
+                Get Started for Free <ArrowRight size={18} />
+              </button>
+              <button className="secondary-btn" onClick={() => document.getElementById('howItWorks').scrollIntoView({ behavior: 'smooth' })}>
+                View Demo
+              </button>
+            </div>
+          </div>
+          <div className="hero-visual animate-fade-in" style={{ animationDelay: '400ms' }}>
+            <div className="mockup-container">
+              <img src={heroMockup} alt="Tasky Dashboard Mockup" className="hero-mockup" />
+              <div className="hero-circle-accent"></div>
+            </div>
           </div>
         </div>
       </section>
