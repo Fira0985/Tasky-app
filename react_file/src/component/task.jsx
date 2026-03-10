@@ -9,28 +9,36 @@ import {
 } from "lucide-react";
 import '../styles/task.css';
 
+import React, { useCallback } from 'react';
+import {
+    Pencil,
+    Trash2,
+    Clock,
+    Layers,
+} from "lucide-react";
+import '../styles/task.css';
+import { fetchAPI } from '../api';
+
 function Task(props) {
-    const api_url_vercel = process.env.REACT_APP_API_URL_vercel;
     const isCompleted = props.status === "Completed";
 
     const deleteTask = useCallback(async () => {
         if (!window.confirm("Are you sure you want to delete this task?")) return;
 
         try {
-            const response = await fetch(api_url_vercel + "delete", {
+            const result = await fetchAPI("delete", {
                 method: "DELETE",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name: props.TName })
             });
 
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            if (!result.ok) throw new Error(result.message || "Failed to delete task");
 
             if (props.onRefresh) props.onRefresh();
         } catch (error) {
             console.error('Delete task error:', error);
-            alert("Failed to delete task. Please try again.");
+            alert(error.message || "Failed to delete task. Please try again.");
         }
-    }, [api_url_vercel, props.TName]);
+    }, [props.TName, props.onRefresh]);
 
     const sendEvent = useCallback(() => {
         props.editEvent(true, props.TName, props.detail, props.priority, props.deadline, props.dependency);
@@ -40,10 +48,12 @@ function Task(props) {
         props.StatusData(props.TName, event.target.checked);
     }, [props.StatusData, props.TName]);
 
-    const priorityClass = `priority-badge priority-${props.priority.toLowerCase()}`;
+    const priorityLower = props.priority?.toLowerCase() || 'low';
+    const priorityClass = `priority-badge priority-${priorityLower}`;
+    const cardClass = `task-card ${isCompleted ? 'completed' : ''} border-priority-${priorityLower}`;
 
     return (
-        <div className={`task-card ${isCompleted ? 'completed' : ''}`}>
+        <div className={cardClass}>
             <div className="task-header">
                 <h3 className="task-title">{props.TName}</h3>
                 <span className={priorityClass}>{props.priority}</span>
@@ -55,10 +65,12 @@ function Task(props) {
                     <Clock size={14} />
                     <span>Due: {props.deadline}</span>
                 </div>
-                <div className="task-info-item">
-                    <Layers size={14} />
-                    <span>Depends on: {props.dependency || 'None'}</span>
-                </div>
+                {props.dependency && (
+                    <div className="task-info-item">
+                        <Layers size={14} />
+                        <span>Depends on: {props.dependency}</span>
+                    </div>
+                )}
             </div>
 
             <div className="task-footer">
@@ -83,5 +95,7 @@ function Task(props) {
         </div>
     );
 }
+
+export default Task;
 
 export default Task;

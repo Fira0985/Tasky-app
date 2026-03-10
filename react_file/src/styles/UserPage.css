@@ -369,6 +369,50 @@ main {
     font-size: 0.875rem;
 }
 
+.stats-summary {
+    display: flex;
+    gap: 2rem;
+    background: var(--white);
+    padding: 1.5rem 2.5rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--secondary-100);
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--secondary-900);
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--secondary-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.text-success {
+    color: var(--success);
+}
+
+.text-warning {
+    color: var(--warning);
+}
+
+.text-danger {
+    color: var(--danger);
+}
+
 /* Task Container Grid */
 .task-container {
     display: grid;

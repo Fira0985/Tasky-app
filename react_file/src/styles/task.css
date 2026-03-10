@@ -130,9 +130,16 @@
     color: var(--secondary-400);
 }
 
-.btn-edit:hover {
-    background: var(--primary-50);
-    color: var(--primary-600);
+.border-priority-high {
+    border-left: 4px solid var(--danger);
+}
+
+.border-priority-medium {
+    border-left: 4px solid var(--warning);
+}
+
+.border-priority-low {
+    border-left: 4px solid var(--success);
 }
 
 .btn-delete:hover {

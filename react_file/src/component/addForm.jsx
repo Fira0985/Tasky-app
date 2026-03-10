@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { X, Type, AlignLeft, Calendar, Flag, Link, Loader2 } from "lucide-react";
 import '../styles/addPop.css';
+import { fetchAPI } from "../api";
 
 function AddForm(props) {
     const [taskName, setTaskName] = useState("");
@@ -12,20 +13,6 @@ function AddForm(props) {
     const [error, setError] = useState("");
 
     const email = props.email;
-    const api_url_vercel = process.env.REACT_APP_API_URL_vercel;
-
-    const closeForm = useCallback(() => {
-        props.GetData(false);
-    }, [props.GetData]);
-
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.key === 'Escape') closeForm();
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [closeForm]);
-
     const taskFormRequest = useCallback(async (event) => {
         event.preventDefault();
         setLoading(true);
@@ -42,15 +29,13 @@ function AddForm(props) {
         };
 
         try {
-            const response = await fetch(api_url_vercel + "add-task", {
+            const result = await fetchAPI("add-task", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "Failed to add task");
+            if (!result.ok) {
+                throw new Error(result.message || "Failed to add task");
             }
 
             closeForm();
@@ -61,7 +46,7 @@ function AddForm(props) {
         } finally {
             setLoading(false);
         }
-    }, [api_url_vercel, email, taskName, detail, priority, deadline, dependency, closeForm]);
+    }, [email, taskName, detail, priority, deadline, dependency, closeForm, props]);
 
     return (
         <div className="modal-backdrop" onClick={(e) => e.target === e.currentTarget && closeForm()}>

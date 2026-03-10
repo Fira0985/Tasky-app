@@ -144,6 +144,13 @@ function User(props) {
     return tasks;
   }, [message, currentView, searchTerm]);
 
+  const stats = useMemo(() => {
+    const total = message.length;
+    const completed = message.filter(t => t.status === "Completed").length;
+    const pending = total - completed;
+    return { total, completed, pending };
+  }, [message]);
+
   return (
     <div className="container">
       <div id="overlay" style={overlayStyle}></div>
@@ -247,11 +254,28 @@ function User(props) {
         ) : (
           <section>
             <div className="view-header">
-              <h2>
-                {currentView === 'all' ? 'All Tasks' :
-                  currentView === 'completed' ? 'Completed Tasks' : 'Incomplete Tasks'}
-              </h2>
-              <div className="task-count">{filteredTasks.length} tasks</div>
+              <div className="view-title">
+                <h2>
+                  {currentView === 'all' ? 'All Tasks' :
+                    currentView === 'completed' ? 'Completed Tasks' : 'Incomplete Tasks'}
+                </h2>
+                <div className="task-count">{filteredTasks.length} tasks</div>
+              </div>
+
+              <div className="stats-summary">
+                <div className="stat-item">
+                  <span className="stat-value">{stats.total}</span>
+                  <span className="stat-label">Total</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-value text-success">{stats.completed}</span>
+                  <span className="stat-label">Completed</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-value text-warning">{stats.pending}</span>
+                  <span className="stat-label">Pending</span>
+                </div>
+              </div>
             </div>
 
             {error && (
