@@ -74,9 +74,6 @@ function SignUp({ onClose, GetMessage }) {
 
     return (
         <div className="signup-modal">
-            <button className="close-modal-btn" onClick={onClose}>
-                <X size={24} />
-            </button>
             <h2>Create Account</h2>
             <form onSubmit={registerRequest} className="signup-form">
                 <div className="input-group">

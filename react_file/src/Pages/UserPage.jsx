@@ -338,7 +338,14 @@ function User(props) {
             onRefresh={refreshTasks}
           />
         )}
-        {showSupport && <SupportModal onClose={() => setShowSupport(false)} />}
+        {showSupport && (
+          <div className="modal-overlay" onClick={() => setShowSupport(false)}>
+            <div className="modal-wrapper" onClick={(e) => e.stopPropagation()}>
+              <button className="close-modal-btn" onClick={() => setShowSupport(false)}>×</button>
+              <SupportModal onClose={() => setShowSupport(false)} />
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

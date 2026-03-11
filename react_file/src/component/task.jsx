@@ -4,17 +4,6 @@ import {
     Trash2,
     Clock,
     Layers,
-    Info,
-    AlertTriangle
-} from "lucide-react";
-import '../styles/task.css';
-
-import React, { useCallback } from 'react';
-import {
-    Pencil,
-    Trash2,
-    Clock,
-    Layers,
 } from "lucide-react";
 import '../styles/task.css';
 import { fetchAPI } from '../api';
@@ -95,7 +84,5 @@ function Task(props) {
         </div>
     );
 }
-
-export default Task;
 
 export default Task;

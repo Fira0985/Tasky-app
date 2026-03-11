@@ -13,6 +13,19 @@ function AddForm(props) {
     const [error, setError] = useState("");
 
     const email = props.email;
+
+    const closeForm = useCallback(() => {
+        props.GetData(false);
+    }, [props.GetData]);
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') closeForm();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [closeForm]);
+
     const taskFormRequest = useCallback(async (event) => {
         event.preventDefault();
         setLoading(true);

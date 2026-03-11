@@ -47,9 +47,6 @@ function LoginPop({ SendDataToParent, getEmail, GetMessage, onClose }) {
 
   return (
     <div id="login-box" className="login-box">
-      <button className="close-modal-btn" onClick={onClose}>
-        <X size={24} />
-      </button>
       <h2>Welcome Back</h2>
       <form onSubmit={loginRequest}>
         <div className="textbox">
