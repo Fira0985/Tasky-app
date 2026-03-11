@@ -18,7 +18,13 @@ app.use((req, res, next) => {
 });
 
 app.use(Cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: [
+    process.env.FRONTEND_URL,
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:3002',
+    'http://127.0.0.1:3000'
+  ].filter(Boolean),
   credentials: true
 }))
 app.use(express.json({ limit: '10mb' })) // Increase payload limit

@@ -1,9 +1,19 @@
 const API_URL_VERCEL = process.env.REACT_APP_API_URL_vercel;
 const API_URL_LOCAL = process.env.REACT_APP_API_URL || "http://localhost:4000";
 
-// Fallback logic: Use Vercel URL if available, otherwise local
+// Fallback logic: Detect environment to prioritize local or production URL
 const getBaseUrl = () => {
-    let url = API_URL_VERCEL || API_URL_LOCAL;
+    const isLocalhost =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1";
+
+    // If running locally, prioritize local backend to avoid CORS with production
+    let url = isLocalhost ? (API_URL_LOCAL || API_URL_VERCEL) : (API_URL_VERCEL || API_URL_LOCAL);
+
+    if (!url) {
+        console.error("API URL not found in environment variables");
+        return "http://localhost:4000"; // Absolute fallback
+    }
 
     // Normalize trailing slashes
     if (url.endsWith("/")) {
