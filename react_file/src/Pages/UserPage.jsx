@@ -152,179 +152,147 @@ function User(props) {
   }, [message]);
 
   return (
-    <div className="container">
+    <div className="dashboard-container">
       <div id="overlay" style={overlayStyle}></div>
 
-      {/* Sidebar */}
-      <aside className={`sidebar ${isExpanded ? 'expanded' : 'collapsed'}`}>
-        <div className="logo">
-          <img src={image} alt="Tasky" />
+      {/* Modern Sidebar */}
+      <aside className={`sidebar-modern ${isExpanded ? 'expanded' : 'collapsed'}`}>
+        <div className="sidebar-header">
+          <div className="logo-box">
+            <CheckCircle className="logo-icon" size={28} />
+            {isExpanded && <span className="logo-text">Tasky</span>}
+          </div>
         </div>
 
-        <ul>
-          <li>
-            <button onClick={() => setCurrentView('all')} className={currentView === 'all' ? 'active' : ''}>
-              <ListChecks size={20} />
-              <span>All Tasks</span>
-            </button>
-          </li>
-          <li>
-            <button onClick={() => setCurrentView('completed')} className={currentView === 'completed' ? 'active' : ''}>
-              <CheckCircle size={20} />
-              <span>Completed</span>
-            </button>
-          </li>
-          <li>
-            <button onClick={() => setCurrentView('incomplete')} className={currentView === 'incomplete' ? 'active' : ''}>
-              <CircleOff size={20} />
-              <span>Incomplete</span>
-            </button>
-          </li>
-          <li>
-            <button onClick={() => setCurrentView('projects')} className={currentView === 'projects' ? 'active' : ''}>
-              <Folder size={20} />
-              <span>Projects</span>
-            </button>
-          </li>
-          <li>
-            <button onClick={() => setCurrentView('reports')} className={currentView === 'reports' ? 'active' : ''}>
-              <FileText size={20} />
-              <span>Reports</span>
-            </button>
-          </li>
-          <li>
-            <button onClick={() => setShowSupport(true)}>
-              <HelpCircle size={20} />
-              <span>Support</span>
-            </button>
-          </li>
-        </ul>
-
-        <button className="add-task-sidebar-btn" onClick={ShowForm}>
-          <Plus size={20} />
-          {isExpanded && <span>New Task</span>}
-        </button>
-
-        <div className="sidebar-account">
-          <div className="account-profile" onClick={() => setCurrentView('profile')}>
-            <img src={ProfileImage} alt="Profile" className="profile-img" />
-            <div className="profile-info">
-              <span className="username">{name || 'User'}</span>
-              <span className="user-email">{email}</span>
-            </div>
-            <Settings size={18} className="settings-icon" />
-          </div>
-          <button className="logout-btn" onClick={handleLogout}>
-            <LogOut size={20} />
-            {isExpanded && <span>Logout</span>}
+        <nav className="sidebar-nav">
+          <button onClick={() => setCurrentView('all')} className={currentView === 'all' ? 'nav-item active' : 'nav-item'}>
+            <ListChecks size={20} />
+            {isExpanded && <span>Dashboard</span>}
           </button>
+          <button onClick={() => setCurrentView('all-tasks')} className={currentView === 'all-tasks' ? 'nav-item active' : 'nav-item'}>
+            <Folder size={20} />
+            {isExpanded && <span>All Tasks</span>}
+          </button>
+          <button onClick={() => setCurrentView('projects')} className={currentView === 'projects' ? 'nav-item active' : 'nav-item'}>
+            <Folder size={20} />
+            {isExpanded && <span>Projects</span>}
+          </button>
+          <button onClick={() => setCurrentView('reports')} className={currentView === 'reports' ? 'nav-item active' : 'nav-item'}>
+            <FileText size={20} />
+            {isExpanded && <span>Reports</span>}
+          </button>
+          <button onClick={() => setCurrentView('calendar')} className={currentView === 'calendar' ? 'nav-item active' : 'nav-item'}>
+            <Bell size={20} />
+            {isExpanded && <span>Calendar</span>}
+          </button>
+        </nav>
+
+        <div className="sidebar-footer">
+          <button className="nav-item">
+            <Settings size={20} />
+            {isExpanded && <span>Settings</span>}
+          </button>
+          <div className="user-profile-card">
+            <img src={ProfileImage} alt="User" />
+            {isExpanded && (
+              <div className="user-details">
+                <span className="user-name">{name || 'User'}</span>
+                <span className="user-role">Premium</span>
+              </div>
+            )}
+            <Settings size={16} className="profile-settings" onClick={handleLogout} />
+          </div>
         </div>
       </aside>
 
-      <button className="toggle-btn" onClick={toggleSidebar}>
-        {isExpanded ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
-      </button>
-
-      {/* Main Content */}
-      <main className="dashboard">
-        <header className="dashboard-header">
-          <div className="header-search">
-            <Search size={20} />
-            <input
-              type="text"
-              placeholder="Search tasks or descriptions..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+      {/* Main Content Area */}
+      <main className="main-content">
+        <header className="main-header">
+          <div className="header-left">
+            <h1>Dashboard</h1>
+            <p className="greeting">Welcome back, {name || 'User'}!</p>
           </div>
-          <div className="header-actions">
-            <button className="icon-btn"><Bell size={20} /></button>
-            <div className="header-profile" onClick={() => setCurrentView('profile')}>
-              <img src={ProfileImage} alt="User" />
+          <div className="header-right">
+            <div className="search-box-modern">
+              <Search size={18} />
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
+            <button className="add-task-btn-modern" onClick={ShowForm}>
+              <Plus size={18} />
+              <span>Add New Task</span>
+            </button>
           </div>
         </header>
 
-        {currentView === 'reports' ? (
-          <Report tasks={message} />
-        ) : currentView === 'projects' ? (
-          <Project />
-        ) : currentView === 'profile' ? (
-          <ProfilePage email={email} />
-        ) : (
-          <section>
-            <div className="view-header">
-              <div className="view-title">
-                <h2>
-                  {currentView === 'all' ? 'All Tasks' :
-                    currentView === 'completed' ? 'Completed Tasks' : 'Incomplete Tasks'}
-                </h2>
-                <div className="task-count">{filteredTasks.length} tasks</div>
-              </div>
+        {/* Stats Section */}
+        <section className="dashboard-stats-grid">
+          <div className="stat-card-modern">
+            <span className="stat-card-title">Pending Tasks</span>
+            <span className="stat-card-value">{stats.pending}</span>
+          </div>
+          <div className="stat-card-modern">
+            <span className="stat-card-title">Completed Tasks</span>
+            <span className="stat-card-value">{stats.completed}</span>
+          </div>
+          <div className="stat-card-modern">
+            <span className="stat-card-title">Overdue</span>
+            <span className="stat-card-value">3</span>
+          </div>
+        </section>
 
-              <div className="stats-summary">
-                <div className="stat-item">
-                  <span className="stat-value">{stats.total}</span>
-                  <span className="stat-label">Total</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-value text-success">{stats.completed}</span>
-                  <span className="stat-label">Completed</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-value text-warning">{stats.pending}</span>
-                  <span className="stat-label">Pending</span>
-                </div>
-              </div>
+        {/* Task Board */}
+        <div className="board-header">
+          <div className="board-title">
+            <h3>My Tasks</h3>
+          </div>
+          <div className="board-filters">
+            <span className="filter-label">Filter:</span>
+            <select value={currentView} onChange={(e) => setCurrentView(e.target.value)} className="modern-select">
+              <option value="all">All Tasks</option>
+              <option value="completed">Completed</option>
+              <option value="incomplete">Incomplete</option>
+            </select>
+            <select className="modern-select">
+              <option>Due This Week</option>
+              <option>Priority: High</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="tasks-grid">
+          {loading ? (
+            <div className="loading-state">Loading your tasks...</div>
+          ) : filteredTasks.length === 0 ? (
+            <div className="empty-state-modern">
+              <Plus size={48} />
+              <p>No tasks found. Start by creating one!</p>
             </div>
-
-            {error && (
-              <div className="error-message">
-                <p>{error}</p>
-                <button onClick={() => window.location.reload()}>Retry</button>
-              </div>
-            )}
-
-            <div className="task-container">
-              {loading ? (
-                Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="task-skeleton animate-pulse">
-                    <div className="skeleton-header"></div>
-                    <div className="skeleton-line"></div>
-                    <div className="skeleton-line short"></div>
-                  </div>
-                ))
-              ) : filteredTasks.length === 0 ? (
-                <div className="empty-state">
-                  <p>
-                    {currentView === 'completed' ? "No completed tasks yet!" :
-                      currentView === 'incomplete' ? "No incomplete tasks!" :
-                        "No tasks found. Create your first task!"}
-                  </p>
-                </div>
-              ) : (
-                filteredTasks.map((task, index) => (
-                  <Task
-                    key={task._id || index}
-                    editEvent={(edit, n, d, p, dl, dp) => {
-                      setOverStyle({ display: "block" });
-                      setShowEdit(edit);
-                      setBeforeEdit([n, d, p, dl, dp]);
-                    }}
-                    onRefresh={refreshTasks}
-                    StatusData={updateTaskStatus}
-                    TName={task.taskName}
-                    detail={task.detail}
-                    priority={task.priority}
-                    status={task.status}
-                    dependency={task.dependency}
-                    deadline={task.deadline}
-                  />
-                ))
-              )}
-            </div>
-          </section>
-        )}
+          ) : (
+            filteredTasks.map((task, index) => (
+              <Task
+                key={task._id || index}
+                editEvent={(edit, n, d, p, dl, dp) => {
+                  setOverStyle({ display: "block" });
+                  setShowEdit(edit);
+                  setBeforeEdit([n, d, p, dl, dp]);
+                }}
+                onRefresh={refreshTasks}
+                StatusData={updateTaskStatus}
+                TName={task.taskName}
+                detail={task.detail}
+                priority={task.priority}
+                status={task.status}
+                dependency={task.dependency}
+                deadline={task.deadline}
+              />
+            ))
+          )}
+        </div>
 
         {showForm && <AddForm email={email} GetData={GetFormData} onRefresh={refreshTasks} />}
         {showEdit && (
@@ -347,6 +315,48 @@ function User(props) {
           </div>
         )}
       </main>
+
+      {/* Right Side Panel */}
+      <aside className="right-panel">
+        <div className="panel-section">
+          <h3>Recent Activity</h3>
+          <div className="activity-list">
+            <div className="activity-item">
+              <div className="user-avatar-small">
+                <img src={ProfileImage} alt="User" />
+              </div>
+              <div className="activity-info">
+                <p><strong>You</strong> finished the Website</p>
+                <span className="time">1 hour ago</span>
+              </div>
+            </div>
+            <div className="activity-item">
+              <div className="user-avatar-small">
+                <img src={ProfileImage} alt="User" />
+              </div>
+              <div className="activity-info">
+                <p><strong>Alex M.</strong> commented on UX</p>
+                <span className="time">2 hours ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="panel-section">
+          <h3>Upcoming Deadlines</h3>
+          <div className="deadline-list">
+            {message.filter(t => t.status !== "Completed").slice(0, 3).map((task, i) => (
+              <div key={i} className="deadline-item">
+                <div className={`deadline-tag ${task.priority?.toLowerCase() || 'low'}`}></div>
+                <div className="deadline-info">
+                  <p>{task.taskName}</p>
+                  <span>{task.deadline}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </aside>
     </div>
   );
 }
