@@ -10,7 +10,19 @@ import { fetchAPI } from '../api';
 import ProfileImage from '../asset/profile.png';
 
 function Task(props) {
-    const isCompleted = props.status === "Completed";
+    const {
+        status,
+        TName,
+        onRefresh,
+        editEvent,
+        detail,
+        priority,
+        deadline,
+        dependency,
+        StatusData
+    } = props;
+
+    const isCompleted = status === "Completed";
     const progress = isCompleted ? 100 : 40; // Simulated progress for visual parity
 
     const deleteTask = useCallback(async () => {
@@ -19,25 +31,25 @@ function Task(props) {
         try {
             const result = await fetchAPI("delete", {
                 method: "DELETE",
-                body: JSON.stringify({ name: props.TName })
+                body: JSON.stringify({ name: TName })
             });
 
             if (!result.ok) throw new Error(result.message || "Failed to delete task");
 
-            if (props.onRefresh) props.onRefresh();
+            if (onRefresh) onRefresh();
         } catch (error) {
             console.error('Delete task error:', error);
             alert(error.message || "Failed to delete task. Please try again.");
         }
-    }, [props.TName, props.onRefresh]);
+    }, [TName, onRefresh]);
 
     const sendEvent = useCallback(() => {
-        props.editEvent(true, props.TName, props.detail, props.priority, props.deadline, props.dependency);
-    }, [props.editEvent, props.TName, props.detail, props.priority, props.deadline, props.dependency]);
+        editEvent(true, TName, detail, priority, deadline, dependency);
+    }, [editEvent, TName, detail, priority, deadline, dependency]);
 
     const handleStatus = useCallback(() => {
-        props.StatusData(props.TName, !isCompleted);
-    }, [props.StatusData, props.TName, isCompleted]);
+        StatusData(TName, !isCompleted);
+    }, [StatusData, TName, isCompleted]);
 
     const priorityLower = props.priority?.toLowerCase() || 'low';
     const priorityClass = `priority-badge priority-${priorityLower}`;
@@ -48,26 +60,26 @@ function Task(props) {
             <div className="task-header">
                 <div className="task-title" onClick={handleStatus}>
                     <div className="task-checkbox-custom"></div>
-                    {props.TName}
+                    {TName}
                 </div>
-                <span className={priorityClass}>{props.priority}</span>
+                <span className={priorityClass}>{priority}</span>
             </div>
 
             <div className="task-body">
                 <div className="task-meta">
                     <div className="meta-item">
                         <Clock size={14} />
-                        <span>{props.deadline}</span>
+                        <span>{deadline}</span>
                     </div>
-                    {props.dependency && (
+                    {dependency && (
                         <div className="meta-item">
                             <Layers size={14} />
-                            <span>{props.dependency}</span>
+                            <span>{dependency}</span>
                         </div>
                     )}
                 </div>
 
-                <p className="task-detail">{props.detail}</p>
+                <p className="task-detail">{detail}</p>
 
                 <div className="progress-container">
                     <div className="progress-label">
