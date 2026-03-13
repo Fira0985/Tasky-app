@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import "../styles/profile.css";
+import { fetchAPI } from "../api";
 import { User, Mail, Lock, Save, X } from "lucide-react";
+import "../styles/profile.css";
 
 export default function ProfilePage({ email }) {
-    const api_url_vercel = process.env.REACT_APP_API_URL_vercel;
-
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState("");
@@ -31,18 +30,15 @@ export default function ProfilePage({ email }) {
     async function fetchProfile() {
         setLoading(true);
         try {
-            const base_url = api_url_vercel?.endsWith("/") ? api_url_vercel.slice(0, -1) : api_url_vercel;
-            const response = await fetch(`${base_url}/get-profile`, {
+            const result = await fetchAPI("/get-profile", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
             });
-            const data = await response.json();
-            if (response.ok) {
-                setName(data.name || "");
-                setServerEmail(data.email || email);
+            if (result.ok) {
+                setName(result.data.name || "");
+                setServerEmail(result.data.email || email);
             } else {
-                showMessage(data.message || "Failed to load profile", "error");
+                showMessage(result.message || "Failed to load profile", "error");
             }
         } catch (error) {
             showMessage("Network error while loading profile", "error");
@@ -83,22 +79,19 @@ export default function ProfilePage({ email }) {
                 payload.newPassword = newPassword;
             }
 
-            const base_url = api_url_vercel?.endsWith("/") ? api_url_vercel.slice(0, -1) : api_url_vercel;
-            const res = await fetch(`${base_url}/update-profile`, {
+            const result = await fetchAPI("/update-profile", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
             });
 
-            const data = await res.json();
-            if (res.ok) {
+            if (result.ok) {
                 showMessage("Profile updated successfully", "success");
                 setCurrentPassword("");
                 setNewPassword("");
                 setConfirmPassword("");
                 setShowPasswordSection(false);
             } else {
-                showMessage(data.message || "Failed to update profile", "error");
+                showMessage(result.message || "Failed to update profile", "error");
             }
         } catch (error) {
             showMessage("Network error while updating profile", "error");

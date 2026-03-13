@@ -3,6 +3,7 @@ const express = require("express")
 const User = require("../models/user")
 const Task = require("../models/task");
 const Project = require("../models/project");
+const Activity = require("../models/activity");
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv");
@@ -130,8 +131,15 @@ route.post('/add-task', async (req, res) => {
             return res.status(400).json({ message: "This task already exists" })
         }
         const newTask = new Task({ email, taskName, detail, priority, deadline, dependency, status });
-
         await newTask.save();
+
+        // Log Activity
+        const newActivity = new Activity({
+            email,
+            action: "Created task",
+            target: taskName
+        });
+        await newActivity.save();
 
         return res.status(201).json({ message: 'Task Added successfully' });
     } catch (err) {
@@ -202,6 +210,15 @@ route.delete('/delete', async (req, res) => {
         if (taskExist) {
             // Delete the task
             await Task.deleteOne({ taskName: name });
+
+            // Log Activity
+            const newActivity = new Activity({
+                email: taskExist.email,
+                action: "Deleted task",
+                target: name
+            });
+            await newActivity.save();
+
             return res.status(200).json({ message: "Task deleted successfully" });
         }
 
@@ -223,6 +240,15 @@ route.post("/update", async (req, res) => {
 
     try {
         const task = await Task.findOneAndUpdate({ taskName: initialName }, { $set: { taskName: taskName, detail: detail, priority: priority, deadline: deadline, dependency: dependency } }, { new: true })
+
+        // Log Activity
+        const newActivity = new Activity({
+            email: task.email,
+            action: "Updated task",
+            target: taskName
+        });
+        await newActivity.save();
+
         return res.status(200).json({ message: "Task Updated Successfully" })
     } catch (error) {
         return res.status(500).json({ message: "Internal server error", error: error.message })
@@ -281,6 +307,14 @@ route.post('/set-status', async (req, res) => {
         if (!task) {
             return res.status(404).json({ message: "Task not found" });
         }
+
+        // Log Activity
+        const newActivity = new Activity({
+            email: task.email,
+            action: task_status === "Completed" ? "Completed task" : "Reopened task",
+            target: task_name
+        });
+        await newActivity.save();
 
         return res.status(200).json({ message: "Task status updated successfully" });
     } catch (error) {
@@ -426,6 +460,52 @@ route.post('/update-project', async (req, res) => {
         return res.status(200).json({ message: "Project updated successfully", project });
     } catch (error) {
         return res.status(500).json({ message: "Failed to update project", error: error.message });
+    }
+});
+
+// Activity Routes
+route.get('/get-activity', async (req, res) => {
+    const { email } = req.query;
+    if (!email) return res.status(400).json({ message: "Email required" });
+
+    try {
+        const activities = await Activity.find({ email })
+            .sort({ timestamp: -1 })
+            .limit(10)
+            .lean();
+        return res.status(200).json({ message: activities });
+    } catch (error) {
+        return res.status(500).json({ message: "Failed to fetch activities", error: error.message });
+    }
+});
+
+// Dashboard Stats Route
+route.get('/dashboard-stats', async (req, res) => {
+    const { email } = req.query;
+    if (!email) return res.status(400).json({ message: "Email required" });
+
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const totalTasks = await Task.countDocuments({ email });
+        const completedTasks = await Task.countDocuments({ email, status: "Completed" });
+        const pendingTasks = totalTasks - completedTasks;
+
+        // Calculate overdue: Not Completed and deadline < today
+        const overdueTasks = await Task.countDocuments({
+            email,
+            status: "Not Completed",
+            deadline: { $lt: today.toISOString().split('T')[0] }
+        });
+
+        return res.status(200).json({
+            pending: pendingTasks,
+            completed: completedTasks,
+            overdue: overdueTasks
+        });
+    } catch (error) {
+        return res.status(500).json({ message: "Failed to fetch stats", error: error.message });
     }
 });
 

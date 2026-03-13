@@ -15,7 +15,7 @@ import {
   AlignLeft,
   Loader2
 } from "lucide-react";
-import "../styles/ProjectPage.css";
+import { fetchAPI } from "../api";
 
 const ProjectPage = ({ email }) => {
   const [projects, setProjects] = useState([]);
@@ -29,17 +29,13 @@ const ProjectPage = ({ email }) => {
   });
   const [editingProject, setEditingProject] = useState(null);
 
-  const api_url_vercel = process.env.REACT_APP_API_URL_vercel;
-
   const fetchProjects = async () => {
     if (!email) return;
     setLoading(true);
     try {
-      const base_url = api_url_vercel?.endsWith("/") ? api_url_vercel.slice(0, -1) : api_url_vercel;
-      const response = await fetch(`${base_url}/get-projects?email=${email}`);
-      const result = await response.json();
-      if (response.ok) {
-        setProjects(result.message || []);
+      const result = await fetchAPI(`/get-projects?email=${email}`);
+      if (result.ok) {
+        setProjects(result.data.message || []);
       }
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -49,7 +45,7 @@ const ProjectPage = ({ email }) => {
 
   useEffect(() => {
     fetchProjects();
-  }, [email, api_url_vercel]);
+  }, [email]);
 
   const closeForm = useCallback(() => {
     setShowCreateForm(false);
@@ -77,25 +73,20 @@ const ProjectPage = ({ email }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Assuming 'setSubmitting' from diff is 'setLoading'
+    setLoading(true);
 
     try {
-      const base_url = api_url_vercel?.endsWith("/") ? api_url_vercel.slice(0, -1) : api_url_vercel;
-      const url = editingProject
-        ? `${base_url}/update-project`
-        : `${base_url}/create-project`;
-
+      const endpoint = editingProject ? "/update-project" : "/create-project";
       const body = editingProject
         ? { projectId: editingProject._id, ...formData }
         : { email, ...formData };
 
-      const response = await fetch(url, {
+      const result = await fetchAPI(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
 
-      if (response.ok) {
+      if (result.ok) {
         await fetchProjects();
         closeForm();
       }
@@ -120,14 +111,12 @@ const ProjectPage = ({ email }) => {
     if (!window.confirm('Are you sure you want to delete this project?')) return;
 
     try {
-      const base_url = api_url_vercel?.endsWith("/") ? api_url_vercel.slice(0, -1) : api_url_vercel;
-      const response = await fetch(`${base_url}/delete-project`, {
+      const result = await fetchAPI("/delete-project", {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ projectId }),
       });
 
-      if (response.ok) {
+      if (result.ok) {
         await fetchProjects();
       }
     } catch (error) {

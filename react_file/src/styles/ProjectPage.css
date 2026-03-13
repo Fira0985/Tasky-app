@@ -1,14 +1,11 @@
 /* ProjectPage.css - Modern Project Management Styling */
 
 .project-overlay {
-  padding: 2rem;
-  min-height: 100vh;
-  background-color: var(--secondary-50);
+  padding: 1rem 0;
 }
 
 .project-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
 }
 
 .project-header {

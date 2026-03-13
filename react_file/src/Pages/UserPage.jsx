@@ -10,6 +10,7 @@ import {
   Settings,
   HelpCircle,
   Bell,
+  Calendar as CalendarIcon,
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
@@ -44,6 +45,10 @@ function User(props) {
   const [error, setError] = useState(null);
   const email = props.email
   const [name, setName] = useState("")
+  const [activities, setActivities] = useState([])
+  const [dashboardStats, setDashboardStats] = useState({ pending: 0, completed: 0, overdue: 0 })
+  const [filterPriority, setFilterPriority] = useState('all')
+  const [filterTime, setFilterTime] = useState('all')
 
   const handleLogout = () => {
     localStorage.removeItem("email");
@@ -128,9 +133,26 @@ function User(props) {
     if (!message.length) return [];
     let tasks = [...message];
 
-    // Filter by view
+    // Filter by view/status
     if (currentView === 'completed') tasks = tasks.filter(t => t.status === "Completed");
     if (currentView === 'incomplete') tasks = tasks.filter(t => t.status === "Not Completed");
+
+    // Filter by priority
+    if (filterPriority !== 'all') {
+      tasks = tasks.filter(t => t.priority?.toLowerCase() === filterPriority);
+    }
+
+    // Filter by time
+    if (filterTime === 'week') {
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() + 7);
+      const today = new Date();
+      tasks = tasks.filter(t => {
+        if (!t.deadline) return false;
+        const d = new Date(t.deadline);
+        return d >= today && d <= weekAgo;
+      });
+    }
 
     // Filter by search term
     if (searchTerm.trim()) {
@@ -142,7 +164,23 @@ function User(props) {
     }
 
     return tasks;
-  }, [message, currentView, searchTerm]);
+  }, [message, currentView, searchTerm, filterPriority, filterTime]);
+
+  async function fetchDashboardData() {
+    if (!email) return;
+
+    // Fetch Activities
+    const actResult = await fetchAPI(`/get-activity?email=${email}`);
+    if (actResult.ok) setActivities(actResult.data.message || []);
+
+    // Fetch Stats
+    const statsResult = await fetchAPI(`/dashboard-stats?email=${email}`);
+    if (statsResult.ok) setDashboardStats(statsResult.data);
+  }
+
+  useEffect(() => {
+    if (email) fetchDashboardData();
+  }, [email, message]); // Refresh when tasks change
 
   const stats = useMemo(() => {
     const total = message.length;
@@ -182,13 +220,13 @@ function User(props) {
             {isExpanded && <span>Reports</span>}
           </button>
           <button onClick={() => setCurrentView('calendar')} className={currentView === 'calendar' ? 'nav-item active' : 'nav-item'}>
-            <Bell size={20} />
+            <CalendarIcon size={20} />
             {isExpanded && <span>Calendar</span>}
           </button>
         </nav>
 
         <div className="sidebar-footer">
-          <button className="nav-item">
+          <button onClick={() => setCurrentView('profile')} className={currentView === 'profile' ? 'nav-item active' : 'nav-item'}>
             <Settings size={20} />
             {isExpanded && <span>Settings</span>}
           </button>
@@ -200,7 +238,7 @@ function User(props) {
                 <span className="user-role">Premium</span>
               </div>
             )}
-            <Settings size={16} className="profile-settings" onClick={handleLogout} />
+            <LogOut size={16} className="profile-settings" onClick={handleLogout} />
           </div>
         </div>
       </aside>
@@ -209,7 +247,12 @@ function User(props) {
       <main className="main-content">
         <header className="main-header">
           <div className="header-left">
-            <h1>Dashboard</h1>
+            <h1>{
+              currentView === 'reports' ? 'Analytics' :
+                currentView === 'projects' ? 'My Projects' :
+                  currentView === 'profile' ? 'My Profile' :
+                    currentView === 'calendar' ? 'Calendar' : 'Dashboard'
+            }</h1>
             <p className="greeting">Welcome back, {name || 'User'}!</p>
           </div>
           <div className="header-right">
@@ -229,70 +272,120 @@ function User(props) {
           </div>
         </header>
 
-        {/* Stats Section */}
-        <section className="dashboard-stats-grid">
-          <div className="stat-card-modern">
-            <span className="stat-card-title">Pending Tasks</span>
-            <span className="stat-card-value">{stats.pending}</span>
-          </div>
-          <div className="stat-card-modern">
-            <span className="stat-card-title">Completed Tasks</span>
-            <span className="stat-card-value">{stats.completed}</span>
-          </div>
-          <div className="stat-card-modern">
-            <span className="stat-card-title">Overdue</span>
-            <span className="stat-card-value">3</span>
-          </div>
-        </section>
+        {(currentView === 'all' || currentView === 'all-tasks' || currentView === 'completed' || currentView === 'incomplete') ? (
+          <>
+            {/* Stats Section only on main views */}
+            {(currentView === 'all' || currentView === 'all-tasks') && (
+              <section className="dashboard-stats-grid">
+                <div className="stat-card-modern">
+                  <span className="stat-card-title">Pending Tasks</span>
+                  <span className="stat-card-value">{dashboardStats.pending}</span>
+                </div>
+                <div className="stat-card-modern">
+                  <span className="stat-card-title">Completed Tasks</span>
+                  <span className="stat-card-value">{dashboardStats.completed}</span>
+                </div>
+                <div className="stat-card-modern">
+                  <span className="stat-card-title">Overdue</span>
+                  <span className="stat-card-value">{dashboardStats.overdue}</span>
+                </div>
+              </section>
+            )}
 
-        {/* Task Board */}
-        <div className="board-header">
-          <div className="board-title">
-            <h3>My Tasks</h3>
-          </div>
-          <div className="board-filters">
-            <span className="filter-label">Filter:</span>
-            <select value={currentView} onChange={(e) => setCurrentView(e.target.value)} className="modern-select">
-              <option value="all">All Tasks</option>
-              <option value="completed">Completed</option>
-              <option value="incomplete">Incomplete</option>
-            </select>
-            <select className="modern-select">
-              <option>Due This Week</option>
-              <option>Priority: High</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="tasks-grid">
-          {loading ? (
-            <div className="loading-state">Loading your tasks...</div>
-          ) : filteredTasks.length === 0 ? (
-            <div className="empty-state-modern">
-              <Plus size={48} />
-              <p>No tasks found. Start by creating one!</p>
+            {/* Task Board */}
+            <div className="board-header">
+              <div className="board-title">
+                <h3>{currentView === 'all' || currentView === 'all-tasks' ? 'My Tasks' :
+                  currentView === 'completed' ? 'Completed' : 'Incomplete'}</h3>
+              </div>
+              <div className="board-filters">
+                <span className="filter-label">Filter:</span>
+                <select value={currentView} onChange={(e) => setCurrentView(e.target.value)} className="modern-select">
+                  <option value="all">Dashboard</option>
+                  <option value="all-tasks">All Tasks</option>
+                  <option value="completed">Completed</option>
+                  <option value="incomplete">Incomplete</option>
+                </select>
+                <select value={filterPriority} onChange={(e) => setFilterPriority(e.target.value)} className="modern-select">
+                  <option value="all">All Priority</option>
+                  <option value="high">High Priority</option>
+                  <option value="medium">Medium Priority</option>
+                  <option value="low">Low Priority</option>
+                </select>
+                <select value={filterTime} onChange={(e) => setFilterTime(e.target.value)} className="modern-select">
+                  <option value="all">All Time</option>
+                  <option value="week">Due This Week</option>
+                </select>
+              </div>
             </div>
-          ) : (
-            filteredTasks.map((task, index) => (
-              <Task
-                key={task._id || index}
-                editEvent={(edit, n, d, p, dl, dp) => {
-                  setOverStyle({ display: "block" });
-                  setShowEdit(edit);
-                  setBeforeEdit([n, d, p, dl, dp]);
-                }}
-                onRefresh={refreshTasks}
-                StatusData={updateTaskStatus}
-                TName={task.taskName}
-                detail={task.detail}
-                priority={task.priority}
-                status={task.status}
-                dependency={task.dependency}
-                deadline={task.deadline}
-              />
-            ))
-          )}
-        </div>
+
+            <div className="tasks-grid">
+              {loading ? (
+                <div className="loading-state">Loading your tasks...</div>
+              ) : filteredTasks.length === 0 ? (
+                <div className="empty-state-modern">
+                  <Plus size={48} />
+                  <p>No tasks found. Start by creating one!</p>
+                </div>
+              ) : (
+                filteredTasks.map((task, index) => (
+                  <Task
+                    key={task._id || index}
+                    editEvent={(edit, n, d, p, dl, dp) => {
+                      setOverStyle({ display: "block" });
+                      setShowEdit(edit);
+                      setBeforeEdit([n, d, p, dl, dp]);
+                    }}
+                    onRefresh={refreshTasks}
+                    StatusData={updateTaskStatus}
+                    TName={task.taskName}
+                    detail={task.detail}
+                    priority={task.priority}
+                    status={task.status}
+                    dependency={task.dependency}
+                    deadline={task.deadline}
+                  />
+                ))
+              )}
+            </div>
+          </>
+        ) : currentView === 'reports' ? (
+          <Report tasks={message} />
+        ) : currentView === 'projects' ? (
+          <Project email={email} />
+        ) : currentView === 'profile' ? (
+          <ProfilePage email={email} />
+        ) : currentView === 'calendar' ? (
+          <div className="calendar-view-container">
+            <div className="calendar-header">
+              <h3>Task Calendar</h3>
+              <p>Your schedule at a glance</p>
+            </div>
+            <div className="calendar-grid-mock">
+              {/* Simple Grid Representation */}
+              {Array.from({ length: 31 }).map((_, i) => {
+                const day = i + 1;
+                const tasksOnDay = message.filter(t => t.deadline && parseInt(t.deadline.split('-')[2]) === day);
+                return (
+                  <div key={i} className="calendar-day">
+                    <span className="day-num">{day}</span>
+                    <div className="day-tasks">
+                      {tasksOnDay.map((t, idx) => (
+                        <div key={idx} className={`mini-task-dot ${t.priority?.toLowerCase()}`} title={t.taskName}></div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="empty-view">
+            <HelpCircle size={48} />
+            <p>Help & Privacy documentation coming soon!</p>
+            <button className="support-trigger" onClick={() => setShowSupport(true)}>Contact Support</button>
+          </div>
+        )}
 
         {showForm && <AddForm email={email} GetData={GetFormData} onRefresh={refreshTasks} />}
         {showEdit && (
@@ -321,24 +414,21 @@ function User(props) {
         <div className="panel-section">
           <h3>Recent Activity</h3>
           <div className="activity-list">
-            <div className="activity-item">
-              <div className="user-avatar-small">
-                <img src={ProfileImage} alt="User" />
-              </div>
-              <div className="activity-info">
-                <p><strong>You</strong> finished the Website</p>
-                <span className="time">1 hour ago</span>
-              </div>
-            </div>
-            <div className="activity-item">
-              <div className="user-avatar-small">
-                <img src={ProfileImage} alt="User" />
-              </div>
-              <div className="activity-info">
-                <p><strong>Alex M.</strong> commented on UX</p>
-                <span className="time">2 hours ago</span>
-              </div>
-            </div>
+            {activities.length === 0 ? (
+              <p className="empty-panel-text">No recent activity</p>
+            ) : (
+              activities.map((act, i) => (
+                <div key={i} className="activity-item">
+                  <div className="user-avatar-small">
+                    <img src={ProfileImage} alt="User" />
+                  </div>
+                  <div className="activity-info">
+                    <p><strong>You</strong> {act.action.toLowerCase()}: {act.target}</p>
+                    <span className="time">{new Date(act.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 

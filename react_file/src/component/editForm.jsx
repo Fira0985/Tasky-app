@@ -1,18 +1,17 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { X, Type, AlignLeft, Calendar, Flag, Link, Loader2 } from "lucide-react";
 import "../styles/editForm.css";
+import { fetchAPI } from "../api";
 
 function EditTaskForm(props) {
     const initialName = props.name;
     const [taskName, setTaskName] = useState(props.name || "");
     const [detail, setDetail] = useState(props.detail || "");
-    const [priority, setPriority] = useState(props.priority || "");
+    const [priority, setPriority] = useState(props.priority?.toLowerCase() || "");
     const [deadline, setDeadline] = useState(props.deadline || "");
     const [dependency, setDependency] = useState(props.dependency || "");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-
-    const api_url_vercel = process.env.REACT_APP_API_URL_vercel;
 
     const closeForm = useCallback(() => {
         props.GetData(false);
@@ -41,15 +40,13 @@ function EditTaskForm(props) {
         };
 
         try {
-            const response = await fetch(api_url_vercel + "update", {
+            const result = await fetchAPI("/update", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "Failed to update task");
+            if (!result.ok) {
+                throw new Error(result.message || "Failed to update task");
             }
 
             closeForm();
@@ -138,9 +135,9 @@ function EditTaskForm(props) {
                                     disabled={loading}
                                 >
                                     <option value="" disabled>Select</option>
-                                    <option value="High">High</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="Low">Low</option>
+                                    <option value="high">High</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="low">Low</option>
                                 </select>
                             </div>
                         </div>
