@@ -34,7 +34,9 @@ export const fetchAPI = async (endpoint, options = {}) => {
     const formattedEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
     const url = `${API_BASE_URL}${formattedEndpoint}`;
 
-    const defaultHeaders = {
+    const isFormData = options.body instanceof FormData;
+
+    const defaultHeaders = isFormData ? {} : {
         "Content-Type": "application/json",
     };
 

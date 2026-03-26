@@ -45,6 +45,7 @@ function User(props) {
   const [error, setError] = useState(null);
   const email = props.email
   const [name, setName] = useState("")
+  const [avatar, setAvatar] = useState("")
   const [activities, setActivities] = useState([])
   const [dashboardStats, setDashboardStats] = useState({ pending: 0, completed: 0, overdue: 0 })
   const [filterPriority, setFilterPriority] = useState('all')
@@ -100,8 +101,9 @@ function User(props) {
         body: JSON.stringify({ email }),
       });
 
-      if (result.ok) {
-        setName(result.data.message);
+       if (result.ok) {
+        setName(result.data.name);
+        setAvatar(result.data.avatar || "");
       } else {
         console.error("Failed to fetch user info", result.message);
       }
@@ -233,8 +235,14 @@ function User(props) {
             <Settings size={20} />
             {isExpanded && <span>Settings</span>}
           </button>
-          <div className="user-profile-card">
-            <img src={ProfileImage} alt="User" />
+          <div className="user-profile-card" onClick={() => setCurrentView('profile')} style={{ cursor: 'pointer' }}>
+            <div className="sidebar-avatar-wrapper">
+                {avatar ? (
+                    <img src={`http://localhost:4000${avatar}`} alt="User" className="sidebar-avatar" />
+                ) : (
+                    <img src={ProfileImage} alt="User" />
+                )}
+            </div>
             {isExpanded && (
               <div className="user-details">
                 <span className="user-name">{name || 'User'}</span>

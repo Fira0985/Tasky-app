@@ -12,6 +12,8 @@ export default function ProfilePage({ email }) {
     // Profile Data
     const [name, setName] = useState("");
     const [serverEmail, setServerEmail] = useState(email || "");
+    const [avatar, setAvatar] = useState("");
+    const [uploading, setUploading] = useState(false);
 
     // Password Data
     const [currentPassword, setCurrentPassword] = useState("");
@@ -34,9 +36,10 @@ export default function ProfilePage({ email }) {
                 method: "POST",
                 body: JSON.stringify({ email }),
             });
-            if (result.ok) {
+             if (result.ok) {
                 setName(result.data.name || "");
                 setServerEmail(result.data.email || email);
+                setAvatar(result.data.avatar || "");
             } else {
                 showMessage(result.message || "Failed to load profile", "error");
             }
@@ -100,6 +103,42 @@ export default function ProfilePage({ email }) {
         }
     }
 
+    const handleAvatarChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Visual preview
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            // We set the temporary preview, but we'll wait for the server to confirm
+        };
+        reader.readAsDataURL(file);
+
+        // Upload to server
+        const formData = new FormData();
+        formData.append("avatar", file);
+        formData.append("email", serverEmail);
+
+        setUploading(true);
+        try {
+            const result = await fetchAPI("/update-avatar", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (result.ok) {
+                setAvatar(result.data.avatarUrl);
+                showMessage("Profile photo updated", "success");
+            } else {
+                showMessage(result.message || "Upload failed", "error");
+            }
+        } catch (error) {
+            showMessage("Network error during upload", "error");
+        } finally {
+            setUploading(false);
+        }
+    };
+
     if (loading) return (
         <div className="profile-dashboard-container loading-state">
             <Loader2 size={48} className="animate-spin" color="var(--primary-500)" />
@@ -123,10 +162,22 @@ export default function ProfilePage({ email }) {
                         <div className="profile-card premium-card">
                             <div className="profile-avatar-container">
                                 <div className="profile-avatar">
-                                    <User size={48} />
-                                    <button className="avatar-edit-btn" title="Change Avatar">
-                                        <Camera size={16} />
-                                    </button>
+                                    {avatar ? (
+                                        <img src={`http://localhost:4000${avatar}`} alt="Profile" className="avatar-img" />
+                                    ) : (
+                                        <User size={48} />
+                                    )}
+                                    <label className="avatar-edit-btn" title="Change Avatar" htmlFor="avatar-upload">
+                                        {uploading ? <Loader2 size={16} className="animate-spin" /> : <Camera size={16} />}
+                                        <input 
+                                            type="file" 
+                                            id="avatar-upload" 
+                                            hidden 
+                                            accept="image/*"
+                                            onChange={handleAvatarChange}
+                                            disabled={uploading}
+                                        />
+                                    </label>
                                 </div>
                                 <h3>{name || "User"}</h3>
                                 <p>{serverEmail}</p>

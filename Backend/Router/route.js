@@ -6,9 +6,38 @@ const Project = require("../models/project");
 const Activity = require("../models/activity");
 const bcrypt = require("bcryptjs")
 const dotenv = require("dotenv");
+const multer = require("multer");
+const path = require("path");
 const route = express.Router()
 
 dotenv.config();
+
+// Multer Configuration for Profile Photos
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/")
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9)
+        cb(null, "avatar-" + uniqueSuffix + path.extname(file.originalname))
+    }
+})
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: (req, file, cb) => {
+        const filetypes = /jpeg|jpg|png|webp/
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
+        const mimetype = filetypes.test(file.mimetype)
+
+        if (mimetype && extname) {
+            return cb(null, true)
+        } else {
+            cb(new Error("Only images (jpeg, jpg, png, webp) are allowed"))
+        }
+    }
+})
 
 // Auth Middleware
 const isAuthenticated = (req, res, next) => {
@@ -338,14 +367,14 @@ route.post('/get-name', isAuthenticated, async (req, res) => {
     const { email } = req.body;
 
     try {
-        const user = await User.findOne({ email }, { name: 1, _id: 0 });
+        const user = await User.findOne({ email }, { name: 1, avatar: 1, _id: 0 });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        return res.status(200).json({ message: user.name });
+        return res.status(200).json({ name: user.name, avatar: user.avatar });
     } catch (error) {
-        return res.status(500).json({ message: "Failed to fetch user name", error: error.message });
+        return res.status(500).json({ message: "Failed to fetch user info", error: error.message });
     }
 });
 
