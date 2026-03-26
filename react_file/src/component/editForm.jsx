@@ -4,16 +4,13 @@ import "../styles/editForm.css";
 import { fetchAPI } from "../api";
 
 function EditForm(props) {
-    const [taskName, setTaskName] = useState(props.task.taskName || "");
-    const [detail, setDetail] = useState(props.task.detail || "");
-    const [priority, setPriority] = useState(props.task.priority || "");
-    const [deadline, setDeadline] = useState(props.task.deadline || "");
-    const [dependency, setDependency] = useState(props.task.dependency || "");
+    const [taskName, setTaskName] = useState(props.name || "");
+    const [detail, setDetail] = useState(props.detail || "");
+    const [priority, setPriority] = useState(props.priority || "");
+    const [deadline, setDeadline] = useState(props.deadline || "");
+    const [dependency, setDependency] = useState(props.dependency || "");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-
-    const email = props.email;
-    const taskId = props.task.id;
 
     const closeForm = () => {
         props.GetData(false);
@@ -33,19 +30,17 @@ function EditForm(props) {
         setError("");
 
         const data = {
-            id: taskId,
-            email,
+            initialName: props.name,
             taskName,
             detail,
             priority,
             deadline,
-            dependency,
-            status: props.task.status,
+            dependency
         };
 
         try {
-            const result = await fetchAPI("edit-task", {
-                method: "PUT",
+            const result = await fetchAPI("update", {
+                method: "POST",
                 body: JSON.stringify(data)
             });
 

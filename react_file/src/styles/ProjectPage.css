@@ -194,37 +194,160 @@
 
 .status-completed { color: var(--success); }
 
-.action-buttons {
-    display: flex;
-    gap: var(--space-2);
+/* Task Selector in Modal */
+.task-selector-section {
+    margin-top: var(--space-4);
+    border: 1px solid var(--secondary-200);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background: var(--secondary-50);
 }
 
-.icon-action-btn {
-    width: 34px;
-    height: 34px;
-    border-radius: var(--radius-lg);
+.selector-header {
+    padding: var(--space-4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition-base);
+    user-select: none;
+}
+
+.selector-header:hover {
+    background: var(--secondary-100);
+}
+
+.selector-header .header-info {
     display: flex;
     align-items: center;
-    justify-content: center;
-    background: var(--secondary-50);
-    color: var(--secondary-500);
+    gap: var(--space-2);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--secondary-700);
+}
+
+.task-selection-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border-top: 1px solid var(--secondary-200);
+    background: var(--white);
+    padding: var(--space-2);
+}
+
+.task-select-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
     transition: var(--transition-fast);
 }
 
-.icon-action-btn.edit:hover { background: var(--primary-50); color: var(--primary-600); }
-.icon-action-btn.delete:hover { background: #fef2f2; color: var(--danger); }
-
-.no-projects-view {
-    text-align: center;
-    padding: var(--space-16) var(--space-8);
-    background: var(--white);
-    border-radius: var(--radius-2xl);
-    border: 2px dashed var(--secondary-200);
+.task-select-item:hover {
+    background: var(--secondary-50);
 }
 
-.empty-state-illustration {
-    font-size: 4rem;
-    margin-bottom: var(--space-4);
+.task-select-item.selected {
+    background: var(--primary-50);
+}
+
+.select-box {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--secondary-200);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-600);
+    transition: var(--transition-fast);
+}
+
+.task-select-item.selected .select-box {
+    border-color: var(--primary-600);
+    background: var(--primary-50);
+}
+
+.task-item-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-item-info .name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--secondary-900);
+}
+
+.task-item-info .status {
+    font-size: 0.75rem;
+    color: var(--secondary-400);
+}
+
+/* Project Progress Area */
+.project-progress-area {
+    margin: var(--space-5) 0;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-2);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--secondary-700);
+}
+
+.progress-info .percentage {
+    color: var(--primary-600);
+}
+
+.progress-bar-bg {
+    height: 8px;
+    background: var(--secondary-100);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
+    border-radius: var(--radius-full);
+    transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Status Pills */
+.project-status-pill {
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: var(--secondary-100);
+    color: var(--secondary-600);
+}
+
+.project-status-pill.completed { background: var(--success-50); color: var(--success-700); }
+.project-status-pill.in-progress { background: var(--primary-50); color: var(--primary-700); }
+
+/* Completed State */
+.premium-project-card.fully-completed {
+    border-color: var(--success-200);
+    background: linear-gradient(to bottom right, var(--white), var(--success-50));
+}
+
+.premium-project-card.fully-completed .project-name {
+    color: var(--success-900);
+}
+
+.premium-project-card.fully-completed .progress-bar-fill {
+    background: var(--success-500);
+}
+
+.project-actions-dropdown {
+    display: flex;
+    gap: var(--space-1);
 }
 
 @media (max-width: 640px) {
@@ -236,5 +359,9 @@
 
   .create-project-btn {
     width: 100%;
+  }
+
+  .form-row-grid {
+      grid-template-columns: 1fr;
   }
 }

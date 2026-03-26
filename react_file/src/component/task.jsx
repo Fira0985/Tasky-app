@@ -68,41 +68,26 @@ function Task(props) {
             <div className="task-body">
                 <div className="task-meta">
                     <div className="meta-item">
-                        <Clock size={14} />
-                        <span>{deadline}</span>
+                        <Clock size={16} />
+                        <span>Due: {deadline}</span>
                     </div>
                     {dependency && (
                         <div className="meta-item">
-                            <Layers size={14} />
-                            <span>{dependency}</span>
+                            <Layers size={16} />
+                            <span>Linked: {dependency}</span>
                         </div>
                     )}
                 </div>
 
                 <p className="task-detail">{detail}</p>
-
-                <div className="progress-container">
-                    <div className="progress-label">
-                        <span>Progress</span>
-                        <span>{progress}%</span>
-                    </div>
-                    <div className="progress-bar-bg">
-                        <div className="progress-bar-fill" style={{ width: `${progress}%` }}></div>
-                    </div>
-                </div>
             </div>
 
             <div className="task-footer">
-                <div className="collaborators">
-                    <img src={ProfileImage} alt="User" className="collab-avatar" />
-                    <div className="collab-avatar" style={{ background: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>+2</div>
-                </div>
-
                 <div className="task-actions">
-                    <button className="task-action-btn-modern" onClick={sendEvent}>
+                    <button className="task-action-btn-modern" onClick={sendEvent} title="Edit Task">
                         <Pencil size={16} />
                     </button>
-                    <button className="task-action-btn-modern btn-delete-modern" onClick={deleteTask}>
+                    <button className="task-action-btn-modern btn-delete-modern" onClick={deleteTask} title="Delete Task">
                         <Trash2 size={16} />
                     </button>
                 </div>

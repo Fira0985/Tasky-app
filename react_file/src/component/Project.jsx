@@ -1,35 +1,40 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Plus,
   Search,
   Calendar,
   Flag,
   Layout,
-  MoreVertical,
   Pencil,
   Trash2,
   Clock,
   CheckCircle2,
-  AlertCircle,
   X,
   AlignLeft,
   Loader2,
   FolderPlus,
-  Briefcase
+  Briefcase,
+  ListChecks,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { fetchAPI } from "../api";
 import "../styles/ProjectPage.css";
 
 const ProjectPage = ({ email }) => {
   const [projects, setProjects] = useState([]);
+  const [allTasks, setAllTasks] = useState([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
+  const [showTaskSelector, setShowTaskSelector] = useState(false);
+  
   const [formData, setFormData] = useState({
     projectName: '',
     description: '',
     priority: 'medium',
-    deadline: ''
+    deadline: '',
+    tasks: [] // Array of task IDs
   });
   const [editingProject, setEditingProject] = useState(null);
 
@@ -47,18 +52,33 @@ const ProjectPage = ({ email }) => {
     setLoading(false);
   };
 
+  const fetchTasks = async () => {
+    if (!email) return;
+    try {
+      const result = await fetchAPI(`/get-task?email=${email}`);
+      if (result.ok) {
+        setAllTasks(result.data.message || []);
+      }
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    }
+  };
+
   useEffect(() => {
     fetchProjects();
+    fetchTasks();
   }, [email]);
 
   const closeForm = useCallback(() => {
     setShowCreateForm(false);
     setEditingProject(null);
+    setShowTaskSelector(false);
     setFormData({
       projectName: '',
       description: '',
       priority: 'medium',
-      deadline: ''
+      deadline: '',
+      tasks: []
     });
   }, []);
 
@@ -75,15 +95,30 @@ const ProjectPage = ({ email }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const toggleTaskSelection = (taskId) => {
+    setFormData(prev => {
+      const currentTasks = [...prev.tasks];
+      const index = currentTasks.indexOf(taskId);
+      if (index > -1) {
+        currentTasks.splice(index, 1);
+      } else {
+        currentTasks.push(taskId);
+      }
+      return { ...prev, tasks: currentTasks };
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormLoading(true);
 
     try {
       const endpoint = editingProject ? "/update-project" : "/create-project";
-      const body = editingProject
-        ? { projectId: editingProject._id, ...formData }
-        : { email, ...formData };
+      const body = {
+          email,
+          ...formData,
+          projectId: editingProject?._id
+      };
 
       const result = await fetchAPI(endpoint, {
         method: 'POST',
@@ -92,6 +127,7 @@ const ProjectPage = ({ email }) => {
 
       if (result.ok) {
         await fetchProjects();
+        await fetchTasks(); // Refresh tasks to update project associations
         closeForm();
       }
     } catch (error) {
@@ -106,7 +142,8 @@ const ProjectPage = ({ email }) => {
       projectName: project.projectName,
       description: project.description || '',
       priority: project.priority,
-      deadline: project.deadline || ''
+      deadline: project.deadline || '',
+      tasks: project.tasks ? project.tasks.map(t => t._id) : []
     });
     setShowCreateForm(true);
   };
@@ -128,6 +165,12 @@ const ProjectPage = ({ email }) => {
     }
   };
 
+  const calculateProgress = (projectTasks) => {
+    if (!projectTasks || projectTasks.length === 0) return 0;
+    const completedCount = projectTasks.filter(t => t.status === 'Completed').length;
+    return Math.round((completedCount / projectTasks.length) * 100);
+  };
+
   const priorityBadgeClass = (p) => `priority-badge priority-${p.toLowerCase()}`;
   const statusBadgeClass = (s) => `status-badge status-${s.toLowerCase().replace(' ', '-')}`;
 
@@ -136,8 +179,8 @@ const ProjectPage = ({ email }) => {
       <div className="project-container">
         <div className="project-header">
           <div className="header-title-area">
-            <h2 className="project-title">My Projects</h2>
-            <p className="project-subtitle">Manage and track your long-term goals</p>
+            <h2 className="project-title">Project Workspace</h2>
+            <p className="project-subtitle">Organize your tasks into high-level goals</p>
           </div>
           <button
             className="premium-btn-primary create-project-btn"
@@ -194,7 +237,7 @@ const ProjectPage = ({ email }) => {
                       placeholder="What is this project about?"
                       value={formData.description}
                       onChange={handleInputChange}
-                      rows="3"
+                      rows="2"
                     />
                   </div>
                 </div>
@@ -234,16 +277,51 @@ const ProjectPage = ({ email }) => {
                   </div>
                 </div>
 
+                {/* Task Selector */}
+                <div className="task-selector-section">
+                  <div className="selector-header" onClick={() => setShowTaskSelector(!showTaskSelector)}>
+                    <div className="header-info">
+                      <ListChecks size={18} />
+                      <span>Linked Tasks ({formData.tasks.length})</span>
+                    </div>
+                    {showTaskSelector ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                  </div>
+                  
+                  {showTaskSelector && (
+                    <div className="task-selection-list animate-slide-down">
+                      {allTasks.length === 0 ? (
+                        <p className="empty-tasks-txt">No tasks found. Create tasks first to link them.</p>
+                      ) : (
+                        allTasks.map(task => (
+                          <div 
+                            key={task._id} 
+                            className={`task-select-item ${formData.tasks.includes(task._id) ? 'selected' : ''}`}
+                            onClick={() => toggleTaskSelection(task._id)}
+                          >
+                            <div className="select-box">
+                                {formData.tasks.includes(task._id) && <CheckCircle2 size={14} />}
+                            </div>
+                            <div className="task-item-info">
+                                <span className="name">{task.taskName}</span>
+                                <span className="status">{task.status}</span>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
+
                 <button type="submit" className="premium-btn-primary project-theme" disabled={formLoading}>
                   {formLoading ? (
                     <>
                       <Loader2 size={18} className="animate-spin" />
-                      <span>Saving...</span>
+                      <span>Saving Changes...</span>
                     </>
                   ) : (
                     <>
                       <Briefcase size={18} />
-                      <span>{editingProject ? 'Update Project' : 'Create Project'}</span>
+                      <span>{editingProject ? 'Save Project Changes' : 'Launch Project'}</span>
                     </>
                   )}
                 </button>
@@ -256,69 +334,75 @@ const ProjectPage = ({ email }) => {
           {loading && projects.length === 0 ? (
             Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="project-card skeleton-card">
-                <div className="skeleton-line" style={{ height: '100px', margin: '1.5rem' }}></div>
+                <div className="skeleton-line" style={{ height: '200px', margin: '1rem' }}></div>
               </div>
             ))
           ) : projects.length === 0 ? (
             <div className="no-projects-view" style={{ gridColumn: '1/-1' }}>
               <div className="empty-state-illustration">📁</div>
-              <h3>No projects found</h3>
-              <p>Create your first project to start organizing your work better.</p>
+              <h3>No active projects</h3>
+              <p>Break down your major goals into trackable projects.</p>
               <button className="premium-btn-primary" onClick={() => setShowCreateForm(true)} style={{ width: 'auto', marginTop: '1.5rem' }}>
-                <Plus size={18} /> Create Project
+                <Plus size={18} /> New Project
               </button>
             </div>
           ) : (
-            projects.map((project) => (
-              <div key={project._id} className={`premium-project-card ${project.status === 'Completed' ? 'completed' : ''}`}>
-                <div className="project-card-highlight"></div>
-                <div className="project-card-header">
-                  <div className="header-main">
-                    <h3 className="project-name">{project.projectName}</h3>
-                  </div>
-                  <div className="project-badges">
-                    <span className={priorityBadgeClass(project.priority)}>
-                      {project.priority}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="project-card-body">
-                  {project.description && (
-                    <p className="project-description">{project.description}</p>
-                  )}
-
-                  <div className="project-details-grid">
-                    {project.deadline && (
-                      <div className="detail-pill">
-                        <Clock size={12} />
-                        <span>Ends: {new Date(project.deadline).toLocaleDateString()}</span>
-                      </div>
-                    )}
-                    <div className="detail-pill">
-                      <CheckCircle2 size={12} />
-                      <span>Tasks: <strong>{project.tasks?.length || 0}</strong></span>
+            projects.map((project) => {
+              const progress = calculateProgress(project.tasks);
+              return (
+                <div key={project._id} className={`premium-project-card ${progress === 100 ? 'fully-completed' : ''}`}>
+                  <div className="project-card-header">
+                    <div className="header-main">
+                      <h3 className="project-name">{project.projectName}</h3>
+                      <span className={priorityBadgeClass(project.priority)}>{project.priority}</span>
+                    </div>
+                    <div className="project-actions-dropdown">
+                        <button className="icon-action-btn edit" onClick={() => handleEdit(project)} title="Edit">
+                           <Pencil size={15} />
+                        </button>
+                        <button className="icon-action-btn delete" onClick={() => handleDelete(project._id)} title="Delete">
+                           <Trash2 size={15} />
+                        </button>
                     </div>
                   </div>
-                </div>
 
-                <div className="project-card-footer">
-                   <div className="status-indicator">
-                      <span className={statusBadgeClass(project.status)}>
+                  <div className="project-card-body">
+                    {project.description && (
+                      <p className="project-description">{project.description}</p>
+                    )}
+
+                    <div className="project-progress-area">
+                        <div className="progress-info">
+                            <span>Project Completion</span>
+                            <span className="percentage">{progress}%</span>
+                        </div>
+                        <div className="progress-bar-bg">
+                            <div className="progress-bar-fill" style={{ width: `${progress}%` }}></div>
+                        </div>
+                    </div>
+
+                    <div className="project-details-grid">
+                      {project.deadline && (
+                        <div className="detail-pill">
+                          <Clock size={12} />
+                          <span>Deadline: {new Date(project.deadline).toLocaleDateString()}</span>
+                        </div>
+                      )}
+                      <div className="detail-pill">
+                        <ListChecks size={12} />
+                        <span>{project.tasks?.length || 0} Linked Tasks</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="project-card-footer">
+                     <div className={`project-status-pill ${project.status.toLowerCase().replace(' ', '-')}`}>
                         {project.status}
-                      </span>
-                   </div>
-                  <div className="action-buttons">
-                    <button className="icon-action-btn edit" onClick={() => handleEdit(project)} title="Edit">
-                      <Pencil size={16} />
-                    </button>
-                    <button className="icon-action-btn delete" onClick={() => handleDelete(project._id)} title="Delete">
-                      <Trash2 size={16} />
-                    </button>
+                     </div>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>

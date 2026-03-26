@@ -351,7 +351,7 @@ route.post('/get-name', isAuthenticated, async (req, res) => {
 
 // Project routes
 route.post('/create-project', isAuthenticated, async (req, res) => {
-    const { email, projectName, description, priority, deadline } = req.body;
+    const { email, projectName, description, priority, deadline, tasks } = req.body;
 
     try {
         const projectExist = await Project.findOne({ projectName, email });
@@ -366,10 +366,20 @@ route.post('/create-project', isAuthenticated, async (req, res) => {
             description,
             priority,
             deadline,
-            status: 'Not Started'
+            status: 'Not Started',
+            tasks: tasks || []
         });
 
         await newProject.save();
+
+        // If tasks were provided, update each task to reference this project
+        if (tasks && tasks.length > 0) {
+            await Task.updateMany(
+                { _id: { $in: tasks } },
+                { $set: { project: newProject._id } }
+            );
+        }
+
         return res.status(201).json({ message: 'Project created successfully', project: newProject });
     } catch (error) {
         return res.status(500).json({ message: 'Failed to create project', error: error.message });
@@ -391,65 +401,15 @@ route.get('/get-projects', isAuthenticated, async (req, res) => {
     }
 });
 
-route.post('/add-task-to-project', isAuthenticated, async (req, res) => {
-    const { projectId, taskName } = req.body;
-
-    try {
-        const project = await Project.findById(projectId);
-        if (!project) {
-            return res.status(404).json({ message: "Project not found" });
-        }
-
-        const task = await Task.findOne({ taskName });
-        if (!task) {
-            return res.status(404).json({ message: "Task not found" });
-        }
-
-        // Remove task from any existing project
-        await Project.updateMany(
-            { tasks: task._id },
-            { $pull: { tasks: task._id } }
-        );
-
-        // Add task to the new project
-        project.tasks.push(task._id);
-        task.project = projectId;
-
-        await project.save();
-        await task.save();
-
-        return res.status(200).json({ message: "Task added to project successfully" });
-    } catch (error) {
-        return res.status(500).json({ message: "Failed to add task to project", error: error.message });
-    }
-});
-
-route.delete('/delete-project', isAuthenticated, async (req, res) => {
-    const { projectId } = req.body;
-
-    try {
-        const project = await Project.findById(projectId);
-        if (!project) {
-            return res.status(404).json({ message: "Project not found" });
-        }
-
-        // Remove project reference from all tasks in this project
-        await Task.updateMany(
-            { project: projectId },
-            { $unset: { project: 1 } }
-        );
-
-        await Project.findByIdAndDelete(projectId);
-        return res.status(200).json({ message: "Project deleted successfully" });
-    } catch (error) {
-        return res.status(500).json({ message: "Failed to delete project", error: error.message });
-    }
-});
-
 route.post('/update-project', isAuthenticated, async (req, res) => {
-    const { projectId, projectName, description, priority, deadline, status } = req.body;
+    const { projectId, projectName, description, priority, deadline, status, tasks } = req.body;
 
     try {
+        const oldProject = await Project.findById(projectId);
+        if (!oldProject) {
+            return res.status(404).json({ message: "Project not found" });
+        }
+
         const project = await Project.findByIdAndUpdate(
             projectId,
             {
@@ -459,14 +419,29 @@ route.post('/update-project', isAuthenticated, async (req, res) => {
                     priority,
                     deadline,
                     status,
+                    tasks: tasks || [],
                     updatedAt: Date.now()
                 }
             },
             { new: true }
         );
 
-        if (!project) {
-            return res.status(404).json({ message: "Project not found" });
+        // SYNC TASK REFERENCES
+        // 1. Remove project reference from tasks that are NO LONGER in the project
+        const removedTasks = oldProject.tasks.filter(id => !tasks.includes(id.toString()));
+        if (removedTasks.length > 0) {
+            await Task.updateMany(
+                { _id: { $in: removedTasks } },
+                { $unset: { project: 1 } }
+            );
+        }
+
+        // 2. Add project reference to NEWLY added tasks
+        if (tasks && tasks.length > 0) {
+            await Task.updateMany(
+                { _id: { $in: tasks } },
+                { $set: { project: projectId } }
+            );
         }
 
         return res.status(200).json({ message: "Project updated successfully", project });
