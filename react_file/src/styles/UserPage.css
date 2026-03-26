@@ -382,3 +382,125 @@
     font-size: 1.125rem;
     color: var(--secondary-400);
 }
+
+/* Mobile Responsiveness */
+.mobile-menu-trigger {
+    display: none;
+    padding: var(--space-2);
+    margin-right: var(--space-4);
+    color: var(--secondary-900);
+}
+
+.mobile-close-btn {
+    display: none;
+}
+
+@media (max-width: 1024px) {
+    .right-panel {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+
+    .sidebar-modern {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        bottom: 0;
+        z-index: 2000;
+        width: 280px !important;
+        height: 100vh;
+        border-radius: 0;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .sidebar-modern.mobile-open {
+        left: 0;
+    }
+
+    .sidebar-overlay-mobile {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(4px);
+        z-index: 1999;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .mobile-menu-trigger {
+        display: block;
+    }
+
+    .mobile-close-btn {
+        display: block;
+        color: white;
+        opacity: 0.6;
+    }
+
+    .main-content {
+        border-radius: 0;
+        margin: 0;
+        padding: var(--space-4);
+    }
+
+    .main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-4);
+    }
+
+    .header-right {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .search-box-modern {
+        width: 100%;
+    }
+
+    .add-task-btn-modern {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .dashboard-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .board-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-4);
+    }
+
+    .board-filters {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .modern-select {
+        flex: 1;
+        min-width: 140px;
+    }
+
+    .main-header h1 {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .tasks-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card-value {
+        font-size: 2rem;
+    }
+}

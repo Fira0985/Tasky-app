@@ -292,3 +292,55 @@
     background: #e2e8f0;
     border-radius: 10px;
 }
+
+/* Calendar Mobile Responsiveness */
+@media (max-width: 1024px) {
+    .calendar-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .calendar-side-panel {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #e2e8f0;
+    }
+}
+
+@media (max-width: 768px) {
+    .calendar-main {
+        padding: 16px;
+    }
+
+    .current-month-info h2 {
+        font-size: 1.25rem;
+    }
+
+    .calendar-grid {
+        gap: 4px;
+    }
+
+    .calendar-day-cell {
+        padding: 8px;
+        min-height: 60px;
+        border-radius: 8px;
+    }
+
+    .day-number {
+        font-size: 0.9rem;
+    }
+
+    .weekday {
+        font-size: 0.7rem;
+        letter-spacing: 0;
+    }
+
+    .day-indicators {
+        gap: 2px;
+    }
+
+    .task-dot {
+        width: 6px;
+        height: 6px;
+    }
+}

@@ -32,6 +32,11 @@
     --danger: #ef4444;
     --danger-light: #fee2e2;
 
+    /* Theme Accents */
+    --accent-teal: #14b8a6;
+    --accent-blue: #3b82f6;
+    --accent-purple: #8b5cf6;
+
     /* Base Colors for guaranteed contrast */
     --pure-white: #ffffff;
     --pure-black: #000000;
@@ -318,4 +323,99 @@ select {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--secondary-400);
+}
+
+/* Global Mobile Responsiveness */
+@media (max-width: 768px) {
+    .modern-form-container {
+        padding: var(--space-6);
+        border-radius: var(--radius-xl);
+    }
+
+    .form-row-grid {
+        grid-template-columns: 1fr;
+    }
+
+    input, 
+    select, 
+    textarea, 
+    button {
+        font-size: 16px !important; /* Prevent iOS zoom on focus */
+    }
+}
+
+@media (max-width: 480px) {
+    .modern-form-container {
+        padding: var(--space-4);
+        border-radius: var(--radius-2xl); /* Back to rounded on mobile as requested */
+        width: 95%; /* Don't fill 100% width */
+        max-height: 90vh; /* Don't fill full height */
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto; /* Scrollable content */
+        margin: 20px auto;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-title-section {
+        margin-top: var(--space-4);
+        margin-bottom: var(--space-4);
+        flex-shrink: 0;
+    }
+
+    .close-btn {
+        top: 1rem;
+        right: 1rem;
+        background: var(--secondary-50);
+        padding: 4px;
+        border-radius: 50%;
+        z-index: 10;
+    }
+
+    form {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto; /* Allow form content to scroll */
+        padding-bottom: 80px; /* Space for sticky actions */
+    }
+
+    .form-row-grid {
+        gap: var(--space-4);
+    }
+
+    .form-actions {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        gap: var(--space-3);
+        padding: var(--space-4);
+        background: white; /* Solid background to cover scrolling content */
+        border-top: 1px solid var(--secondary-100);
+        margin-top: auto;
+        flex-shrink: 0;
+        z-index: 20;
+    }
+
+    .modern-btn-primary, 
+    .modern-btn-secondary {
+        flex: 1;
+        margin: 0 !important;
+        justify-content: center;
+    }
+
+    .modern-btn-secondary {
+        background: var(--secondary-100);
+        color: var(--secondary-700);
+        border: 1px solid var(--secondary-200);
+        padding: 0.75rem 1rem;
+        border-radius: var(--radius-xl);
+        font-weight: 600;
+        transition: var(--transition-base);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 }

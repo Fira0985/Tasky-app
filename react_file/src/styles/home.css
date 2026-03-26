@@ -36,6 +36,10 @@
     gap: 2.5rem;
 }
 
+.mobile-toggle {
+    display: none;
+}
+
 .nav-link-btn {
     font-size: 0.95rem;
     font-weight: 500;
@@ -45,6 +49,12 @@
 
 .nav-link-btn:hover {
     color: var(--primary-600);
+}
+
+.nav-auth-btns {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 }
 
 .nav-btn {
@@ -146,6 +156,7 @@
     color: var(--primary-600);
     background: linear-gradient(135deg, var(--primary-600) 0%, var(--accent-purple) 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -547,7 +558,51 @@
         display: none;
     }
 
-    /* Could add hamburger menu later */
+    .navbar .nav-links.mobile-active {
+        display: flex;
+        position: absolute;
+        top: 80px;
+        left: 0;
+        right: 0;
+        background: var(--white);
+        flex-direction: column;
+        padding: 2rem;
+        gap: 1.5rem;
+        z-index: 1099;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid var(--secondary-100);
+        animation: slideDownNav 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideDownNav {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .pc-only {
+        display: none;
+    }
+
+    .nav-auth-btns {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+    }
+
+    .mobile-toggle {
+        display: block;
+        color: var(--secondary-900);
+        background: var(--secondary-50);
+        padding: 0.5rem;
+        border-radius: var(--radius-md);
+    }
+
+    .nav-links.mobile-active .nav-btn {
+        width: 100%;
+        max-width: none;
+        text-align: center;
+        padding: 0.875rem;
+    }
     .footer-container {
         grid-template-columns: 1fr;
         text-align: center;

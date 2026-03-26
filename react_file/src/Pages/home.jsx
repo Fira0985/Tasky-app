@@ -16,7 +16,9 @@ import {
   Zap,
   Shield,
   Layout,
-  Calendar as CalendarIcon
+  Calendar as CalendarIcon,
+  Menu,
+  X
 } from "lucide-react";
 import image from "../asset/69KTbX-LogoMakr.png";
 import heroMockup from "../asset/tasky_hero_mockup.png";
@@ -31,6 +33,7 @@ function Home({ GetUserEmail }) {
   const [isRegisterOpen, setRegisterOpen] = useState(false);
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [showSupport, setShowSupport] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   function GetLoginData(data) {
     const isSuccess = data?.message === "User logged in successfully" ||
@@ -79,16 +82,22 @@ function Home({ GetUserEmail }) {
         </div>
       )}
 
-      {/* Navbar */}
       <header>
         <nav className="navbar">
           <a id="logo" href="/"><img src={image} alt="Tasky Logo" /></a>
-          <div className="nav-links">
-            <button className="nav-link-btn" onClick={() => document.getElementById('howItWorks').scrollIntoView({ behavior: 'smooth' })}>How It Works</button>
-            <button className="nav-link-btn" onClick={() => setShowSupport(true)}>Support</button>
-            <button className="nav-link-btn" onClick={() => document.getElementById('download').scrollIntoView({ behavior: 'smooth' })}>Download</button>
-            <button className="nav-btn nav-btn--login" onClick={openLogin}>Login</button>
-            <button className="nav-btn nav-btn--signup" onClick={openRegister}>Get Started</button>
+          
+          <button className="mobile-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+
+          <div className={`nav-links ${isMenuOpen ? 'mobile-active' : ''}`}>
+            <button className="nav-link-btn pc-only" onClick={() => { setIsMenuOpen(false); document.getElementById('howItWorks').scrollIntoView({ behavior: 'smooth' }); }}>How It Works</button>
+            <button className="nav-link-btn pc-only" onClick={() => { setIsMenuOpen(false); setShowSupport(true); }}>Support</button>
+            <button className="nav-link-btn pc-only" onClick={() => { setIsMenuOpen(false); document.getElementById('download').scrollIntoView({ behavior: 'smooth' }); }}>Download</button>
+            <div className="nav-auth-btns">
+              <button className="nav-btn nav-btn--login" onClick={() => { setIsMenuOpen(false); openLogin(); }}>Login</button>
+              <button className="nav-btn nav-btn--signup" onClick={() => { setIsMenuOpen(false); openRegister(); }}>Get Started</button>
+            </div>
           </div>
         </nav>
       </header>

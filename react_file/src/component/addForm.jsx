@@ -208,19 +208,24 @@ function AddForm(props) {
                         </div>
                     </div>
 
-                    <button type="submit" className="modern-btn-primary" disabled={loading}>
-                        {loading ? (
-                            <>
-                                <Loader2 size={18} className="animate-spin" />
-                                <span>Generating...</span>
-                            </>
-                        ) : (
-                            <>
-                                <PlusCircle size={18} />
-                                <span>Add Task</span>
-                            </>
-                        )}
-                    </button>
+                    <div className="form-actions">
+                        <button type="button" className="modern-btn-secondary" onClick={closeForm} disabled={loading}>
+                            Cancel
+                        </button>
+                        <button type="submit" className="modern-btn-primary" disabled={loading}>
+                            {loading ? (
+                                <>
+                                    <Loader2 size={18} className="animate-spin" />
+                                    <span>Generating...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <PlusCircle size={18} />
+                                    <span>Add Task</span>
+                                </>
+                            )}
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

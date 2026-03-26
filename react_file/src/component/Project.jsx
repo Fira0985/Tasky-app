@@ -17,7 +17,8 @@ import {
   ListChecks,
   ChevronDown,
   ChevronUp,
-  Link
+  Link,
+  Save
 } from "lucide-react";
 import { fetchAPI } from "../api";
 import "../styles/ProjectPage.css";
@@ -374,19 +375,24 @@ const ProjectPage = ({ email }) => {
                   )}
                 </div>
 
-                <button type="submit" className="modern-btn-primary project-theme" disabled={formLoading}>
-                  {formLoading ? (
-                    <>
-                      <Loader2 size={18} className="animate-spin" />
-                      <span>Saving Changes...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Briefcase size={18} />
-                      <span>{editingProject ? 'Save Project Changes' : 'Launch Project'}</span>
-                    </>
-                  )}
-                </button>
+                <div className="form-actions">
+                  <button type="button" className="modern-btn-secondary" onClick={closeForm} disabled={formLoading}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="modern-btn-primary project-theme" disabled={formLoading}>
+                    {formLoading ? (
+                      <>
+                        <Loader2 size={18} className="animate-spin" />
+                        <span>Saving...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Save size={18} />
+                        <span>{editingProject ? 'Save Changes' : 'Create Project'}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </form>
             </div>
           </div>

@@ -206,19 +206,24 @@ function EditForm(props) {
                         </div>
                     </div>
 
-                    <button type="submit" className="modern-btn-primary edit-theme" disabled={loading}>
-                        {loading ? (
-                            <>
-                                <Loader2 size={18} className="animate-spin" />
-                                <span>Updating...</span>
-                            </>
-                        ) : (
-                            <>
-                                <Save size={18} />
-                                <span>Save Changes</span>
-                            </>
-                        )}
-                    </button>
+                    <div className="form-actions">
+                        <button type="button" className="modern-btn-secondary" onClick={closeForm} disabled={loading}>
+                            Cancel
+                        </button>
+                        <button type="submit" className="modern-btn-primary edit-theme" disabled={loading}>
+                            {loading ? (
+                                <>
+                                    <Loader2 size={18} className="animate-spin" />
+                                    <span>Updating...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Save size={18} />
+                                    <span>Save Changes</span>
+                                </>
+                            )}
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

@@ -350,20 +350,49 @@
     gap: var(--space-1);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .project-header {
     flex-direction: column;
     gap: 1.5rem;
     align-items: flex-start;
   }
 
+  .header-title-area h2 {
+      font-size: 1.75rem;
+  }
+
+  .projects-grid {
+      grid-template-columns: 1fr;
+  }
+
   .create-project-btn {
     width: 100%;
+    justify-content: center;
   }
 
   .form-row-grid {
       grid-template-columns: 1fr;
   }
+
+  .modern-project-card {
+      padding: var(--space-4);
+  }
+}
+
+@media (max-width: 480px) {
+    .project-tasks-list {
+        gap: var(--space-1);
+    }
+
+    .project-task-item {
+        padding: var(--space-2);
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .task-status-tag {
+        margin-top: var(--space-2);
+    }
 }
 
 /* Expansion Styles */

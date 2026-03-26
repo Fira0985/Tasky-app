@@ -139,3 +139,31 @@
     background: #fee2e2;
     color: #ef4444;
 }
+
+/* Task Card Mobile Responsiveness */
+@media (max-width: 768px) {
+    .task-card {
+        padding: var(--space-4);
+        border-radius: var(--radius-xl);
+    }
+
+    .task-title {
+        font-size: 1.1rem;
+    }
+
+    .task-meta {
+        flex-wrap: wrap;
+        gap: var(--space-2);
+    }
+}
+
+@media (max-width: 480px) {
+    .task-header {
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .priority-badge {
+        align-self: flex-start;
+    }
+}

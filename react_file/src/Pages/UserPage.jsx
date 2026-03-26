@@ -12,7 +12,9 @@ import {
   Bell,
   Calendar as CalendarIcon,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Menu,
+  X
 } from "lucide-react";
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +39,7 @@ function User(props) {
   const [showForm, setShowForm] = useState(false)
   const [showEdit, setShowEdit] = useState(false)
   const [showSupport, setShowSupport] = useState(false)
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const [beforeEdit, setBeforeEdit] = useState([])
 
   const [currentView, setCurrentView] = useState('all')
@@ -224,43 +227,47 @@ function User(props) {
       <div id="overlay" style={overlayStyle}></div>
 
       {/* Modern Sidebar */}
-      <aside className={`sidebar-modern ${isExpanded ? 'expanded' : 'collapsed'}`}>
+      <aside className={`sidebar-modern ${isExpanded ? 'expanded' : 'collapsed'} ${mobileSidebarOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
           <div className="logo-box">
             <CheckCircle className="logo-icon" size={28} />
-            {isExpanded && <span className="logo-text">Tasky</span>}
+            {(isExpanded || mobileSidebarOpen) && <span className="logo-text">Tasky</span>}
           </div>
+          {/* Mobile Close Button */}
+          <button className="mobile-close-btn" onClick={() => setMobileSidebarOpen(false)}>
+            <X size={24} />
+          </button>
         </div>
 
         <nav className="sidebar-nav">
-          <button onClick={() => setCurrentView('all')} className={currentView === 'all' ? 'nav-item active' : 'nav-item'}>
+          <button onClick={() => { setCurrentView('all'); setMobileSidebarOpen(false); }} className={currentView === 'all' ? 'nav-item active' : 'nav-item'}>
             <ListChecks size={20} />
-            {isExpanded && <span>Dashboard</span>}
+            {(isExpanded || mobileSidebarOpen) && <span>Dashboard</span>}
           </button>
-          <button onClick={() => setCurrentView('all-tasks')} className={currentView === 'all-tasks' ? 'nav-item active' : 'nav-item'}>
+          <button onClick={() => { setCurrentView('all-tasks'); setMobileSidebarOpen(false); }} className={currentView === 'all-tasks' ? 'nav-item active' : 'nav-item'}>
             <Folder size={20} />
-            {isExpanded && <span>All Tasks</span>}
+            {(isExpanded || mobileSidebarOpen) && <span>All Tasks</span>}
           </button>
-          <button onClick={() => setCurrentView('projects')} className={currentView === 'projects' ? 'nav-item active' : 'nav-item'}>
+          <button onClick={() => { setCurrentView('projects'); setMobileSidebarOpen(false); }} className={currentView === 'projects' ? 'nav-item active' : 'nav-item'}>
             <Folder size={20} />
-            {isExpanded && <span>Projects</span>}
+            {(isExpanded || mobileSidebarOpen) && <span>Projects</span>}
           </button>
-          <button onClick={() => setCurrentView('reports')} className={currentView === 'reports' ? 'nav-item active' : 'nav-item'}>
+          <button onClick={() => { setCurrentView('reports'); setMobileSidebarOpen(false); }} className={currentView === 'reports' ? 'nav-item active' : 'nav-item'}>
             <FileText size={20} />
-            {isExpanded && <span>Reports</span>}
+            {(isExpanded || mobileSidebarOpen) && <span>Reports</span>}
           </button>
-          <button onClick={() => setCurrentView('calendar')} className={currentView === 'calendar' ? 'nav-item active' : 'nav-item'}>
+          <button onClick={() => { setCurrentView('calendar'); setMobileSidebarOpen(false); }} className={currentView === 'calendar' ? 'nav-item active' : 'nav-item'}>
             <CalendarIcon size={20} />
-            {isExpanded && <span>Calendar</span>}
+            {(isExpanded || mobileSidebarOpen) && <span>Calendar</span>}
           </button>
         </nav>
 
         <div className="sidebar-footer">
-          <button onClick={() => setCurrentView('profile')} className={currentView === 'profile' ? 'nav-item active' : 'nav-item'}>
+          <button onClick={() => { setCurrentView('profile'); setMobileSidebarOpen(false); }} className={currentView === 'profile' ? 'nav-item active' : 'nav-item'}>
             <Settings size={20} />
-            {isExpanded && <span>Settings</span>}
+            {(isExpanded || mobileSidebarOpen) && <span>Settings</span>}
           </button>
-          <div className="user-profile-card" onClick={() => setCurrentView('profile')} style={{ cursor: 'pointer' }}>
+          <div className="user-profile-card" onClick={() => { setCurrentView('profile'); setMobileSidebarOpen(false); }} style={{ cursor: 'pointer' }}>
             <div className="sidebar-avatar-wrapper">
                 {avatar ? (
                     <img src={`${API_BASE_URL}${avatar}`} alt="User" className="sidebar-avatar" />
@@ -268,7 +275,7 @@ function User(props) {
                     <img src={ProfileImage} alt="User" />
                 )}
             </div>
-            {isExpanded && (
+            {(isExpanded || mobileSidebarOpen) && (
               <div className="user-details">
                 <span className="user-name">{name || 'User'}</span>
                 <span className="user-role">Free Workspace</span>
@@ -279,9 +286,15 @@ function User(props) {
         </div>
       </aside>
 
+      {/* Mobile Sidebar Overlay */}
+      {mobileSidebarOpen && <div className="sidebar-overlay-mobile" onClick={() => setMobileSidebarOpen(false)}></div>}
+
       {/* Main Content Area */}
       <main className="main-content">
         <header className="main-header">
+          <button className="mobile-menu-trigger" onClick={() => setMobileSidebarOpen(true)}>
+            <Menu size={24} />
+          </button>
           <div className="header-left">
             <h1>{
               currentView === 'reports' ? 'Analytics' :
