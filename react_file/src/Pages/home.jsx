@@ -15,7 +15,8 @@ import {
   Download,
   Zap,
   Shield,
-  Layout
+  Layout,
+  Calendar as CalendarIcon
 } from "lucide-react";
 import image from "../asset/69KTbX-LogoMakr.png";
 import heroMockup from "../asset/tasky_hero_mockup.png";
@@ -100,15 +101,15 @@ function Home({ GetUserEmail }) {
               <span className="badge">v1.2 is here – Faster tasks than ever</span>
             </div>
             <h1 className="animate-slide-up" style={{ animationDelay: '100ms' }}>
-              Master your day with <span>Tasky</span>
+              Your Personal <span>Productivity</span> Sanctuary
             </h1>
             <p className="animate-slide-up" style={{ animationDelay: '200ms' }}>
-              The all-in-one task management platform built for modern teams.
-              Organize, track, and complete your projects with precision and speed.
+              The premium individual workspace designed to help you conquer your goals. 
+              Organize projects, track deadlines with our interactive calendar, and personalize your experience.
             </p>
             <div className="hero-actions animate-slide-up" style={{ animationDelay: '300ms' }}>
               <button className="primary-btn" onClick={openRegister}>
-                Get Started for Free <ArrowRight size={18} />
+                Start Your Journey <ArrowRight size={18} />
               </button>
               <button className="secondary-btn" onClick={() => document.getElementById('howItWorks').scrollIntoView({ behavior: 'smooth' })}>
                 View Demo
@@ -134,23 +135,23 @@ function Home({ GetUserEmail }) {
           {[
             {
               icon: <UserPlus />,
-              title: "Create Account",
-              desc: "Quick sign up to unlock powerful features tailored for your productivity needs."
+              title: "Personal Setup",
+              desc: "Create your workspace and personalize your profile with a custom avatar for a unique experience."
             },
             {
               icon: <PlusCircle />,
-              title: "Add Tasks",
-              desc: "Define task names, set priorities, and establish deadlines with our intuitive editor."
+              title: "Smart Tasks",
+              desc: "Quickly define tasks, set priorities, and assign deadlines to keep your day structured."
             },
             {
-              icon: <Layers />,
-              title: "Stay Organized",
-              desc: "Group tasks into projects and monitor progress through clear visual dashboards."
+              icon: <Layout />,
+              title: "Project Focus",
+              desc: "Group related tasks into dedicated projects to maintain a clean and organized workspace."
             },
             {
-              icon: <Users />,
-              title: "Collaborate",
-              desc: "Invite members and assign roles to achieve your goals faster with your team."
+              icon: <CalendarIcon />,
+              title: "Visual Timeline",
+              desc: "Navigate your schedule with our fully interactive calendar and never miss a deadline again."
             }
           ].map((step, i) => (
             <div key={i} className="step animate-slide-up" style={{ animationDelay: `${(i + 1) * 100}ms` }}>

@@ -75,9 +75,9 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: var(--font-sans);
-    background-color: var(--gray-50);
-    color: var(--gray-800);
+    font-family: var(--font-main, sans-serif);
+    background-color: var(--secondary-50, #f8fafc);
+    color: var(--secondary-900, #0f172a);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
