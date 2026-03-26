@@ -283,12 +283,12 @@ route.post('/get-name', isAuthenticated, async (req, res) => {
 
 // Project routes
 route.post('/create-project', isAuthenticated, async (req, res) => {
-    const { email, projectName, description, priority, deadline, tasks } = req.body;
+    const { email, projectName, description, priority, deadline, dependency, tasks } = req.body;
     try {
         const projectExist = await Project.findOne({ projectName, email });
         if (projectExist) return res.status(400).json({ message: "Project with this name already exists" });
 
-        const newProject = new Project({ email, projectName, description, priority, deadline, status: 'Not Started', tasks: tasks || [] });
+        const newProject = new Project({ email, projectName, description, priority, deadline, dependency, status: 'Not Started', tasks: tasks || [] });
         await newProject.save();
 
         if (tasks && tasks.length > 0) {
@@ -304,7 +304,7 @@ route.get('/get-projects', isAuthenticated, async (req, res) => {
     const { email } = req.query;
     if (!email) return res.status(400).json({ message: "Email not found" });
     try {
-        const projects = await Project.find({ email }).populate('tasks');
+        const projects = await Project.find({ email }).populate('tasks').lean();
         return res.status(200).json({ message: projects });
     } catch (error) {
         return res.status(500).json({ message: "Failed to fetch projects", error: error.message });
@@ -312,12 +312,12 @@ route.get('/get-projects', isAuthenticated, async (req, res) => {
 });
 
 route.post('/update-project', isAuthenticated, async (req, res) => {
-    const { projectId, projectName, description, priority, deadline, status, tasks } = req.body;
+    const { projectId, projectName, description, priority, deadline, dependency, status, tasks } = req.body;
     try {
         const oldProject = await Project.findById(projectId);
         if (!oldProject) return res.status(404).json({ message: "Project not found" });
 
-        const project = await Project.findByIdAndUpdate(projectId, { $set: { projectName, description, priority, deadline, status, tasks: tasks || [], updatedAt: Date.now() } }, { new: true });
+        const project = await Project.findByIdAndUpdate(projectId, { $set: { projectName, description, priority, deadline, dependency, status, tasks: tasks || [], updatedAt: Date.now() } }, { new: true });
         const removedTasks = oldProject.tasks.filter(id => !tasks.includes(id.toString()));
         if (removedTasks.length > 0) {
             await Task.updateMany({ _id: { $in: removedTasks } }, { $unset: { project: 1 } });

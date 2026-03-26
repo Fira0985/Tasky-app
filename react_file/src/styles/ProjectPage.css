@@ -1,4 +1,4 @@
-/* ProjectPage.css - Premium Project Management Styling */
+/* ProjectPage.css - Modern Project Management Styling */
 
 .project-overlay {
   padding: var(--space-4) 0;
@@ -76,7 +76,7 @@
     box-shadow: 0 8px 16px -4px rgba(99, 102, 241, 0.2);
 }
 
-.premium-btn-primary.project-theme {
+.modern-btn-primary.project-theme {
     background: var(--primary-600);
     margin-top: var(--space-4);
 }
@@ -88,8 +88,8 @@
   gap: var(--space-6);
 }
 
-/* Premium Project Card */
-.premium-project-card {
+/* Modern Project Card */
+.modern-project-card {
   background: var(--white);
   border-radius: var(--radius-2xl);
   border: 1px solid var(--secondary-200);
@@ -102,7 +102,7 @@
   box-shadow: var(--shadow-sm);
 }
 
-.premium-project-card:hover {
+.modern-project-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-xl);
   border-color: var(--primary-300);
@@ -119,7 +119,7 @@
     transition: var(--transition-base);
 }
 
-.premium-project-card:hover .project-card-highlight {
+.modern-project-card:hover .project-card-highlight {
     opacity: 1;
 }
 
@@ -332,16 +332,16 @@
 .project-status-pill.in-progress { background: var(--primary-50); color: var(--primary-700); }
 
 /* Completed State */
-.premium-project-card.fully-completed {
+.modern-project-card.fully-completed {
     border-color: var(--success-200);
     background: linear-gradient(to bottom right, var(--white), var(--success-50));
 }
 
-.premium-project-card.fully-completed .project-name {
+.modern-project-card.fully-completed .project-name {
     color: var(--success-900);
 }
 
-.premium-project-card.fully-completed .progress-bar-fill {
+.modern-project-card.fully-completed .progress-bar-fill {
     background: var(--success-500);
 }
 
@@ -364,4 +364,117 @@
   .form-row-grid {
       grid-template-columns: 1fr;
   }
-}
+}
+
+/* Expansion Styles */
+.modern-project-card {
+  cursor: pointer;
+}
+
+.modern-project-card.is-expanded {
+    grid-column: 1 / -1; /* Take full width if possible or just more space */
+    border-color: var(--primary-400);
+}
+
+.expansion-indicator {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--secondary-50);
+    color: var(--secondary-400);
+    transition: var(--transition-base);
+}
+
+.modern-project-card:hover .expansion-indicator {
+    background: var(--primary-50);
+    color: var(--primary-600);
+}
+
+.project-expanded-content {
+    margin-top: var(--space-6);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--secondary-100);
+}
+
+.expanded-tasks-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--secondary-900);
+    margin-bottom: var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.project-tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.project-task-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--secondary-50);
+    border-radius: var(--radius-xl);
+    border: 1px solid transparent;
+    transition: var(--transition-base);
+}
+
+.project-task-item:hover {
+    background: var(--white);
+    border-color: var(--secondary-200);
+    transform: translateX(4px);
+    box-shadow: var(--shadow-sm);
+}
+
+.task-status-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.completed-icon { color: var(--success); }
+.pending-icon { color: var(--primary-400); }
+
+.task-main-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.task-main-info .task-name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--secondary-800);
+}
+
+.task-main-info .task-deadline {
+    font-size: 0.75rem;
+    color: var(--secondary-500);
+}
+
+.task-status-tag {
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-full);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.task-status-tag.completed { background: var(--success-100); color: var(--success-700); }
+.task-status-tag.not-completed { background: var(--secondary-200); color: var(--secondary-600); }
+
+.animate-slide-down {
+    animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

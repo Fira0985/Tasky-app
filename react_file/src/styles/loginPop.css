@@ -1,4 +1,4 @@
-/* loginPop.css - Premium Login Form Styling */
+/* loginPop.css - Modern Login Form Styling */
 
 .login-modal {
   max-width: 440px;
@@ -140,4 +140,4 @@
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
-}
+}

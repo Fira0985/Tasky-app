@@ -1,4 +1,4 @@
-/* SupportModal.css - Premium Support Form Styling */
+/* SupportModal.css - Modern Support Form Styling */
 
 .support-modal {
     max-width: 550px;
@@ -76,10 +76,10 @@
     color: var(--secondary-500);
 }
 
-.premium-btn-primary.support-theme {
+.modern-btn-primary.support-theme {
     background: var(--accent-blue);
 }
 
-.premium-btn-primary.support-theme:hover:not(:disabled) {
+.modern-btn-primary.support-theme:hover:not(:disabled) {
     background: #0284c7;
 }

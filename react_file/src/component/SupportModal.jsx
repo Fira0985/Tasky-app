@@ -34,7 +34,7 @@ const SupportModal = ({ onClose }) => {
     }
 
     return (
-        <div className="premium-form-container support-modal">
+        <div className="modern-form-container support-modal">
             <div className="form-header-decoration support-theme"></div>
             <button className="close-btn" onClick={onClose} title="Close">
                 <X size={20} />
@@ -60,12 +60,12 @@ const SupportModal = ({ onClose }) => {
             </div>
 
             <form onSubmit={handleSubmit} className="support-form">
-                <div className="premium-input-group">
-                    <label className="premium-label" htmlFor="subject">Subject</label>
-                    <div className="premium-input-wrapper">
+                <div className="modern-input-group">
+                    <label className="modern-label" htmlFor="subject">Subject</label>
+                    <div className="modern-input-wrapper">
                         <MessageSquare size={18} />
                         <input
-                            className="premium-input"
+                            className="modern-input"
                             id="subject"
                             type="text"
                             required
@@ -77,11 +77,11 @@ const SupportModal = ({ onClose }) => {
                     </div>
                 </div>
 
-                <div className="premium-input-group">
-                    <label className="premium-label" htmlFor="help-message">Message</label>
-                    <div className="premium-input-wrapper">
+                <div className="modern-input-group">
+                    <label className="modern-label" htmlFor="help-message">Message</label>
+                    <div className="modern-input-wrapper">
                         <textarea
-                            className="premium-input premium-textarea"
+                            className="modern-input modern-textarea"
                             id="help-message"
                             required
                             rows="4"
@@ -94,7 +94,7 @@ const SupportModal = ({ onClose }) => {
                     </div>
                 </div>
 
-                <button type="submit" className="premium-btn-primary support-theme" disabled={loading}>
+                <button type="submit" className="modern-btn-primary support-theme" disabled={loading}>
                     {loading ? (
                         <>
                             <Loader2 size={18} className="animate-spin" />

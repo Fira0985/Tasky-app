@@ -89,7 +89,7 @@ export default function Calendar({ tasks }) {
     const selectedDayTasks = selectedDay ? getTasksForDay(selectedDay) : [];
 
     return (
-        <div className="calendar-container premium-card">
+        <div className="calendar-container modern-card">
             <div className="calendar-main">
                 <div className="calendar-header-nav">
                     <div className="current-month-info">

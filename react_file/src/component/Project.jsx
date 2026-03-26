@@ -16,7 +16,8 @@ import {
   Briefcase,
   ListChecks,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Link
 } from "lucide-react";
 import { fetchAPI } from "../api";
 import "../styles/ProjectPage.css";
@@ -27,6 +28,7 @@ const ProjectPage = ({ email }) => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
+  const [tasksLoading, setTasksLoading] = useState(false);
   const [showTaskSelector, setShowTaskSelector] = useState(false);
   
   const [formData, setFormData] = useState({
@@ -34,9 +36,11 @@ const ProjectPage = ({ email }) => {
     description: '',
     priority: 'medium',
     deadline: '',
+    dependency: { id: "", type: "" },
     tasks: [] // Array of task IDs
   });
   const [editingProject, setEditingProject] = useState(null);
+  const [expandedProject, setExpandedProject] = useState(null);
 
   const fetchProjects = async () => {
     if (!email) return;
@@ -52,8 +56,9 @@ const ProjectPage = ({ email }) => {
     setLoading(false);
   };
 
-  const fetchTasks = async () => {
-    if (!email) return;
+  const lazyFetchTasks = async () => {
+    if (!email || allTasks.length > 0) return; // Only fetch once when needed
+    setTasksLoading(true);
     try {
       const result = await fetchAPI(`/get-task?email=${email}`);
       if (result.ok) {
@@ -62,12 +67,18 @@ const ProjectPage = ({ email }) => {
     } catch (error) {
       console.error('Error fetching tasks:', error);
     }
+    setTasksLoading(false);
   };
 
   useEffect(() => {
     fetchProjects();
-    fetchTasks();
   }, [email]);
+
+  useEffect(() => {
+    if (showCreateForm) {
+      lazyFetchTasks();
+    }
+  }, [showCreateForm]);
 
   const closeForm = useCallback(() => {
     setShowCreateForm(false);
@@ -127,7 +138,7 @@ const ProjectPage = ({ email }) => {
 
       if (result.ok) {
         await fetchProjects();
-        await fetchTasks(); // Refresh tasks to update project associations
+        await lazyFetchTasks(); // Refresh tasks to update project associations
         closeForm();
       }
     } catch (error) {
@@ -143,6 +154,7 @@ const ProjectPage = ({ email }) => {
       description: project.description || '',
       priority: project.priority,
       deadline: project.deadline || '',
+      dependency: project.dependency || { id: "", type: "" },
       tasks: project.tasks ? project.tasks.map(t => t._id) : []
     });
     setShowCreateForm(true);
@@ -165,14 +177,20 @@ const ProjectPage = ({ email }) => {
     }
   };
 
-  const calculateProgress = (projectTasks) => {
-    if (!projectTasks || projectTasks.length === 0) return 0;
-    const completedCount = projectTasks.filter(t => t.status === 'Completed').length;
-    return Math.round((completedCount / projectTasks.length) * 100);
+  const getProjectStatus = (tasks) => {
+    if (!tasks || tasks.length === 0) return 'Not Started';
+    const completedCount = tasks.filter(t => t.status === 'Completed').length;
+    if (completedCount === tasks.length) return 'Completed';
+    if (completedCount > 0) return 'In Progress';
+    return 'Not Started';
   };
 
-  const priorityBadgeClass = (p) => `priority-badge priority-${p.toLowerCase()}`;
-  const statusBadgeClass = (s) => `status-badge status-${s.toLowerCase().replace(' ', '-')}`;
+  const toggleExpansion = (projectId) => {
+    setExpandedProject(expandedProject === projectId ? null : projectId);
+  };
+
+  const priorityBadgeClass = (p) => `priority-badge priority-${p?.toLowerCase() || 'medium'}`;
+  const statusBadgeClass = (s) => `status-badge status-${s?.toLowerCase().replace(' ', '-') || 'not-started'}`;
 
   return (
     <div className="project-overlay animate-fade-in">
@@ -183,7 +201,7 @@ const ProjectPage = ({ email }) => {
             <p className="project-subtitle">Organize your tasks into high-level goals</p>
           </div>
           <button
-            className="premium-btn-primary create-project-btn"
+            className="modern-btn-primary create-project-btn"
             onClick={() => setShowCreateForm(true)}
           >
             <Plus size={20} />
@@ -193,7 +211,7 @@ const ProjectPage = ({ email }) => {
 
         {showCreateForm && (
           <div className="project-form-modal-backdrop" onClick={(e) => e.target === e.currentTarget && closeForm()}>
-            <div className="premium-form-container project-form-modal">
+            <div className="modern-form-container project-form-modal">
               <div className="form-header-decoration project-theme"></div>
               <button className="close-btn" onClick={closeForm} title="Close">
                 <X size={20} />
@@ -208,12 +226,12 @@ const ProjectPage = ({ email }) => {
               </div>
 
               <form onSubmit={handleSubmit}>
-                <div className="premium-input-group">
-                  <label className="premium-label" htmlFor="projectName">Project Name</label>
-                  <div className="premium-input-wrapper">
+                <div className="modern-input-group">
+                  <label className="modern-label" htmlFor="projectName">Project Name</label>
+                  <div className="modern-input-wrapper">
                     <Layout size={18} />
                     <input
-                      className="premium-input"
+                      className="modern-input"
                       type="text"
                       id="projectName"
                       name="projectName"
@@ -226,12 +244,12 @@ const ProjectPage = ({ email }) => {
                   </div>
                 </div>
 
-                <div className="premium-input-group">
-                  <label className="premium-label" htmlFor="description">Description</label>
-                  <div className="premium-input-wrapper">
+                <div className="modern-input-group">
+                  <label className="modern-label" htmlFor="description">Description</label>
+                  <div className="modern-input-wrapper">
                     <AlignLeft size={18} style={{ top: '0.85rem' }} />
                     <textarea
-                      className="premium-input premium-textarea"
+                      className="modern-input modern-textarea"
                       id="description"
                       name="description"
                       placeholder="What is this project about?"
@@ -243,12 +261,12 @@ const ProjectPage = ({ email }) => {
                 </div>
 
                 <div className="form-row-grid">
-                  <div className="premium-input-group">
-                    <label className="premium-label" htmlFor="priority">Priority</label>
-                    <div className="premium-input-wrapper">
+                  <div className="modern-input-group">
+                    <label className="modern-label" htmlFor="priority">Priority</label>
+                    <div className="modern-input-wrapper">
                       <Flag size={18} />
                       <select
-                        className="premium-input"
+                        className="modern-input"
                         id="priority"
                         name="priority"
                         value={formData.priority}
@@ -261,12 +279,12 @@ const ProjectPage = ({ email }) => {
                     </div>
                   </div>
 
-                  <div className="premium-input-group">
-                    <label className="premium-label" htmlFor="deadline">Deadline</label>
-                    <div className="premium-input-wrapper">
+                  <div className="modern-input-group">
+                    <label className="modern-label" htmlFor="deadline">Deadline</label>
+                    <div className="modern-input-wrapper">
                       <Calendar size={18} />
                       <input
-                        className="premium-input"
+                        className="modern-input"
                         type="date"
                         id="deadline"
                         name="deadline"
@@ -277,7 +295,46 @@ const ProjectPage = ({ email }) => {
                   </div>
                 </div>
 
-                {/* Task Selector */}
+                <div className="modern-input-group">
+                  <label className="modern-label" htmlFor="projectDependencies">
+                      Blocking Dependency (Optional)
+                      {editingProject && getProjectStatus(editingProject.tasks) === 'Completed' && (
+                        <span className="restriction-note" style={{ color: '#6366f1', marginLeft: '8px', fontSize: '0.85em' }}> (Locked - Project Completed)</span>
+                      )}
+                    </label>
+                    <div className="modern-input-wrapper">
+                      <Link size={18} />
+                      <select
+                        className="modern-input"
+                        id="projectDependencies"
+                        style={editingProject && getProjectStatus(editingProject.tasks) === 'Completed' ? { opacity: 0.7, cursor: 'not-allowed', backgroundColor: '#f9fafb' } : {}}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (!val) setFormData(prev => ({ ...prev, dependency: { id: "", type: "" } }));
+                          else {
+                            const [type, id] = val.split(':');
+                            setFormData(prev => ({ ...prev, dependency: { id, type } }));
+                          }
+                        }}
+                        value={formData.dependency?.id ? `${formData.dependency.type}:${formData.dependency.id}` : ""}
+                        disabled={formLoading || (editingProject && getProjectStatus(editingProject.tasks) === 'Completed')}
+                      >
+                      <option value="">No Dependency</option>
+                      {allTasks
+                        .filter(t => t.status !== 'Completed')
+                        .map(t => ({ id: t._id, name: t.taskName, type: 'Task' }))
+                        .concat(projects
+                          .filter(p => p.status !== 'Completed' && (!editingProject || p._id !== editingProject._id))
+                          .map(p => ({ id: p._id, name: p.projectName, type: 'Project' }))
+                        )
+                        .map((dep, idx) => (
+                          <option key={idx} value={`${dep.type}:${dep.id}`}>
+                            [{dep.type}] {dep.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                </div>
                 <div className="task-selector-section">
                   <div className="selector-header" onClick={() => setShowTaskSelector(!showTaskSelector)}>
                     <div className="header-info">
@@ -289,7 +346,12 @@ const ProjectPage = ({ email }) => {
                   
                   {showTaskSelector && (
                     <div className="task-selection-list animate-slide-down">
-                      {allTasks.length === 0 ? (
+                      {tasksLoading ? (
+                        <div className="mini-loader">
+                          <Loader2 size={16} className="animate-spin" />
+                          <span>Loading tasks...</span>
+                        </div>
+                      ) : allTasks.length === 0 ? (
                         <p className="empty-tasks-txt">No tasks found. Create tasks first to link them.</p>
                       ) : (
                         allTasks.map(task => (
@@ -312,7 +374,7 @@ const ProjectPage = ({ email }) => {
                   )}
                 </div>
 
-                <button type="submit" className="premium-btn-primary project-theme" disabled={formLoading}>
+                <button type="submit" className="modern-btn-primary project-theme" disabled={formLoading}>
                   {formLoading ? (
                     <>
                       <Loader2 size={18} className="animate-spin" />
@@ -342,25 +404,30 @@ const ProjectPage = ({ email }) => {
               <div className="empty-state-illustration">📁</div>
               <h3>No active projects</h3>
               <p>Break down your major goals into trackable projects.</p>
-              <button className="premium-btn-primary" onClick={() => setShowCreateForm(true)} style={{ width: 'auto', marginTop: '1.5rem' }}>
+              <button className="modern-btn-primary" onClick={() => setShowCreateForm(true)} style={{ width: 'auto', marginTop: '1.5rem' }}>
                 <Plus size={18} /> New Project
               </button>
             </div>
           ) : (
             projects.map((project) => {
-              const progress = calculateProgress(project.tasks);
+              const progress = Math.round((project.tasks?.filter(t => t.status === 'Completed').length / (project.tasks?.length || 1)) * 100) || 0;
+              const status = getProjectStatus(project.tasks);
               return (
-                <div key={project._id} className={`premium-project-card ${progress === 100 ? 'fully-completed' : ''}`}>
+                  <div 
+                    key={project._id} 
+                    className={`modern-project-card ${progress === 100 ? 'fully-completed' : ''} ${expandedProject === project._id ? 'is-expanded' : ''}`}
+                    onClick={() => toggleExpansion(project._id)}
+                  >
                   <div className="project-card-header">
                     <div className="header-main">
                       <h3 className="project-name">{project.projectName}</h3>
                       <span className={priorityBadgeClass(project.priority)}>{project.priority}</span>
                     </div>
                     <div className="project-actions-dropdown">
-                        <button className="icon-action-btn edit" onClick={() => handleEdit(project)} title="Edit">
+                        <button className="icon-action-btn edit" onClick={(e) => { e.stopPropagation(); handleEdit(project); }} title="Edit">
                            <Pencil size={15} />
                         </button>
-                        <button className="icon-action-btn delete" onClick={() => handleDelete(project._id)} title="Delete">
+                        <button className="icon-action-btn delete" onClick={(e) => { e.stopPropagation(); handleDelete(project._id); }} title="Delete">
                            <Trash2 size={15} />
                         </button>
                     </div>
@@ -396,10 +463,38 @@ const ProjectPage = ({ email }) => {
                   </div>
 
                   <div className="project-card-footer">
-                     <div className={`project-status-pill ${project.status.toLowerCase().replace(' ', '-')}`}>
-                        {project.status}
+                      <div className={`project-status-pill ${status.toLowerCase().replace(' ', '-')}`}>
+                         {status}
+                      </div>
+                      <div className="expansion-indicator">
+                        {expandedProject === project._id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      </div>
+                   </div>
+
+                   {expandedProject === project._id && (
+                     <div className="project-expanded-content animate-slide-down" onClick={(e) => e.stopPropagation()}>
+                       <div className="expanded-divider"></div>
+                       <h4 className="expanded-tasks-title">Assigned Tasks</h4>
+                       <div className="project-tasks-list">
+                         {project.tasks && project.tasks.length > 0 ? (
+                           project.tasks.map(task => (
+                             <div key={task._id} className={`project-task-item ${task.status.toLowerCase()}`}>
+                               <div className="task-status-icon">
+                                 {task.status === 'Completed' ? <CheckCircle2 size={14} className="completed-icon" /> : <Clock size={14} className="pending-icon" />}
+                               </div>
+                               <div className="task-main-info">
+                                 <span className="task-name">{task.taskName}</span>
+                                 {task.deadline && <span className="task-deadline">{task.deadline}</span>}
+                               </div>
+                               <span className={`task-status-tag ${task.status.toLowerCase()}`}>{task.status}</span>
+                             </div>
+                           ))
+                         ) : (
+                           <p className="no-tasks-text">No tasks linked to this project.</p>
+                         )}
+                       </div>
                      </div>
-                  </div>
+                   )}
                 </div>
               );
             })

@@ -24,8 +24,8 @@ const taskScheme = new mongoose.Schema(
             required: true,
         },
         dependency: {
-            type: String,
-            required: false,
+            id: { type: String, default: "" },
+            type: { type: String, enum: ['Task', 'Project', ""], default: "" }
         },
         status: {
             type: String,

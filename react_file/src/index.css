@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
 
 :root {
-    /* Premium Color Palette - Deep Indigo & Slate Theme */
+    /* Modern Color Palette - Deep Indigo & Slate Theme */
     --primary-50: #eef2ff;
     --primary-100: #e0e7ff;
     --primary-200: #c7d2fe;
@@ -164,8 +164,8 @@ select {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Premium Form Elements */
-.premium-form-container {
+/* Modern Form Elements */
+.modern-form-container {
     background: var(--white);
     border-radius: var(--radius-2xl);
     box-shadow: var(--shadow-xl);
@@ -175,12 +175,12 @@ select {
     overflow: hidden;
 }
 
-.premium-input-group {
+.modern-input-group {
     position: relative;
     margin-bottom: var(--space-6);
 }
 
-.premium-label {
+.modern-label {
     display: block;
     font-size: 0.875rem;
     font-weight: 600;
@@ -189,13 +189,13 @@ select {
     transition: var(--transition-fast);
 }
 
-.premium-input-wrapper {
+.modern-input-wrapper {
     position: relative;
     display: flex;
     align-items: center;
 }
 
-.premium-input-wrapper svg {
+.modern-input-wrapper svg {
     position: absolute;
     left: var(--space-4);
     color: var(--secondary-400);
@@ -203,7 +203,7 @@ select {
     pointer-events: none;
 }
 
-.premium-input {
+.modern-input {
     width: 100%;
     padding: 0.75rem 1rem 0.75rem 2.75rem;
     background: var(--form-input-bg);
@@ -213,18 +213,18 @@ select {
     transition: var(--transition-base);
 }
 
-.premium-input:focus {
+.modern-input:focus {
     outline: none;
     border-color: var(--form-input-focus-border);
     box-shadow: var(--form-input-focus-glow);
     background: var(--white);
 }
 
-.premium-input:focus + svg {
+.modern-input:focus + svg {
     color: var(--primary-500);
 }
 
-.premium-btn-primary {
+.modern-btn-primary {
     width: 100%;
     padding: 0.875rem var(--space-6);
     background: var(--primary-600);
@@ -239,17 +239,17 @@ select {
     gap: var(--space-2);
 }
 
-.premium-btn-primary:hover:not(:disabled) {
+.modern-btn-primary:hover:not(:disabled) {
     background: var(--primary-700);
     transform: translateY(-1px);
     box-shadow: var(--shadow-lg);
 }
 
-.premium-btn-primary:active:not(:disabled) {
+.modern-btn-primary:active:not(:disabled) {
     transform: translateY(0);
 }
 
-.premium-btn-primary:disabled {
+.modern-btn-primary:disabled {
     opacity: 0.7;
     cursor: not-allowed;
 }

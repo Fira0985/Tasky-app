@@ -8,7 +8,8 @@ function AddForm(props) {
     const [detail, setDetail] = useState("");
     const [priority, setPriority] = useState("");
     const [deadline, setDeadline] = useState("");
-    const [dependency, setDependency] = useState("");
+    const [dependency, setDependency] = useState({ id: "", type: "" });
+    const [availableDependencies, setAvailableDependencies] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -19,12 +20,34 @@ function AddForm(props) {
     }, [props.GetData]);
 
     useEffect(() => {
+        const fetchDeps = async () => {
+            const [tasksRes, projectsRes] = await Promise.all([
+                fetchAPI(`/get-task?email=${email}`),
+                fetchAPI(`/get-projects?email=${email}`)
+            ]);
+            
+            let deps = [];
+            if (tasksRes.ok) {
+                deps = [...deps, ...tasksRes.data.message
+                    .filter(t => t.status !== "Completed")
+                    .map(t => ({ id: t._id, name: t.taskName, type: 'Task' }))];
+            }
+            if (projectsRes.ok) {
+                // For projects, we might need to check their calculated status or the 'status' field from DB
+                deps = [...deps, ...projectsRes.data.message
+                    .filter(p => p.status !== "Completed")
+                    .map(p => ({ id: p._id, name: p.projectName, type: 'Project' }))];
+            }
+            setAvailableDependencies(deps);
+        };
+        fetchDeps();
+
         const handleKeyDown = (e) => {
             if (e.key === 'Escape') closeForm();
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [closeForm]);
+    }, [email, closeForm]);
 
     const taskFormRequest = useCallback(async (event) => {
         event.preventDefault();
@@ -63,7 +86,7 @@ function AddForm(props) {
 
     return (
         <div className="modal-backdrop" onClick={(e) => e.target === e.currentTarget && closeForm()}>
-            <div className="premium-form-container add-task-modal">
+            <div className="modern-form-container add-task-modal">
                 <div className="form-header-decoration"></div>
                 <button className="close-btn" onClick={closeForm} title="Close">
                     <X size={20} />
@@ -84,12 +107,12 @@ function AddForm(props) {
                 )}
 
                 <form onSubmit={taskFormRequest}>
-                    <div className="premium-input-group">
-                        <label className="premium-label" htmlFor="taskName">Task Name</label>
-                        <div className="premium-input-wrapper">
+                    <div className="modern-input-group">
+                        <label className="modern-label" htmlFor="taskName">Task Name</label>
+                        <div className="modern-input-wrapper">
                             <Type size={18} />
                             <input
-                                className="premium-input"
+                                className="modern-input"
                                 type="text"
                                 id="taskName"
                                 placeholder="What needs to be done?"
@@ -102,12 +125,12 @@ function AddForm(props) {
                         </div>
                     </div>
 
-                    <div className="premium-input-group">
-                        <label className="premium-label" htmlFor="taskDetail">Description</label>
-                        <div className="premium-input-wrapper">
+                    <div className="modern-input-group">
+                        <label className="modern-label" htmlFor="taskDetail">Description</label>
+                        <div className="modern-input-wrapper">
                             <AlignLeft size={18} style={{ top: '0.85rem' }} />
                             <textarea
-                                className="premium-input premium-textarea"
+                                className="modern-input modern-textarea"
                                 id="taskDetail"
                                 rows="3"
                                 placeholder="Add more details..."
@@ -120,12 +143,12 @@ function AddForm(props) {
                     </div>
 
                     <div className="form-row-grid">
-                        <div className="premium-input-group">
-                            <label className="premium-label" htmlFor="taskDeadline">Deadline</label>
-                            <div className="premium-input-wrapper">
+                        <div className="modern-input-group">
+                            <label className="modern-label" htmlFor="taskDeadline">Deadline</label>
+                            <div className="modern-input-wrapper">
                                 <Calendar size={18} />
                                 <input
-                                    className="premium-input"
+                                    className="modern-input"
                                     type="date"
                                     id="taskDeadline"
                                     required
@@ -136,12 +159,12 @@ function AddForm(props) {
                             </div>
                         </div>
 
-                        <div className="premium-input-group">
-                            <label className="premium-label" htmlFor="taskPriority">Priority</label>
-                            <div className="premium-input-wrapper">
+                        <div className="modern-input-group">
+                            <label className="modern-label" htmlFor="taskPriority">Priority</label>
+                            <div className="modern-input-wrapper">
                                 <Flag size={18} />
                                 <select
-                                    className="premium-input"
+                                    className="modern-input"
                                     id="taskPriority"
                                     required
                                     onChange={(e) => setPriority(e.target.value)}
@@ -157,23 +180,35 @@ function AddForm(props) {
                         </div>
                     </div>
 
-                    <div className="premium-input-group">
-                        <label className="premium-label" htmlFor="taskDependencies">Project / Dependency</label>
-                        <div className="premium-input-wrapper">
+                    <div className="modern-input-group">
+                        <label className="modern-label" htmlFor="taskDependencies">Blocking Dependency (Optional)</label>
+                        <div className="modern-input-wrapper">
                             <Link size={18} />
-                            <input
-                                className="premium-input"
-                                type="text"
+                            <select
+                                className="modern-input"
                                 id="taskDependencies"
-                                placeholder="Link to project or other task"
-                                onChange={(e) => setDependency(e.target.value)}
-                                value={dependency}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (!val) setDependency({ id: "", type: "" });
+                                    else {
+                                        const [type, id] = val.split(':');
+                                        setDependency({ id, type });
+                                    }
+                                }}
+                                value={dependency.id ? `${dependency.type}:${dependency.id}` : ""}
                                 disabled={loading}
-                            />
+                            >
+                                <option value="">No Dependency</option>
+                                {availableDependencies.map((dep, idx) => (
+                                    <option key={idx} value={`${dep.type}:${dep.id}`}>
+                                        [{dep.type}] {dep.name}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                     </div>
 
-                    <button type="submit" className="premium-btn-primary" disabled={loading}>
+                    <button type="submit" className="modern-btn-primary" disabled={loading}>
                         {loading ? (
                             <>
                                 <Loader2 size={18} className="animate-spin" />

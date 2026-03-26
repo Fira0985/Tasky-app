@@ -161,7 +161,7 @@ export default function ProfilePage({ email, onUpdate }) {
                 <div className="profile-layout-grid">
                     {/* Left Sidebar - Profile Overview */}
                     <aside className="profile-sidebar">
-                        <div className="profile-card premium-card">
+                        <div className="profile-card modern-card">
                             <div className="profile-avatar-container">
                                 <div className="profile-avatar">
                                     {avatar ? (
@@ -206,7 +206,7 @@ export default function ProfilePage({ email, onUpdate }) {
 
                     {/* Main Content Area */}
                     <main className="profile-main-content">
-                        <form onSubmit={handleSave} className="premium-form-container profile-form">
+                        <form onSubmit={handleSave} className="modern-form-container profile-form">
                             <div className="form-header-decoration profile-theme"></div>
                             
                             {message && (
@@ -223,12 +223,12 @@ export default function ProfilePage({ email, onUpdate }) {
                                     <h2>Personal Information</h2>
                                 </div>
                                 <div className="form-row-grid">
-                                    <div className="premium-input-group">
-                                        <label className="premium-label" htmlFor="profile-name">Full Name</label>
-                                        <div className="premium-input-wrapper">
+                                    <div className="modern-input-group">
+                                        <label className="modern-label" htmlFor="profile-name">Full Name</label>
+                                        <div className="modern-input-wrapper">
                                             <User size={18} />
                                             <input
-                                                className="premium-input"
+                                                className="modern-input"
                                                 id="profile-name"
                                                 type="text"
                                                 value={name}
@@ -238,12 +238,12 @@ export default function ProfilePage({ email, onUpdate }) {
                                             />
                                         </div>
                                     </div>
-                                    <div className="premium-input-group">
-                                        <label className="premium-label" htmlFor="profile-email">Email Address</label>
-                                        <div className="premium-input-wrapper">
+                                    <div className="modern-input-group">
+                                        <label className="modern-label" htmlFor="profile-email">Email Address</label>
+                                        <div className="modern-input-wrapper">
                                             <Mail size={18} />
                                             <input
-                                                className="premium-input readonly-input"
+                                                className="modern-input readonly-input"
                                                 id="profile-email"
                                                 type="email"
                                                 value={serverEmail}
@@ -271,12 +271,12 @@ export default function ProfilePage({ email, onUpdate }) {
                                     </div>
                                 ) : (
                                     <div className="password-form-active animate-scale-in">
-                                        <div className="premium-input-group">
-                                            <label className="premium-label" htmlFor="current-pw">Current Password</label>
-                                            <div className="premium-input-wrapper">
+                                        <div className="modern-input-group">
+                                            <label className="modern-label" htmlFor="current-pw">Current Password</label>
+                                            <div className="modern-input-wrapper">
                                                 <Lock size={18} />
                                                 <input
-                                                    className="premium-input"
+                                                    className="modern-input"
                                                     id="current-pw"
                                                     type="password"
                                                     value={currentPassword}
@@ -286,12 +286,12 @@ export default function ProfilePage({ email, onUpdate }) {
                                             </div>
                                         </div>
                                         <div className="form-row-grid">
-                                            <div className="premium-input-group">
-                                                <label className="premium-label" htmlFor="new-pw">New Password</label>
-                                                <div className="premium-input-wrapper">
+                                            <div className="modern-input-group">
+                                                <label className="modern-label" htmlFor="new-pw">New Password</label>
+                                                <div className="modern-input-wrapper">
                                                     <Lock size={18} />
                                                     <input
-                                                        className="premium-input"
+                                                        className="modern-input"
                                                         id="new-pw"
                                                         type="password"
                                                         value={newPassword}
@@ -300,12 +300,12 @@ export default function ProfilePage({ email, onUpdate }) {
                                                     />
                                                 </div>
                                             </div>
-                                            <div className="premium-input-group">
-                                                <label className="premium-label" htmlFor="confirm-pw">Confirm New</label>
-                                                <div className="premium-input-wrapper">
+                                            <div className="modern-input-group">
+                                                <label className="modern-label" htmlFor="confirm-pw">Confirm New</label>
+                                                <div className="modern-input-wrapper">
                                                     <Lock size={18} />
                                                     <input
-                                                        className="premium-input"
+                                                        className="modern-input"
                                                         id="confirm-pw"
                                                         type="password"
                                                         value={confirmPassword}
@@ -323,7 +323,7 @@ export default function ProfilePage({ email, onUpdate }) {
                             </div>
 
                             <div className="form-footer-actions">
-                                <button type="submit" className="premium-btn-primary save-btn" disabled={saving}>
+                                <button type="submit" className="modern-btn-primary save-btn" disabled={saving}>
                                     {saving ? (
                                         <>
                                             <Loader2 size={18} className="animate-spin" />

@@ -1,4 +1,4 @@
-/* profile.css - Premium Profile Dashboard Styling */
+/* profile.css - Modern Profile Dashboard Styling */
 
 .profile-dashboard-container {
     width: 100%;
@@ -40,7 +40,7 @@
     top: 2rem;
 }
 
-.profile-card.premium-card {
+.profile-card.modern-card {
     background: var(--white);
     border-radius: var(--radius-2xl);
     border: 1px solid var(--secondary-200);
@@ -173,7 +173,7 @@
 }
 
 /* Main Content Styling */
-.profile-main-content .premium-form-container {
+.profile-main-content .modern-form-container {
     padding: var(--space-8);
 }
 

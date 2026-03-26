@@ -1,4 +1,4 @@
-/* addPop.css - Premium Task Form Styling */
+/* addPop.css - Modern Task Form Styling */
 
 .modal-backdrop {
     position: fixed;
@@ -88,7 +88,7 @@
     gap: var(--space-4);
 }
 
-.premium-textarea {
+.modern-textarea {
     resize: none;
     min-height: 100px;
 }
@@ -132,4 +132,4 @@
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
-}
+}

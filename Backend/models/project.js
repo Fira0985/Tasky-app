@@ -22,6 +22,10 @@ const projectSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
+    dependency: {
+        id: { type: String, default: "" },
+        type: { type: String, enum: ['Task', 'Project', ""], default: "" }
+    },
     status: {
         type: String,
         enum: ['Not Started', 'In Progress', 'Completed', 'On Hold'],

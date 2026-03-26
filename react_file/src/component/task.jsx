@@ -19,8 +19,25 @@ function Task(props) {
         priority,
         deadline,
         dependency,
-        StatusData
+        StatusData,
+        allTasks = [],
+        allProjects = []
     } = props;
+
+    // Resolve dependency info
+    const resolvedDep = React.useMemo(() => {
+        if (!dependency || !dependency.id) return null;
+        if (dependency.type === 'Task') {
+            const depTask = allTasks.find(t => t._id === dependency.id);
+            return depTask ? { name: depTask.taskName, status: depTask.status, type: 'Task' } : null;
+        } else if (dependency.type === 'Project') {
+            const depProj = allProjects.find(p => p._id === dependency.id);
+            return depProj ? { name: depProj.projectName, status: depProj.status, type: 'Project' } : null;
+        }
+        return null;
+    }, [dependency, allTasks, allProjects]);
+
+    const isBlocked = resolvedDep && resolvedDep.status !== "Completed";
 
     const isCompleted = status === "Completed";
     const progress = isCompleted ? 100 : 40; // Simulated progress for visual parity
@@ -44,12 +61,16 @@ function Task(props) {
     }, [TName, onRefresh]);
 
     const sendEvent = useCallback(() => {
-        editEvent(true, TName, detail, priority, deadline, dependency);
-    }, [editEvent, TName, detail, priority, deadline, dependency]);
+        editEvent(true, TName, detail, priority, deadline, dependency, status);
+    }, [editEvent, TName, detail, priority, deadline, dependency, status]);
 
     const handleStatus = useCallback(() => {
+        if (!isCompleted && isBlocked) {
+            alert(`This task is blocked by "${resolvedDep.name}". Please complete that first.`);
+            return;
+        }
         StatusData(TName, !isCompleted);
-    }, [StatusData, TName, isCompleted]);
+    }, [StatusData, TName, isCompleted, isBlocked, resolvedDep]);
 
     const priorityLower = props.priority?.toLowerCase() || 'low';
     const priorityClass = `priority-badge priority-${priorityLower}`;
@@ -71,10 +92,10 @@ function Task(props) {
                         <Clock size={16} />
                         <span>Due: {deadline}</span>
                     </div>
-                    {dependency && (
-                        <div className="meta-item">
+                    {resolvedDep && (
+                        <div className={`meta-item ${isBlocked ? 'blocked-meta' : 'cleared-meta'}`}>
                             <Layers size={16} />
-                            <span>Linked: {dependency}</span>
+                            <span>{isBlocked ? 'Blocked by: ' : 'Requires: '} {resolvedDep.name}</span>
                         </div>
                     )}
                 </div>

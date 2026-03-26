@@ -53,7 +53,7 @@ function LoginPop({ SendDataToParent, getEmail, GetMessage, onClose }) {
   };
 
   return (
-    <div id="login-box" className="premium-form-container login-modal">
+    <div id="login-box" className="modern-form-container login-modal">
       <div className="form-header-decoration login-theme"></div>
       <button className="close-btn" onClick={onClose} title="Close">
         <X size={20} />
@@ -75,12 +75,12 @@ function LoginPop({ SendDataToParent, getEmail, GetMessage, onClose }) {
       )}
 
       <form onSubmit={loginRequest}>
-        <div className="premium-input-group">
-          <label className="premium-label" htmlFor="email">Email Address</label>
-          <div className="premium-input-wrapper">
+        <div className="modern-input-group">
+          <label className="modern-label" htmlFor="email">Email Address</label>
+          <div className="modern-input-wrapper">
             <Mail size={18} />
             <input
-              className="premium-input"
+              className="modern-input"
               id="email"
               type="email"
               placeholder="name@company.com"
@@ -92,15 +92,15 @@ function LoginPop({ SendDataToParent, getEmail, GetMessage, onClose }) {
           </div>
         </div>
 
-        <div className="premium-input-group">
+        <div className="modern-input-group">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <label className="premium-label" htmlFor="password">Password</label>
+            <label className="modern-label" htmlFor="password">Password</label>
             <span className="forgot-password-link">Forgot?</span>
           </div>
-          <div className="premium-input-wrapper">
+          <div className="modern-input-wrapper">
             <Lock size={18} />
             <input
-              className="premium-input"
+              className="modern-input"
               id="password"
               type="password"
               placeholder="••••••••"
@@ -112,7 +112,7 @@ function LoginPop({ SendDataToParent, getEmail, GetMessage, onClose }) {
           </div>
         </div>
 
-        <button type="submit" className="premium-btn-primary login-theme" disabled={loading}>
+        <button type="submit" className="modern-btn-primary login-theme" disabled={loading}>
           {loading ? (
             <>
               <Loader2 size={18} className="animate-spin" />

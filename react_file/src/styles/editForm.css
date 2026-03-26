@@ -1,4 +1,4 @@
-/* editForm.css - Premium Task Form Styling */
+/* editForm.css - Modern Task Form Styling */
 
 .modal-backdrop {
     position: fixed;
@@ -88,16 +88,16 @@
     gap: var(--space-4);
 }
 
-.premium-textarea {
+.modern-textarea {
     resize: none;
     min-height: 100px;
 }
 
-.premium-btn-primary.edit-theme {
+.modern-btn-primary.edit-theme {
     background: var(--accent-teal);
 }
 
-.premium-btn-primary.edit-theme:hover:not(:disabled) {
+.modern-btn-primary.edit-theme:hover:not(:disabled) {
     background: #0d9488;
 }
 
@@ -140,4 +140,4 @@
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
-}
+}

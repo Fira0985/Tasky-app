@@ -8,7 +8,8 @@ function EditForm(props) {
     const [detail, setDetail] = useState(props.detail || "");
     const [priority, setPriority] = useState(props.priority || "");
     const [deadline, setDeadline] = useState(props.deadline || "");
-    const [dependency, setDependency] = useState(props.dependency || "");
+    const [dependency, setDependency] = useState(props.dependency || { id: "", type: "" });
+    const [availableDependencies, setAvailableDependencies] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -17,12 +18,35 @@ function EditForm(props) {
     };
 
     useEffect(() => {
+        const fetchDeps = async () => {
+            const email = localStorage.getItem('userEmail'); // Or however email is available
+            const [tasksRes, projectsRes] = await Promise.all([
+                fetchAPI(`/get-task?email=${email}`),
+                fetchAPI(`/get-projects?email=${email}`)
+            ]);
+            
+            let deps = [];
+            if (tasksRes.ok) {
+                // Filter out the current task to prevent self-dependency and completed tasks
+                deps = [...deps, ...tasksRes.data.message
+                    .filter(t => t.taskName !== props.name && t.status !== "Completed")
+                    .map(t => ({ id: t._id, name: t.taskName, type: 'Task' }))];
+            }
+            if (projectsRes.ok) {
+                deps = [...deps, ...projectsRes.data.message
+                    .filter(p => p.status !== "Completed")
+                    .map(p => ({ id: p._id, name: p.projectName, type: 'Project' }))];
+            }
+            setAvailableDependencies(deps);
+        };
+        fetchDeps();
+
         const handleKeyDown = (e) => {
             if (e.key === 'Escape') closeForm();
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, []);
+    }, [props.name]);
 
     const editFormRequest = async (event) => {
         event.preventDefault();
@@ -60,7 +84,7 @@ function EditForm(props) {
 
     return (
         <div className="modal-backdrop" onClick={(e) => e.target === e.currentTarget && closeForm()}>
-            <div className="premium-form-container edit-task-modal">
+            <div className="modern-form-container edit-task-modal">
                 <div className="form-header-decoration edit-theme"></div>
                 <button className="close-btn" onClick={closeForm} title="Close">
                     <X size={20} />
@@ -81,12 +105,12 @@ function EditForm(props) {
                 )}
 
                 <form onSubmit={editFormRequest}>
-                    <div className="premium-input-group">
-                        <label className="premium-label" htmlFor="taskName">Task Name</label>
-                        <div className="premium-input-wrapper">
+                    <div className="modern-input-group">
+                        <label className="modern-label" htmlFor="taskName">Task Name</label>
+                        <div className="modern-input-wrapper">
                             <Type size={18} />
                             <input
-                                className="premium-input"
+                                className="modern-input"
                                 type="text"
                                 id="taskName"
                                 required
@@ -97,12 +121,12 @@ function EditForm(props) {
                         </div>
                     </div>
 
-                    <div className="premium-input-group">
-                        <label className="premium-label" htmlFor="taskDetail">Description</label>
-                        <div className="premium-input-wrapper">
+                    <div className="modern-input-group">
+                        <label className="modern-label" htmlFor="taskDetail">Description</label>
+                        <div className="modern-input-wrapper">
                             <AlignLeft size={18} style={{ top: '0.85rem' }} />
                             <textarea
-                                className="premium-input premium-textarea"
+                                className="modern-input modern-textarea"
                                 id="taskDetail"
                                 rows="3"
                                 required
@@ -114,12 +138,12 @@ function EditForm(props) {
                     </div>
 
                     <div className="form-row-grid">
-                        <div className="premium-input-group">
-                            <label className="premium-label" htmlFor="taskDeadline">Deadline</label>
-                            <div className="premium-input-wrapper">
+                        <div className="modern-input-group">
+                            <label className="modern-label" htmlFor="taskDeadline">Deadline</label>
+                            <div className="modern-input-wrapper">
                                 <Calendar size={18} />
                                 <input
-                                    className="premium-input"
+                                    className="modern-input"
                                     type="date"
                                     id="taskDeadline"
                                     required
@@ -130,12 +154,12 @@ function EditForm(props) {
                             </div>
                         </div>
 
-                        <div className="premium-input-group">
-                            <label className="premium-label" htmlFor="taskPriority">Priority</label>
-                            <div className="premium-input-wrapper">
+                        <div className="modern-input-group">
+                            <label className="modern-label" htmlFor="taskPriority">Priority</label>
+                            <div className="modern-input-wrapper">
                                 <Flag size={18} />
                                 <select
-                                    className="premium-input"
+                                    className="modern-input"
                                     id="taskPriority"
                                     required
                                     onChange={(e) => setPriority(e.target.value)}
@@ -150,23 +174,39 @@ function EditForm(props) {
                         </div>
                     </div>
 
-                    <div className="premium-input-group">
-                        <label className="premium-label" htmlFor="taskDependencies">Project / Dependency</label>
-                        <div className="premium-input-wrapper">
+                    <div className="modern-input-group">
+                        <label className="modern-label" htmlFor="taskDependencies">
+                            Blocking Dependency (Optional)
+                            {props.status?.toLowerCase() === "completed" && <span className="restriction-note" style={{ color: '#6366f1', marginLeft: '8px', fontSize: '0.85em' }}> (Locked - Task Completed)</span>}
+                        </label>
+                        <div className="modern-input-wrapper">
                             <Link size={18} />
-                            <input
-                                className="premium-input"
-                                type="text"
+                            <select
+                                className="modern-input"
                                 id="taskDependencies"
-                                placeholder="Link to project or other task"
-                                onChange={(e) => setDependency(e.target.value)}
-                                value={dependency}
-                                disabled={loading}
-                            />
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (!val) setDependency({ id: "", type: "" });
+                                    else {
+                                        const [type, id] = val.split(':');
+                                        setDependency({ id, type });
+                                    }
+                                }}
+                                value={dependency?.id ? `${dependency.type}:${dependency.id}` : ""}
+                                disabled={loading || props.status?.toLowerCase() === "completed"}
+                                style={props.status?.toLowerCase() === "completed" ? { opacity: 0.7, cursor: 'not-allowed', backgroundColor: '#f9fafb' } : {}}
+                            >
+                                <option value="">No Dependency</option>
+                                {availableDependencies.map((dep, idx) => (
+                                    <option key={idx} value={`${dep.type}:${dep.id}`}>
+                                        [{dep.type}] {dep.name}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                     </div>
 
-                    <button type="submit" className="premium-btn-primary edit-theme" disabled={loading}>
+                    <button type="submit" className="modern-btn-primary edit-theme" disabled={loading}>
                         {loading ? (
                             <>
                                 <Loader2 size={18} className="animate-spin" />

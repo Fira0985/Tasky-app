@@ -1,4 +1,4 @@
-/* signUp.css - Premium Sign Up Form Styling */
+/* signUp.css - Modern Sign Up Form Styling */
 
 .signup-modal {
     max-width: 500px;
@@ -97,12 +97,12 @@
     color: #166534;
 }
 
-.premium-btn-primary.signup-theme {
+.modern-btn-primary.signup-theme {
     background: var(--accent-purple);
     margin-top: var(--space-2);
 }
 
-.premium-btn-primary.signup-theme:hover:not(:disabled) {
+.modern-btn-primary.signup-theme:hover:not(:disabled) {
     background: #7c3aed;
 }
 
@@ -151,4 +151,4 @@
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
-}
+}

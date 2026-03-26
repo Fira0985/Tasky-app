@@ -81,7 +81,7 @@ function SignUp({ onClose, GetMessage }) {
     };
 
     return (
-        <div className="premium-form-container signup-modal">
+        <div className="modern-form-container signup-modal">
             <div className="form-header-decoration signup-theme"></div>
             <button className="close-btn" onClick={onClose} title="Close">
                 <X size={20} />
@@ -103,12 +103,12 @@ function SignUp({ onClose, GetMessage }) {
             )}
 
             <form onSubmit={registerRequest} className="signup-form">
-                <div className="premium-input-group">
-                    <label className="premium-label" htmlFor="fullName">Full Name</label>
-                    <div className="premium-input-wrapper">
+                <div className="modern-input-group">
+                    <label className="modern-label" htmlFor="fullName">Full Name</label>
+                    <div className="modern-input-wrapper">
                         <User size={18} />
                         <input
-                            className="premium-input"
+                            className="modern-input"
                             id="fullName"
                             type="text"
                             placeholder="John Doe"
@@ -119,12 +119,12 @@ function SignUp({ onClose, GetMessage }) {
                     </div>
                 </div>
 
-                <div className="premium-input-group">
-                    <label className="premium-label" htmlFor="regEmail">Email Address</label>
-                    <div className="premium-input-wrapper">
+                <div className="modern-input-group">
+                    <label className="modern-label" htmlFor="regEmail">Email Address</label>
+                    <div className="modern-input-wrapper">
                         <Mail size={18} />
                         <input
-                            className="premium-input"
+                            className="modern-input"
                             id="regEmail"
                             type="email"
                             placeholder="name@company.com"
@@ -136,12 +136,12 @@ function SignUp({ onClose, GetMessage }) {
                 </div>
 
                 <div className="form-row-grid">
-                    <div className="premium-input-group">
-                        <label className="premium-label" htmlFor="regPassword">Password</label>
-                        <div className="premium-input-wrapper">
+                    <div className="modern-input-group">
+                        <label className="modern-label" htmlFor="regPassword">Password</label>
+                        <div className="modern-input-wrapper">
                             <Lock size={18} />
                             <input
-                                className="premium-input"
+                                className="modern-input"
                                 id="regPassword"
                                 type="password"
                                 placeholder="••••••••"
@@ -152,12 +152,12 @@ function SignUp({ onClose, GetMessage }) {
                         </div>
                     </div>
 
-                    <div className="premium-input-group">
-                        <label className="premium-label" htmlFor="confirmPassword">Confirm</label>
-                        <div className="premium-input-wrapper">
+                    <div className="modern-input-group">
+                        <label className="modern-label" htmlFor="confirmPassword">Confirm</label>
+                        <div className="modern-input-wrapper">
                             <ShieldCheck size={18} />
                             <input
-                                className="premium-input"
+                                className="modern-input"
                                 id="confirmPassword"
                                 type="password"
                                 placeholder="••••••••"
@@ -169,7 +169,7 @@ function SignUp({ onClose, GetMessage }) {
                     </div>
                 </div>
 
-                <button type="submit" className="premium-btn-primary signup-theme" disabled={loading}>
+                <button type="submit" className="modern-btn-primary signup-theme" disabled={loading}>
                     {loading ? (
                         <>
                             <Loader2 size={18} className="animate-spin" />

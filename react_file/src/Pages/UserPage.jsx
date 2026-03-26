@@ -51,6 +51,7 @@ function User(props) {
   const [dashboardStats, setDashboardStats] = useState({ pending: 0, completed: 0, overdue: 0 })
   const [filterPriority, setFilterPriority] = useState('all')
   const [filterTime, setFilterTime] = useState('all')
+  const [projects, setProjects] = useState([])
 
   const handleLogout = () => {
     if (props.onLogout) {
@@ -132,13 +133,21 @@ function User(props) {
     setLoading(true);
     setError(null);
 
-    const result = await fetchAPI(`/get-task?email=${email}`);
+    const [taskRes, projectRes] = await Promise.all([
+      fetchAPI(`/get-task?email=${email}`),
+      fetchAPI(`/get-projects?email=${email}`)
+    ]);
 
-    if (result.ok) {
-      setMessage(result.data.message || []);
+    if (taskRes.ok) {
+      setMessage(taskRes.data.message || []);
     } else {
-      setError(result.message || "Failed to load tasks. Please try again.");
+      setError(taskRes.message || "Failed to load tasks.");
     }
+
+    if (projectRes.ok) {
+      setProjects(projectRes.data.message || []);
+    }
+
     setLoading(false);
   }
 
@@ -262,7 +271,7 @@ function User(props) {
             {isExpanded && (
               <div className="user-details">
                 <span className="user-name">{name || 'User'}</span>
-                <span className="user-role">Premium</span>
+                <span className="user-role">Free Workspace</span>
               </div>
             )}
             <LogOut size={16} className="profile-settings" onClick={handleLogout} />
@@ -358,10 +367,10 @@ function User(props) {
                 filteredTasks.map((task, index) => (
                   <Task
                     key={task._id || index}
-                    editEvent={(edit, n, d, p, dl, dp) => {
+                    editEvent={(edit, n, d, p, dl, dp, s) => {
                       setOverStyle({ display: "block" });
                       setShowEdit(edit);
-                      setBeforeEdit([n, d, p, dl, dp]);
+                      setBeforeEdit([n, d, p, dl, dp, s]);
                     }}
                     onRefresh={refreshTasks}
                     StatusData={updateTaskStatus}
@@ -371,6 +380,8 @@ function User(props) {
                     status={task.status}
                     dependency={task.dependency}
                     deadline={task.deadline}
+                    allTasks={message}
+                    allProjects={projects}
                   />
                 ))
               )}
@@ -400,6 +411,7 @@ function User(props) {
             priority={beforeEdit[2]}
             deadline={beforeEdit[3]}
             dependency={beforeEdit[4]}
+            status={beforeEdit[5]}
             GetData={GetFormData}
             onRefresh={refreshTasks}
           />

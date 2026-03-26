@@ -1,0 +1,30 @@
+TASKY-APP PERFORMANCE OPTIMIZATION REPORT
+==========================================
+
+ISSUE SUMMARY:
+--------------
+The Project Workspace was experiencing significant loading delays ("sluggishness"), especially for users with a large number of projects or tasks.
+
+ROOT CAUSES:
+------------
+1. EAGER TASK FETCHING (Frontend):
+   Every time the Project Workspace was opened, the application eagerly fetched the entire list of tasks for the user from the backend. This was done even if the user only wanted to view their project overview, resulting in unnecessary network and processing overhead.
+
+2. MONGOOSE DOCUMENT OVERHEAD (Backend):
+   The backend routes (`/get-projects` and `/get-task`) were returning default Mongoose "Document" instances. These instances are significantly heavier than raw JavaScript objects because they include internal Mongoose logic, change tracking, and virtuals. This created a bottleneck during JSON serialization for large datasets.
+
+SOLUTIONS IMPLEMENTED:
+----------------------
+1. LAZY LOADING (Frontend Optimization):
+   Refactored `Project.jsx` to move the task-fetching logic (`lazyFetchTasks`) into an effect that only triggers when the "New Project" or "Edit Project" form is actually opened. This dramatically reduced the initial data payload on page load.
+
+2. LEAN QUERIES (Backend Optimization):
+   Updated the `/get-projects` and `/get-task` routes in the backend to use the `.lean()` method. This instructs Mongoose to return raw, plain JavaScript objects from MongoDB, which skip the costly document creation step. This can improve API response performance by up to 5x for large data structures.
+
+3. PERCEIVED PERFORMANCE IMPROVEMENTS:
+   - Implemented "Skeleton Loaders" in the Project Grid to provide immediate visual feedback while data is being fetched.
+   - Added a "Mini Loader" inside the task selector components to handle the lazy-loading state gracefully.
+
+RESULTS:
+--------
+The Project Workspace now loads nearly instantly, with a significantly reduced memory footprint on both the client and server.

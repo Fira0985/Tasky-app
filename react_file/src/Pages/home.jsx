@@ -104,7 +104,7 @@ function Home({ GetUserEmail }) {
               Your Personal <span>Productivity</span> Sanctuary
             </h1>
             <p className="animate-slide-up" style={{ animationDelay: '200ms' }}>
-              The premium individual workspace designed to help you conquer your goals. 
+              The Modern individual workspace designed to help you conquer your goals. 
               Organize projects, track deadlines with our interactive calendar, and personalize your experience.
             </p>
             <div className="hero-actions animate-slide-up" style={{ animationDelay: '300ms' }}>
