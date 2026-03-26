@@ -26,7 +26,7 @@ import Report from "../component/report";
 import Task from "../component/task";
 import ProfilePage from "../component/ProfilePage";
 import SupportModal from "../component/SupportModal";
-import { fetchAPI } from "../api";
+import { fetchAPI, API_BASE_URL } from "../api";
 
 function User(props) {
   const navigate = useNavigate();
@@ -110,6 +110,21 @@ function User(props) {
     }
     fetchUserInfo();
   }, [email]);
+
+  async function fetchUserInfo() {
+    if (!email) return;
+    const result = await fetchAPI("/get-name", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
+
+     if (result.ok) {
+      setName(result.data.name);
+      setAvatar(result.data.avatar || "");
+    } else {
+      console.error("Failed to fetch user info", result.message);
+    }
+  }
 
   async function fetchTasks() {
     if (!email) return;
@@ -238,7 +253,7 @@ function User(props) {
           <div className="user-profile-card" onClick={() => setCurrentView('profile')} style={{ cursor: 'pointer' }}>
             <div className="sidebar-avatar-wrapper">
                 {avatar ? (
-                    <img src={`http://localhost:4000${avatar}`} alt="User" className="sidebar-avatar" />
+                    <img src={`${API_BASE_URL}${avatar}`} alt="User" className="sidebar-avatar" />
                 ) : (
                     <img src={ProfileImage} alt="User" />
                 )}
@@ -365,7 +380,7 @@ function User(props) {
         ) : currentView === 'projects' ? (
           <Project email={email} />
         ) : currentView === 'profile' ? (
-          <ProfilePage email={email} />
+          <ProfilePage email={email} onUpdate={fetchUserInfo} />
         ) : currentView === 'calendar' ? (
           <div className="calendar-view-container">
             <div className="calendar-header">
@@ -431,7 +446,11 @@ function User(props) {
               activities.map((act, i) => (
                 <div key={i} className="activity-item">
                   <div className="user-avatar-small">
-                    <img src={ProfileImage} alt="User" />
+                    {avatar ? (
+                      <img src={`${API_BASE_URL}${avatar}`} alt="User" className="sidebar-avatar" />
+                    ) : (
+                      <img src={ProfileImage} alt="User" />
+                    )}
                   </div>
                   <div className="activity-info">
                     <p><strong>You</strong> {act.action.toLowerCase()}: {act.target}</p>

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { fetchAPI } from "../api";
+import { fetchAPI, API_BASE_URL } from "../api";
 import { User, Mail, Lock, Save, X, Shield, Settings, Loader2, Camera, ChevronRight } from "lucide-react";
 import "../styles/profile.css";
 
-export default function ProfilePage({ email }) {
+export default function ProfilePage({ email, onUpdate }) {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState("");
@@ -87,8 +87,9 @@ export default function ProfilePage({ email }) {
                 body: JSON.stringify(payload),
             });
 
-            if (result.ok) {
+             if (result.ok) {
                 showMessage("Profile updated successfully", "success");
+                if (onUpdate) onUpdate();
                 setCurrentPassword("");
                 setNewPassword("");
                 setConfirmPassword("");
@@ -126,9 +127,10 @@ export default function ProfilePage({ email }) {
                 body: formData,
             });
 
-            if (result.ok) {
+             if (result.ok) {
                 setAvatar(result.data.avatarUrl);
                 showMessage("Profile photo updated", "success");
+                if (onUpdate) onUpdate();
             } else {
                 showMessage(result.message || "Upload failed", "error");
             }
@@ -163,7 +165,7 @@ export default function ProfilePage({ email }) {
                             <div className="profile-avatar-container">
                                 <div className="profile-avatar">
                                     {avatar ? (
-                                        <img src={`http://localhost:4000${avatar}`} alt="Profile" className="avatar-img" />
+                                        <img src={`${API_BASE_URL}${avatar}`} alt="Profile" className="avatar-img" />
                                     ) : (
                                         <User size={48} />
                                     )}
