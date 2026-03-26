@@ -25,6 +25,7 @@ import Project from "../component/Project";
 import Report from "../component/report";
 import Task from "../component/task";
 import ProfilePage from "../component/ProfilePage";
+import Calendar from "../component/Calendar";
 import SupportModal from "../component/SupportModal";
 import { fetchAPI, API_BASE_URL } from "../api";
 
@@ -382,29 +383,7 @@ function User(props) {
         ) : currentView === 'profile' ? (
           <ProfilePage email={email} onUpdate={fetchUserInfo} />
         ) : currentView === 'calendar' ? (
-          <div className="calendar-view-container">
-            <div className="calendar-header">
-              <h3>Task Calendar</h3>
-              <p>Your schedule at a glance</p>
-            </div>
-            <div className="calendar-grid-mock">
-              {/* Simple Grid Representation */}
-              {Array.from({ length: 31 }).map((_, i) => {
-                const day = i + 1;
-                const tasksOnDay = message.filter(t => t.deadline && parseInt(t.deadline.split('-')[2]) === day);
-                return (
-                  <div key={i} className="calendar-day">
-                    <span className="day-num">{day}</span>
-                    <div className="day-tasks">
-                      {tasksOnDay.map((t, idx) => (
-                        <div key={idx} className={`mini-task-dot ${t.priority?.toLowerCase()}`} title={t.taskName}></div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          <Calendar tasks={message} />
         ) : (
           <div className="empty-view">
             <HelpCircle size={48} />
@@ -443,7 +422,7 @@ function User(props) {
             {activities.length === 0 ? (
               <p className="empty-panel-text">No recent activity</p>
             ) : (
-              activities.map((act, i) => (
+              activities.slice(0, 6).map((act, i) => (
                 <div key={i} className="activity-item">
                   <div className="user-avatar-small">
                     {avatar ? (

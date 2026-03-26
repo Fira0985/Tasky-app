@@ -156,7 +156,7 @@
 
 .project-description {
   font-size: 0.9375rem;
-  color: var(--secondary-500);
+  color: #475569; /* Explicit dark slate gray */
   line-height: 1.5;
   margin-bottom: var(--space-4);
 }
