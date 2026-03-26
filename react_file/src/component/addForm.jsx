@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { X, Type, AlignLeft, Calendar, Flag, Link, Loader2 } from "lucide-react";
+import { X, Type, AlignLeft, Calendar, Flag, Link, Loader2, PlusCircle } from "lucide-react";
 import '../styles/addPop.css';
 import { fetchAPI } from "../api";
 
@@ -63,25 +63,33 @@ function AddForm(props) {
 
     return (
         <div className="modal-backdrop" onClick={(e) => e.target === e.currentTarget && closeForm()}>
-            <div className="form-container">
+            <div className="premium-form-container add-task-modal">
+                <div className="form-header-decoration"></div>
                 <button className="close-btn" onClick={closeForm} title="Close">
                     <X size={20} />
                 </button>
 
-                <h2>Add New Task</h2>
+                <div className="form-title-section">
+                    <div className="icon-badge">
+                        <PlusCircle size={24} />
+                    </div>
+                    <h2>Add New Task</h2>
+                    <p>Organize your day with a new objective</p>
+                </div>
 
                 {error && (
-                    <div className="error-message">
+                    <div className="error-message animate-shake">
                         <p>{error}</p>
                     </div>
                 )}
 
                 <form onSubmit={taskFormRequest}>
-                    <div className="form-group">
-                        <label htmlFor="taskName">Task Name</label>
-                        <div className="input-wrapper">
+                    <div className="premium-input-group">
+                        <label className="premium-label" htmlFor="taskName">Task Name</label>
+                        <div className="premium-input-wrapper">
                             <Type size={18} />
                             <input
+                                className="premium-input"
                                 type="text"
                                 id="taskName"
                                 placeholder="What needs to be done?"
@@ -94,11 +102,12 @@ function AddForm(props) {
                         </div>
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="taskDetail">Description</label>
-                        <div className="input-wrapper">
+                    <div className="premium-input-group">
+                        <label className="premium-label" htmlFor="taskDetail">Description</label>
+                        <div className="premium-input-wrapper">
                             <AlignLeft size={18} style={{ top: '0.85rem' }} />
                             <textarea
+                                className="premium-input premium-textarea"
                                 id="taskDetail"
                                 rows="3"
                                 placeholder="Add more details..."
@@ -110,12 +119,13 @@ function AddForm(props) {
                         </div>
                     </div>
 
-                    <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                        <div className="form-group">
-                            <label htmlFor="taskDeadline">Deadline</label>
-                            <div className="input-wrapper">
+                    <div className="form-row-grid">
+                        <div className="premium-input-group">
+                            <label className="premium-label" htmlFor="taskDeadline">Deadline</label>
+                            <div className="premium-input-wrapper">
                                 <Calendar size={18} />
                                 <input
+                                    className="premium-input"
                                     type="date"
                                     id="taskDeadline"
                                     required
@@ -126,11 +136,12 @@ function AddForm(props) {
                             </div>
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="taskPriority">Priority</label>
-                            <div className="input-wrapper">
+                        <div className="premium-input-group">
+                            <label className="premium-label" htmlFor="taskPriority">Priority</label>
+                            <div className="premium-input-wrapper">
                                 <Flag size={18} />
                                 <select
+                                    className="premium-input"
                                     id="taskPriority"
                                     required
                                     onChange={(e) => setPriority(e.target.value)}
@@ -146,11 +157,12 @@ function AddForm(props) {
                         </div>
                     </div>
 
-                    <div className="form-group">
-                        <label htmlFor="taskDependencies">Project / Dependency</label>
-                        <div className="input-wrapper">
+                    <div className="premium-input-group">
+                        <label className="premium-label" htmlFor="taskDependencies">Project / Dependency</label>
+                        <div className="premium-input-wrapper">
                             <Link size={18} />
                             <input
+                                className="premium-input"
                                 type="text"
                                 id="taskDependencies"
                                 placeholder="Link to project or other task"
@@ -161,13 +173,18 @@ function AddForm(props) {
                         </div>
                     </div>
 
-                    <button type="submit" className="submit-btn" disabled={loading}>
+                    <button type="submit" className="premium-btn-primary" disabled={loading}>
                         {loading ? (
-                            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                            <>
                                 <Loader2 size={18} className="animate-spin" />
-                                Adding...
-                            </span>
-                        ) : "Add Task"}
+                                <span>Generating...</span>
+                            </>
+                        ) : (
+                            <>
+                                <PlusCircle size={18} />
+                                <span>Add Task</span>
+                            </>
+                        )}
                     </button>
                 </form>
             </div>

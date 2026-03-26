@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchAPI } from "../api";
-import { User, Mail, Lock, Save, X } from "lucide-react";
+import { User, Mail, Lock, Save, X, Shield, Settings, Loader2, Camera, ChevronRight } from "lucide-react";
 import "../styles/profile.css";
 
 export default function ProfilePage({ email }) {
@@ -100,100 +100,193 @@ export default function ProfilePage({ email }) {
         }
     }
 
-    if (loading) return <div className="profile-dashboard-container loading"><div className="spinner"></div><p>Loading Profile...</p></div>;
+    if (loading) return (
+        <div className="profile-dashboard-container loading-state">
+            <Loader2 size={48} className="animate-spin" color="var(--primary-500)" />
+            <p>Loading personal workspace...</p>
+        </div>
+    );
 
     return (
-        <div className="profile-dashboard-container">
+        <div className="profile-dashboard-container animate-fade-in">
             <div className="profile-content-wrapper">
                 <div className="profile-header-section">
-                    <h1>User Profile</h1>
-                    <p>Manage your account settings and preferences.</p>
+                    <div className="header-text">
+                        <h1>Account Settings</h1>
+                        <p>Customize your profile and security preferences</p>
+                    </div>
                 </div>
 
-                <form onSubmit={handleSave} className="profile-form">
-                    <div className="form-section">
-                        <h2>Personal Information</h2>
-                        <div className="form-grid">
-                            <div className="form-group">
-                                <label><User size={16} /> Full Name</label>
-                                <input
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder="Your Name"
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label><Mail size={16} /> Email Address</label>
-                                <input
-                                    type="email"
-                                    value={serverEmail}
-                                    readOnly
-                                    className="readonly-input"
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="form-section">
-                        <div className="section-header">
-                            <h2>Security</h2>
-                            <button
-                                type="button"
-                                className="toggle-btn"
-                                onClick={() => setShowPasswordSection(!showPasswordSection)}
-                            >
-                                {showPasswordSection ? "Cancel Change" : "Change Password"}
-                            </button>
-                        </div>
-
-                        {showPasswordSection && (
-                            <div className="password-grid">
-                                <div className="form-group">
-                                    <label><Lock size={16} /> Current Password</label>
-                                    <input
-                                        type="password"
-                                        value={currentPassword}
-                                        onChange={(e) => setCurrentPassword(e.target.value)}
-                                        placeholder="Current Password"
-                                    />
+                <div className="profile-layout-grid">
+                    {/* Left Sidebar - Profile Overview */}
+                    <aside className="profile-sidebar">
+                        <div className="profile-card premium-card">
+                            <div className="profile-avatar-container">
+                                <div className="profile-avatar">
+                                    <User size={48} />
+                                    <button className="avatar-edit-btn" title="Change Avatar">
+                                        <Camera size={16} />
+                                    </button>
                                 </div>
-                                <div className="form-group">
-                                    <label><Lock size={16} /> New Password</label>
-                                    <input
-                                        type="password"
-                                        value={newPassword}
-                                        onChange={(e) => setNewPassword(e.target.value)}
-                                        placeholder="New Password"
-                                    />
+                                <h3>{name || "User"}</h3>
+                                <p>{serverEmail}</p>
+                            </div>
+                            <nav className="profile-nav">
+                                <button className="nav-item active">
+                                    <User size={18} />
+                                    <span>Personal Info</span>
+                                    <ChevronRight size={16} className="chevron" />
+                                </button>
+                                <button className="nav-item">
+                                    <Shield size={18} />
+                                    <span>Security</span>
+                                    <ChevronRight size={16} className="chevron" />
+                                </button>
+                                <button className="nav-item">
+                                    <Settings size={18} />
+                                    <span>Preferences</span>
+                                    <ChevronRight size={16} className="chevron" />
+                                </button>
+                            </nav>
+                        </div>
+                    </aside>
+
+                    {/* Main Content Area */}
+                    <main className="profile-main-content">
+                        <form onSubmit={handleSave} className="premium-form-container profile-form">
+                            <div className="form-header-decoration profile-theme"></div>
+                            
+                            {message && (
+                                <div className={`message-banner ${messageType} animate-scale-in`}>
+                                    {messageType === 'success' ? <Save size={16} /> : <X size={16} />}
+                                    <span>{message}</span>
+                                    <button type="button" className="close-msg" onClick={() => setMessage("")}><X size={14} /></button>
                                 </div>
-                                <div className="form-group">
-                                    <label><Lock size={16} /> Confirm Password</label>
-                                    <input
-                                        type="password"
-                                        value={confirmPassword}
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        placeholder="Confirm New Password"
-                                    />
+                            )}
+
+                            <div className="profile-form-section">
+                                <div className="section-title">
+                                    <User size={20} />
+                                    <h2>Personal Information</h2>
+                                </div>
+                                <div className="form-row-grid">
+                                    <div className="premium-input-group">
+                                        <label className="premium-label" htmlFor="profile-name">Full Name</label>
+                                        <div className="premium-input-wrapper">
+                                            <User size={18} />
+                                            <input
+                                                className="premium-input"
+                                                id="profile-name"
+                                                type="text"
+                                                value={name}
+                                                onChange={(e) => setName(e.target.value)}
+                                                placeholder="Your Name"
+                                                disabled={saving}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="premium-input-group">
+                                        <label className="premium-label" htmlFor="profile-email">Email Address</label>
+                                        <div className="premium-input-wrapper">
+                                            <Mail size={18} />
+                                            <input
+                                                className="premium-input readonly-input"
+                                                id="profile-email"
+                                                type="email"
+                                                value={serverEmail}
+                                                readOnly
+                                                disabled
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        )}
-                    </div>
 
-                    {message && (
-                        <div className={`message-banner ${messageType}`}>
-                            {message}
-                            <button type="button" onClick={() => setMessage("")}><X size={16} /></button>
-                        </div>
-                    )}
+                            <div className="profile-form-section">
+                                <div className="section-title">
+                                    <Shield size={20} />
+                                    <h2>Security & Password</h2>
+                                </div>
+                                
+                                {!showPasswordSection ? (
+                                    <div className="password-placeholder-card" onClick={() => setShowPasswordSection(true)}>
+                                        <div className="card-info">
+                                            <h4>Change Password</h4>
+                                            <p>Update your password to keep your account secure</p>
+                                        </div>
+                                        <button type="button" className="action-btn">Enable</button>
+                                    </div>
+                                ) : (
+                                    <div className="password-form-active animate-scale-in">
+                                        <div className="premium-input-group">
+                                            <label className="premium-label" htmlFor="current-pw">Current Password</label>
+                                            <div className="premium-input-wrapper">
+                                                <Lock size={18} />
+                                                <input
+                                                    className="premium-input"
+                                                    id="current-pw"
+                                                    type="password"
+                                                    value={currentPassword}
+                                                    onChange={(e) => setCurrentPassword(e.target.value)}
+                                                    placeholder="Enter current password"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="form-row-grid">
+                                            <div className="premium-input-group">
+                                                <label className="premium-label" htmlFor="new-pw">New Password</label>
+                                                <div className="premium-input-wrapper">
+                                                    <Lock size={18} />
+                                                    <input
+                                                        className="premium-input"
+                                                        id="new-pw"
+                                                        type="password"
+                                                        value={newPassword}
+                                                        onChange={(e) => setNewPassword(e.target.value)}
+                                                        placeholder="At least 6 chars"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="premium-input-group">
+                                                <label className="premium-label" htmlFor="confirm-pw">Confirm New</label>
+                                                <div className="premium-input-wrapper">
+                                                    <Lock size={18} />
+                                                    <input
+                                                        className="premium-input"
+                                                        id="confirm-pw"
+                                                        type="password"
+                                                        value={confirmPassword}
+                                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                                        placeholder="Repeat new password"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" className="cancel-pw-btn" onClick={() => setShowPasswordSection(false)}>
+                                            Cancel Password Change
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
 
-                    <div className="form-actions">
-                        <button type="submit" className="save-btn" disabled={saving}>
-                            <Save size={18} />
-                            {saving ? "Saving..." : "Save Changes"}
-                        </button>
-                    </div>
-                </form>
+                            <div className="form-footer-actions">
+                                <button type="submit" className="premium-btn-primary save-btn" disabled={saving}>
+                                    {saving ? (
+                                        <>
+                                            <Loader2 size={18} className="animate-spin" />
+                                            <span>Saving Changes...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Save size={18} />
+                                            <span>Save Account Changes</span>
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </form>
+                    </main>
+                </div>
             </div>
         </div>
     );

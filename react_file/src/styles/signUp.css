@@ -1,125 +1,154 @@
-@keyframes modalReveal {
-    from {
-        opacity: 0;
-        transform: translateY(10px) scale(0.98);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
+/* signUp.css - Premium Sign Up Form Styling */
 
 .signup-modal {
-    position: relative;
-    width: 100%;
-    max-width: 480px;
-    background: var(--white);
-    border-radius: var(--radius-2xl);
-    padding: 3rem 2.5rem;
-    box-shadow: var(--shadow-xl);
-    border: 1px solid var(--secondary-100);
-    animation: modalReveal var(--transition-base);
+    max-width: 500px;
+    width: 95%;
+    animation: modalReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    z-index: 2001;
 }
 
-.signup-modal h2 {
-    font-family: var(--font-heading);
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--secondary-900);
-    margin-bottom: 0.75rem;
-    text-align: left;
-}
-
-.signup-modal::after {
-    content: "Join Tasky today and start managing tasks like a pro.";
-    display: block;
-    font-size: 0.9375rem;
-    color: var(--secondary-500);
-    margin-bottom: 2.5rem;
-    text-align: left;
-}
-
-.signup-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-}
-
-.signup-form .input-group {
-    position: relative;
-}
-
-.signup-form label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--secondary-700);
-    margin-bottom: 0.5rem;
-}
-
-.signup-form input {
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.75rem;
-    background: var(--secondary-50);
-    border: 1px solid var(--secondary-200);
-    border-radius: var(--radius-lg);
-    font-size: 1rem;
-    color: var(--secondary-900);
-    transition: var(--transition-fast);
-}
-
-.input-icon {
+.form-header-decoration.signup-theme {
     position: absolute;
-    left: 1rem;
-    top: 2.5rem;
-    color: var(--secondary-400);
-    pointer-events: none;
-    transition: var(--transition-fast);
-}
-
-.signup-form input:focus {
-    background: var(--white);
-    border-color: var(--primary-500);
-    box-shadow: 0 0 0 4px var(--primary-50);
-    outline: none;
-}
-
-.signup-form input:focus+.input-icon {
-    color: var(--primary-600);
-}
-
-.signup-modal button[type="submit"] {
+    top: 0;
+    left: 0;
     width: 100%;
-    padding: 0.875rem;
-    background: var(--primary-600);
-    color: var(--white);
-    border-radius: var(--radius-lg);
-    font-weight: 600;
-    font-size: 1rem;
-    margin-top: 1rem;
-    box-shadow: var(--shadow-md);
-    transition: var(--transition-base);
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-purple), var(--primary-600), var(--accent-teal));
 }
 
-.signup-modal button[type="submit"]:hover {
-    background: var(--primary-700);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+.form-title-section {
+    text-align: center;
+    margin-bottom: var(--space-6);
 }
 
-.error-message {
-    padding: 0.75rem 1rem;
-    background: #fef2f2;
-    border: 1px solid #fee2e2;
-    border-radius: var(--radius-md);
-    color: var(--danger);
+.icon-badge.signup-theme {
+    width: 56px;
+    height: 56px;
+    background: #f5f3ff;
+    color: var(--accent-purple);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--space-4);
+    box-shadow: 0 8px 16px -4px rgba(139, 92, 246, 0.2);
+}
+
+.form-title-section h2 {
+    font-size: 1.75rem;
+    color: var(--secondary-900);
+    margin-bottom: var(--space-1);
+}
+
+.form-title-section p {
+    color: var(--secondary-500);
     font-size: 0.875rem;
+}
+
+.close-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--secondary-400);
+    background: var(--secondary-50);
+    cursor: pointer;
+    transition: var(--transition-base);
+    z-index: 10;
+}
+
+.close-btn:hover {
+    background: var(--danger);
+    color: var(--white);
+    transform: rotate(90deg);
+}
+
+.form-row-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+.message-banner {
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-6);
+    font-size: 0.875rem;
+    font-weight: 500;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.signup-modal .close-btn {
-    display: none;
+.message-banner.error {
+    background: #fef2f2;
+    border-left: 4px solid var(--danger);
+    color: #991b1b;
 }
+
+.message-banner.success {
+    background: #f0fdf4;
+    border-left: 4px solid var(--success);
+    color: #166534;
+}
+
+.premium-btn-primary.signup-theme {
+    background: var(--accent-purple);
+    margin-top: var(--space-2);
+}
+
+.premium-btn-primary.signup-theme:hover:not(:disabled) {
+    background: #7c3aed;
+}
+
+.form-footer {
+    margin-top: var(--space-6);
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--secondary-500);
+}
+
+.login-link {
+    color: var(--primary-600);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
+
+@keyframes modalReveal {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.animate-shake {
+    animation: shake 0.4s ease-in-out;
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

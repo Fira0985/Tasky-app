@@ -1,127 +1,143 @@
-@keyframes modalReveal {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.98);
-  }
+/* loginPop.css - Premium Login Form Styling */
 
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.login-box {
-  position: relative;
-  width: 100%;
+.login-modal {
   max-width: 440px;
-  background: var(--white);
-  border-radius: var(--radius-2xl);
-  padding: 3rem 2.5rem;
-  box-shadow: var(--shadow-xl);
-  border: 1px solid var(--secondary-100);
-  animation: modalReveal var(--transition-base);
+  width: 90%;
+  animation: modalReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  z-index: 2001;
 }
 
-.login-box h2 {
-  font-family: var(--font-heading);
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--secondary-900);
-  margin-bottom: 0.75rem;
-  text-align: left;
-}
-
-.login-box::after {
-  content: "Enter your credentials to access your account.";
-  display: block;
-  font-size: 0.9375rem;
-  color: var(--secondary-500);
-  margin-bottom: 2.5rem;
-  text-align: left;
-}
-
-.textbox {
-  margin-bottom: 1.25rem;
-  position: relative;
-}
-
-.textbox label {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--secondary-700);
-  margin-bottom: 0.5rem;
-  text-align: left;
-}
-
-.textbox input {
-  width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.75rem;
-  background: var(--secondary-50);
-  border: 1px solid var(--secondary-200);
-  border-radius: var(--radius-lg);
-  font-size: 1rem;
-  color: var(--secondary-900);
-  transition: var(--transition-fast);
-}
-
-.input-icon {
+.form-header-decoration.login-theme {
   position: absolute;
-  left: 1rem;
-  top: 2.5rem;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-500), var(--accent-blue), var(--primary-400));
+}
+
+.form-title-section {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.icon-badge.login-theme {
+  width: 56px;
+  height: 56px;
+  background: var(--primary-50);
+  color: var(--primary-600);
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-4);
+  box-shadow: 0 8px 16px -4px rgba(99, 102, 241, 0.2);
+}
+
+.form-title-section h2 {
+  font-size: 2rem;
+  color: var(--secondary-900);
+  margin-bottom: var(--space-1);
+}
+
+.form-title-section p {
+  color: var(--secondary-500);
+  font-size: 0.9375rem;
+}
+
+.close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--secondary-400);
-  pointer-events: none;
+  background: var(--secondary-50);
+  cursor: pointer;
+  transition: var(--transition-base);
+  z-index: 10;
+}
+
+.close-btn:hover {
+  background: var(--danger);
+  color: var(--white);
+  transform: rotate(90deg);
+}
+
+.forgot-password-link {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--primary-600);
+  cursor: pointer;
   transition: var(--transition-fast);
 }
 
-.textbox input:focus {
-  background: var(--white);
-  border-color: var(--primary-500);
-  box-shadow: 0 0 0 4px var(--primary-50);
-  outline: none;
+.forgot-password-link:hover {
+  color: var(--primary-700);
+  text-decoration: underline;
 }
 
-.textbox input:focus+.input-icon {
-  color: var(--primary-600);
-}
-
-.login-btn {
-  width: 100%;
-  padding: 0.875rem;
-  background: var(--primary-600);
-  color: var(--white);
-  border-radius: var(--radius-lg);
-  font-weight: 600;
-  font-size: 1rem;
-  margin-top: 1.5rem;
-  box-shadow: var(--shadow-md);
-}
-
-.login-btn:hover {
-  background: var(--primary-700);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
-
-.login-btn:active {
-  transform: translateY(0);
-}
-
-.message {
-  padding: 0.75rem 1rem;
+.error-message {
   background: #fef2f2;
-  border: 1px solid #fee2e2;
+  border-left: 4px solid var(--danger);
+  padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
-  color: var(--danger);
+  margin-bottom: var(--space-6);
+  color: #991b1b;
   font-size: 0.875rem;
-  margin-top: 1.5rem;
+  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-@media (max-width: 480px) {
-  .login-box {
-    padding: 2.5rem 1.5rem;
+.form-footer {
+  margin-top: var(--space-6);
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--secondary-500);
+}
+
+.signup-link {
+  color: var(--primary-600);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
+}
+
+@keyframes modalReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

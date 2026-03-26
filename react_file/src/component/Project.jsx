@@ -13,14 +13,18 @@ import {
   AlertCircle,
   X,
   AlignLeft,
-  Loader2
+  Loader2,
+  FolderPlus,
+  Briefcase
 } from "lucide-react";
 import { fetchAPI } from "../api";
+import "../styles/ProjectPage.css";
 
 const ProjectPage = ({ email }) => {
   const [projects, setProjects] = useState([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [formLoading, setFormLoading] = useState(false);
   const [formData, setFormData] = useState({
     projectName: '',
     description: '',
@@ -73,7 +77,7 @@ const ProjectPage = ({ email }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setFormLoading(true);
 
     try {
       const endpoint = editingProject ? "/update-project" : "/create-project";
@@ -93,7 +97,7 @@ const ProjectPage = ({ email }) => {
     } catch (error) {
       console.error('Error saving project:', error);
     }
-    setLoading(false);
+    setFormLoading(false);
   };
 
   const handleEdit = (project) => {
@@ -128,12 +132,15 @@ const ProjectPage = ({ email }) => {
   const statusBadgeClass = (s) => `status-badge status-${s.toLowerCase().replace(' ', '-')}`;
 
   return (
-    <div className="project-overlay">
+    <div className="project-overlay animate-fade-in">
       <div className="project-container">
         <div className="project-header">
-          <h2 className="project-title">My Projects</h2>
+          <div className="header-title-area">
+            <h2 className="project-title">My Projects</h2>
+            <p className="project-subtitle">Manage and track your long-term goals</p>
+          </div>
           <button
-            className="create-project-btn"
+            className="premium-btn-primary create-project-btn"
             onClick={() => setShowCreateForm(true)}
           >
             <Plus size={20} />
@@ -142,20 +149,28 @@ const ProjectPage = ({ email }) => {
         </div>
 
         {showCreateForm && (
-          <div className="project-form-overlay" onClick={(e) => e.target === e.currentTarget && closeForm()}>
-            <div className="project-form-container">
+          <div className="project-form-modal-backdrop" onClick={(e) => e.target === e.currentTarget && closeForm()}>
+            <div className="premium-form-container project-form-modal">
+              <div className="form-header-decoration project-theme"></div>
               <button className="close-btn" onClick={closeForm} title="Close">
                 <X size={20} />
               </button>
 
-              <h3>{editingProject ? 'Edit Project' : 'Create New Project'}</h3>
+              <div className="form-title-section">
+                <div className="icon-badge project-theme">
+                  {editingProject ? <Pencil size={24} /> : <FolderPlus size={24} />}
+                </div>
+                <h3>{editingProject ? 'Edit Project' : 'Create New Project'}</h3>
+                <p>{editingProject ? 'Make adjustments to your project' : 'Start a new organized workspace'}</p>
+              </div>
 
               <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <label htmlFor="projectName">Project Name</label>
-                  <div className="input-wrapper">
+                <div className="premium-input-group">
+                  <label className="premium-label" htmlFor="projectName">Project Name</label>
+                  <div className="premium-input-wrapper">
                     <Layout size={18} />
                     <input
+                      className="premium-input"
                       type="text"
                       id="projectName"
                       name="projectName"
@@ -168,11 +183,12 @@ const ProjectPage = ({ email }) => {
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="description">Description</label>
-                  <div className="input-wrapper">
+                <div className="premium-input-group">
+                  <label className="premium-label" htmlFor="description">Description</label>
+                  <div className="premium-input-wrapper">
                     <AlignLeft size={18} style={{ top: '0.85rem' }} />
                     <textarea
+                      className="premium-input premium-textarea"
                       id="description"
                       name="description"
                       placeholder="What is this project about?"
@@ -183,12 +199,13 @@ const ProjectPage = ({ email }) => {
                   </div>
                 </div>
 
-                <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div className="form-group">
-                    <label htmlFor="priority">Priority</label>
-                    <div className="input-wrapper">
+                <div className="form-row-grid">
+                  <div className="premium-input-group">
+                    <label className="premium-label" htmlFor="priority">Priority</label>
+                    <div className="premium-input-wrapper">
                       <Flag size={18} />
                       <select
+                        className="premium-input"
                         id="priority"
                         name="priority"
                         value={formData.priority}
@@ -201,11 +218,12 @@ const ProjectPage = ({ email }) => {
                     </div>
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="deadline">Deadline</label>
-                    <div className="input-wrapper">
+                  <div className="premium-input-group">
+                    <label className="premium-label" htmlFor="deadline">Deadline</label>
+                    <div className="premium-input-wrapper">
                       <Calendar size={18} />
                       <input
+                        className="premium-input"
                         type="date"
                         id="deadline"
                         name="deadline"
@@ -216,13 +234,18 @@ const ProjectPage = ({ email }) => {
                   </div>
                 </div>
 
-                <button type="submit" className="submit-btn" disabled={loading}>
-                  {loading ? (
-                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                <button type="submit" className="premium-btn-primary project-theme" disabled={formLoading}>
+                  {formLoading ? (
+                    <>
                       <Loader2 size={18} className="animate-spin" />
-                      Saving...
-                    </span>
-                  ) : (editingProject ? 'Update Project' : 'Create Project')}
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Briefcase size={18} />
+                      <span>{editingProject ? 'Update Project' : 'Create Project'}</span>
+                    </>
+                  )}
                 </button>
               </form>
             </div>
@@ -237,14 +260,18 @@ const ProjectPage = ({ email }) => {
               </div>
             ))
           ) : projects.length === 0 ? (
-            <div className="no-projects" style={{ gridColumn: '1/-1' }}>
-              <div className="empty-state-icon" style={{ fontSize: '3rem', marginBottom: '1rem' }}>📁</div>
+            <div className="no-projects-view" style={{ gridColumn: '1/-1' }}>
+              <div className="empty-state-illustration">📁</div>
               <h3>No projects found</h3>
               <p>Create your first project to start organizing your work better.</p>
+              <button className="premium-btn-primary" onClick={() => setShowCreateForm(true)} style={{ width: 'auto', marginTop: '1.5rem' }}>
+                <Plus size={18} /> Create Project
+              </button>
             </div>
           ) : (
             projects.map((project) => (
-              <div key={project._id} className={`project-card ${project.status === 'Completed' ? 'completed' : ''}`}>
+              <div key={project._id} className={`premium-project-card ${project.status === 'Completed' ? 'completed' : ''}`}>
+                <div className="project-card-highlight"></div>
                 <div className="project-card-header">
                   <div className="header-main">
                     <h3 className="project-name">{project.projectName}</h3>
@@ -252,9 +279,6 @@ const ProjectPage = ({ email }) => {
                   <div className="project-badges">
                     <span className={priorityBadgeClass(project.priority)}>
                       {project.priority}
-                    </span>
-                    <span className={statusBadgeClass(project.status)}>
-                      {project.status}
                     </span>
                   </div>
                 </div>
@@ -264,29 +288,34 @@ const ProjectPage = ({ email }) => {
                     <p className="project-description">{project.description}</p>
                   )}
 
-                  <div className="project-details">
+                  <div className="project-details-grid">
                     {project.deadline && (
-                      <div className="detail-item">
-                        <Clock size={14} />
-                        <span>Due: {new Date(project.deadline).toLocaleDateString()}</span>
+                      <div className="detail-pill">
+                        <Clock size={12} />
+                        <span>Ends: {new Date(project.deadline).toLocaleDateString()}</span>
                       </div>
                     )}
-                    <div className="detail-item">
-                      <CheckCircle2 size={14} />
+                    <div className="detail-pill">
+                      <CheckCircle2 size={12} />
                       <span>Tasks: <strong>{project.tasks?.length || 0}</strong></span>
                     </div>
                   </div>
                 </div>
 
-                <div className="project-card-actions">
-                  <button className="edit-btn" onClick={() => handleEdit(project)}>
-                    <Pencil size={14} style={{ marginRight: '6px' }} />
-                    Edit
-                  </button>
-                  <button className="delete-btn" onClick={() => handleDelete(project._id)}>
-                    <Trash2 size={14} style={{ marginRight: '6px' }} />
-                    Delete
-                  </button>
+                <div className="project-card-footer">
+                   <div className="status-indicator">
+                      <span className={statusBadgeClass(project.status)}>
+                        {project.status}
+                      </span>
+                   </div>
+                  <div className="action-buttons">
+                    <button className="icon-action-btn edit" onClick={() => handleEdit(project)} title="Edit">
+                      <Pencil size={16} />
+                    </button>
+                    <button className="icon-action-btn delete" onClick={() => handleDelete(project._id)} title="Delete">
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
