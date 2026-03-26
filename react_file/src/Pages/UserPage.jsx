@@ -51,8 +51,11 @@ function User(props) {
   const [filterTime, setFilterTime] = useState('all')
 
   const handleLogout = () => {
-    localStorage.removeItem("email");
-    navigate("/");
+    if (props.onLogout) {
+      props.onLogout();
+    } else {
+      navigate("/");
+    }
   };
 
   const toggleSidebar = () => {

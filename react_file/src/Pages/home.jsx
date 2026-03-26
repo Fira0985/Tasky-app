@@ -39,13 +39,7 @@ function Home({ GetUserEmail }) {
     }
   }
 
-  // Auto-redirect if already logged in
-  useEffect(() => {
-    const savedEmail = localStorage.getItem("email");
-    if (savedEmail) {
-      navigate("/user");
-    }
-  }, [navigate]);
+  // Removed legacy localStorage check since App.js handles it
 
   function openRegister() {
     setRegisterOpen(true);

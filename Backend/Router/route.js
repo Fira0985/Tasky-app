@@ -5,11 +5,33 @@ const Task = require("../models/task");
 const Project = require("../models/project");
 const Activity = require("../models/activity");
 const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv");
 const route = express.Router()
 
 dotenv.config();
+
+// Auth Middleware
+const isAuthenticated = (req, res, next) => {
+    if (req.session && req.session.email) {
+        req.body.email = req.session.email;
+        req.query.email = req.session.email;
+        return next();
+    }
+    return res.status(401).json({ message: 'Unauthorized. Please log in.' });
+};
+
+route.post('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) return res.status(500).json({ message: 'Logout failed' });
+        res.clearCookie('connect.sid');
+        return res.status(200).json({ message: 'Logged out successfully' });
+    });
+});
+
+route.get('/check-auth', isAuthenticated, (req, res) => {
+    return res.status(200).json({ message: 'Authenticated', email: req.session.email });
+});
+
 
 // Input validation helpers
 const validateEmail = (email) => {
@@ -55,16 +77,11 @@ route.post('/signup', async (req, res) => {
         const newUser = new User({ name: name.trim(), email: email.toLowerCase().trim(), password });
         await newUser.save();
 
-        // Generate JWT token
-        const token = jwt.sign(
-            { userId: newUser._id, email: newUser.email },
-            process.env.JWT_SECRET || 'fallback_secret',
-            { expiresIn: '7d' }
-        );
+        // Set session
+        req.session.email = newUser.email;
 
         return res.status(201).json({
             message: 'User registered successfully',
-            token,
             user: { name: newUser.name, email: newUser.email }
         });
     } catch (err) {
@@ -98,16 +115,11 @@ route.post('/login', async (req, res) => {
             return res.status(401).json({ message: "Incorrect password" });
         }
 
-        // Generate JWT token
-        const token = jwt.sign(
-            { userId: user._id, email: user.email },
-            process.env.JWT_SECRET || 'fallback_secret',
-            { expiresIn: '7d' }
-        );
+        // Set session
+        req.session.email = user.email;
 
         return res.status(200).json({
             message: "User logged in successfully",
-            token,
             user: { name: user.name, email: user.email }
         });
     } catch (err) {
@@ -116,7 +128,7 @@ route.post('/login', async (req, res) => {
     }
 })
 
-route.post('/add-task', async (req, res) => {
+route.post('/add-task', isAuthenticated, async (req, res) => {
     const { email,
         taskName,
         detail,
@@ -147,7 +159,7 @@ route.post('/add-task', async (req, res) => {
     }
 });
 
-route.get('/get-task', async (req, res) => {
+route.get('/get-task', isAuthenticated, async (req, res) => {
     try {
         const { email, page = 1, limit = 50, status, priority } = req.query;
 
@@ -201,7 +213,7 @@ route.get('/get-task', async (req, res) => {
     }
 });
 
-route.delete('/delete', async (req, res) => {
+route.delete('/delete', isAuthenticated, async (req, res) => {
     const { name } = req.body; // Destructure taskName from the request body
     try {
         // Check if the task exists in the database
@@ -230,7 +242,7 @@ route.delete('/delete', async (req, res) => {
     }
 });
 
-route.post("/update", async (req, res) => {
+route.post("/update", isAuthenticated, async (req, res) => {
     const { initialName,
         taskName,
         detail,
@@ -256,7 +268,7 @@ route.post("/update", async (req, res) => {
 
 })
 
-route.post('/get-profile', async (req, res) => {
+route.post('/get-profile', isAuthenticated, async (req, res) => {
     const { email } = req.body;
     try {
         const user = await User.findOne({ email }, { name: 1, email: 1, _id: 0 });
@@ -267,7 +279,7 @@ route.post('/get-profile', async (req, res) => {
     }
 });
 
-route.post('/update-profile', async (req, res) => {
+route.post('/update-profile', isAuthenticated, async (req, res) => {
     const { email, name, currentPassword, newPassword } = req.body;
 
     try {
@@ -294,7 +306,7 @@ route.post('/update-profile', async (req, res) => {
     }
 });
 
-route.post('/set-status', async (req, res) => {
+route.post('/set-status', isAuthenticated, async (req, res) => {
     const { task_name, task_status } = req.body;
 
     try {
@@ -322,7 +334,7 @@ route.post('/set-status', async (req, res) => {
     }
 });
 
-route.post('/get-name', async (req, res) => {
+route.post('/get-name', isAuthenticated, async (req, res) => {
     const { email } = req.body;
 
     try {
@@ -338,7 +350,7 @@ route.post('/get-name', async (req, res) => {
 });
 
 // Project routes
-route.post('/create-project', async (req, res) => {
+route.post('/create-project', isAuthenticated, async (req, res) => {
     const { email, projectName, description, priority, deadline } = req.body;
 
     try {
@@ -364,7 +376,7 @@ route.post('/create-project', async (req, res) => {
     }
 });
 
-route.get('/get-projects', async (req, res) => {
+route.get('/get-projects', isAuthenticated, async (req, res) => {
     const { email } = req.query;
 
     if (!email) {
@@ -379,7 +391,7 @@ route.get('/get-projects', async (req, res) => {
     }
 });
 
-route.post('/add-task-to-project', async (req, res) => {
+route.post('/add-task-to-project', isAuthenticated, async (req, res) => {
     const { projectId, taskName } = req.body;
 
     try {
@@ -412,7 +424,7 @@ route.post('/add-task-to-project', async (req, res) => {
     }
 });
 
-route.delete('/delete-project', async (req, res) => {
+route.delete('/delete-project', isAuthenticated, async (req, res) => {
     const { projectId } = req.body;
 
     try {
@@ -434,7 +446,7 @@ route.delete('/delete-project', async (req, res) => {
     }
 });
 
-route.post('/update-project', async (req, res) => {
+route.post('/update-project', isAuthenticated, async (req, res) => {
     const { projectId, projectName, description, priority, deadline, status } = req.body;
 
     try {
@@ -464,7 +476,7 @@ route.post('/update-project', async (req, res) => {
 });
 
 // Activity Routes
-route.get('/get-activity', async (req, res) => {
+route.get('/get-activity', isAuthenticated, async (req, res) => {
     const { email } = req.query;
     if (!email) return res.status(400).json({ message: "Email required" });
 
@@ -480,7 +492,7 @@ route.get('/get-activity', async (req, res) => {
 });
 
 // Dashboard Stats Route
-route.get('/dashboard-stats', async (req, res) => {
+route.get('/dashboard-stats', isAuthenticated, async (req, res) => {
     const { email } = req.query;
     if (!email) return res.status(400).json({ message: "Email required" });
 

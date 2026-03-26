@@ -1,6 +1,7 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
+import { fetchAPI } from './api';
 
 // Lazy load components for better performance
 const Home = lazy(() => import('./Pages/home'));
@@ -22,30 +23,51 @@ const LoadingSpinner = () => (
 );
 
 function App() {
-  const [userEmail, setUserEmail] = useState(() => {
-    return localStorage.getItem("email") || "";
-  });
+  const [userEmail, setUserEmail] = useState("");
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      // Don't check localStorage, rely strictly on backend session
+      const result = await fetchAPI("/check-auth", { method: "GET" });
+      if (result.ok && result.data?.email) {
+        setUserEmail(result.data.email);
+      } else {
+        setUserEmail("");
+      }
+      setIsAuthChecking(false);
+    };
+    checkAuth();
+  }, []);
 
   const handleUserEmail = (email) => {
-    console.log("Setting user email:", email);
+    console.log("Session authenticated for:", email);
     setUserEmail(email);
-    localStorage.setItem("email", email);
   };
+
+  const handleLogout = async () => {
+    await fetchAPI("/logout", { method: "POST" });
+    setUserEmail("");
+  };
+
+  if (isAuthChecking) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <Suspense fallback={<LoadingSpinner />}>
       <Routes>
         <Route
           path="/"
-          element={<Home GetUserEmail={handleUserEmail} />}
+          element={userEmail ? <Navigate to="/user" /> : <Home GetUserEmail={handleUserEmail} />}
         />
         <Route
           path="/user"
-          element={(userEmail || localStorage.getItem("email")) ? <User email={userEmail || localStorage.getItem("email")} /> : <Navigate to="/" />}
+          element={userEmail ? <User email={userEmail} onLogout={handleLogout} /> : <Navigate to="/" />}
         />
         <Route
           path="/profile"
-          element={(userEmail || localStorage.getItem("email")) ? <ProfilePage email={userEmail || localStorage.getItem("email")} /> : <Navigate to="/" />}
+          element={userEmail ? <ProfilePage email={userEmail} onLogout={handleLogout} /> : <Navigate to="/" />}
         />
         {/* Catch-all redirect */}
         <Route path="*" element={<Navigate to="/" />} />

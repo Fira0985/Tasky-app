@@ -1,6 +1,8 @@
 const express = require("express")
 const Connect = require("./config/db")
 const Cors = require("cors")
+const session = require("express-session")
+const MongoStore = require("connect-mongo").default
 // Triggering restart to resolve port conflict
 
 const app = express();
@@ -30,6 +32,22 @@ app.use(Cors({
 }))
 app.use(express.json({ limit: '10mb' })) // Increase payload limit
 app.use(express.urlencoded({ extended: true }))
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'fallback_session_secret_tasky',
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URL,
+    collectionName: 'sessions'
+  }),
+  cookie: {
+    maxAge: 1000 * 60 * 60, // 1 hour session limit
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+  }
+}));
 
 const port = process.env.PORT || 4000
 
