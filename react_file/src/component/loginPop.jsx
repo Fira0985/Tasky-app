@@ -3,7 +3,7 @@ import { Mail, Lock, AlertCircle, X, LogIn, Loader2 } from "lucide-react";
 import "../styles/loginPop.css";
 import { fetchAPI } from "../api";
 
-function LoginPop({ SendDataToParent, getEmail, GetMessage, onClose }) {
+function LoginPop({ SendDataToParent, getEmail, GetMessage, onClose, onSwitchToRegister }) {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -128,7 +128,7 @@ function LoginPop({ SendDataToParent, getEmail, GetMessage, onClose }) {
       </form>
 
       <div className="form-footer">
-        <p>Don't have an account? <span className="signup-link">Create one</span></p>
+        <p>Don't have an account? <span className="signup-link" onClick={onSwitchToRegister} style={{cursor: 'pointer'}}>Create one</span></p>
       </div>
     </div>
   );

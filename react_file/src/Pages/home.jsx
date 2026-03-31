@@ -65,14 +65,14 @@ function Home({ GetUserEmail }) {
       {(isRegisterOpen || isLoginOpen || showSupport) && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-wrapper" onClick={(e) => e.stopPropagation()}>
-            <button className="close-modal-btn" onClick={closeModal}>×</button>
-            {isRegisterOpen && <SignUp onClose={closeModal} />}
+            {isRegisterOpen && <SignUp onClose={closeModal} onSwitchToLogin={openLogin} />}
             {isLoginOpen && (
               <LoginPop
                 SendDataToParent={GetLoginData}
                 getEmail={GetUserEmail}
                 GetMessage={() => { }}
                 onClose={closeModal}
+                onSwitchToRegister={openRegister}
               />
             )}
             {showSupport && <SupportModal onClose={closeModal} />}

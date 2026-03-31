@@ -3,7 +3,7 @@ import { User, Mail, Lock, ShieldCheck, AlertCircle, X, UserPlus, Loader2 } from
 import "../styles/signUp.css";
 import { fetchAPI } from "../api";
 
-function SignUp({ onClose, GetMessage }) {
+function SignUp({ onClose, GetMessage, onSwitchToLogin }) {
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -185,7 +185,7 @@ function SignUp({ onClose, GetMessage }) {
             </form>
             
             <div className="form-footer">
-                <p>Already have an account? <span className="login-link" onClick={onClose}>Sign In</span></p>
+                <p>Already have an account? <span className="login-link" onClick={onSwitchToLogin} style={{cursor: 'pointer'}}>Sign In</span></p>
             </div>
         </div>
     );
