@@ -1,6 +1,5 @@
 import {
   CheckCircle,
-  CircleOff,
   FileText,
   Folder,
   ListChecks,
@@ -9,16 +8,11 @@ import {
   LogOut,
   Settings,
   HelpCircle,
-  Bell,
-  Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
   Menu,
   X
 } from "lucide-react";
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import image from '../asset/69KTbX-LogoMakr.png';
 import ProfileImage from '../asset/profile.png';
 import '../styles/UserPage.css';
 import AddForm from '../component/addForm';
@@ -34,7 +28,7 @@ import { fetchAPI, API_BASE_URL } from "../api";
 function User(props) {
   const navigate = useNavigate();
   console.log("Rendering UserPage for email:", props.email);
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded] = useState(true);
   const [overlayStyle, setOverStyle] = useState({ display: "none" })
   const [showForm, setShowForm] = useState(false)
   const [showEdit, setShowEdit] = useState(false)
