@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import {
   FaFacebook,
@@ -9,8 +9,6 @@ import {
 import {
   UserPlus,
   PlusCircle,
-  Layers,
-  Users,
   ArrowRight,
   Download,
   Zap,
@@ -214,10 +212,10 @@ function Home({ GetUserEmail }) {
             <img src={image} alt="Tasky" className="footer-logo" />
             <p>Your ultimate partner in productivity and task management.</p>
             <div className="social-icons">
-              <a href="#"><FaFacebook size={20} /></a>
-              <a href="#"><FaTwitter size={20} /></a>
-              <a href="#"><FaInstagram size={20} /></a>
-              <a href="#"><FaLinkedin size={20} /></a>
+              <a href="https://facebook.com"><FaFacebook size={20} /></a>
+              <a href="https://twitter.com"><FaTwitter size={20} /></a>
+              <a href="https://instagram.com"><FaInstagram size={20} /></a>
+              <a href="https://linkedin.com"><FaLinkedin size={20} /></a>
             </div>
           </div>
 

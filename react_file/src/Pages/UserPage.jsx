@@ -46,7 +46,7 @@ function User(props) {
   const [searchTerm, setSearchTerm] = useState('')
   const [message, setMessage] = useState([])
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
   const email = props.email
   const [name, setName] = useState("")
   const [avatar, setAvatar] = useState("")
@@ -64,9 +64,7 @@ function User(props) {
     }
   };
 
-  const toggleSidebar = () => {
-    setIsExpanded(!isExpanded);
-  }
+
 
   function GetFormData(check) {
     setShowForm(check)
@@ -156,6 +154,7 @@ function User(props) {
 
   useEffect(() => {
     fetchTasks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email]);
 
   const refreshTasks = () => {
@@ -213,14 +212,10 @@ function User(props) {
 
   useEffect(() => {
     if (email) fetchDashboardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email, message]); // Refresh when tasks change
 
-  const stats = useMemo(() => {
-    const total = message.length;
-    const completed = message.filter(t => t.status === "Completed").length;
-    const pending = total - completed;
-    return { total, completed, pending };
-  }, [message]);
+
 
   return (
     <div className="dashboard-container">
