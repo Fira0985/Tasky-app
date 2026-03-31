@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo } from "react";
 import {
   BarChart3,
   CheckCircle2,
@@ -7,7 +7,6 @@ import {
   AlertTriangle,
   Lightbulb,
   CheckCircle,
-  X,
   Zap,
   Activity
 } from "lucide-react";
@@ -46,12 +45,6 @@ const ReportInterface = (props) => {
       case 'low': return 'var(--success)';
       default: return 'var(--secondary-400)';
     }
-  };
-
-  const closeReport = () => {
-    // This is handled by flipping the view in parent, 
-    // but we can provide a nice close button if it's an overlay
-    if (props.onClose) props.onClose();
   };
 
   return (

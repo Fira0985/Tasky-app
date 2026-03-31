@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { X, Type, AlignLeft, Calendar, Flag, Link, Loader2, Edit3, Save } from "lucide-react";
 import "../styles/editForm.css";
 import { fetchAPI } from "../api";
@@ -13,9 +13,10 @@ function EditForm(props) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const closeForm = () => {
+    const closeForm = useCallback(() => {
         props.GetData(false);
-    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.GetData]);
 
     useEffect(() => {
         const fetchDeps = async () => {
@@ -46,7 +47,7 @@ function EditForm(props) {
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [props.name]);
+    }, [props.name, closeForm]);
 
     const editFormRequest = async (event) => {
         event.preventDefault();

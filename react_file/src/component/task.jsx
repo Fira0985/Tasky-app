@@ -7,7 +7,6 @@ import {
 } from "lucide-react";
 import '../styles/task.css';
 import { fetchAPI } from '../api';
-import ProfileImage from '../asset/profile.png';
 
 function Task(props) {
     const {
@@ -40,7 +39,6 @@ function Task(props) {
     const isBlocked = resolvedDep && resolvedDep.status !== "Completed";
 
     const isCompleted = status === "Completed";
-    const progress = isCompleted ? 100 : 40; // Simulated progress for visual parity
 
     const deleteTask = useCallback(async () => {
         if (!window.confirm("Are you sure you want to delete this task?")) return;

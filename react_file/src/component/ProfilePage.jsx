@@ -27,6 +27,7 @@ export default function ProfilePage({ email, onUpdate }) {
             return;
         }
         fetchProfile();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [email]);
 
     async function fetchProfile() {

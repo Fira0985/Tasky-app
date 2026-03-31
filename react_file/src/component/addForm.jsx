@@ -17,6 +17,7 @@ function AddForm(props) {
 
     const closeForm = useCallback(() => {
         props.GetData(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.GetData]);
 
     useEffect(() => {

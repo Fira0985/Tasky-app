@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Plus,
-  Search,
   Calendar,
   Flag,
   Layout,
@@ -13,7 +12,6 @@ import {
   AlignLeft,
   Loader2,
   FolderPlus,
-  Briefcase,
   ListChecks,
   ChevronDown,
   ChevronUp,
@@ -73,12 +71,14 @@ const ProjectPage = ({ email }) => {
 
   useEffect(() => {
     fetchProjects();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email]);
 
   useEffect(() => {
     if (showCreateForm) {
       lazyFetchTasks();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showCreateForm]);
 
   const closeForm = useCallback(() => {
@@ -191,7 +191,6 @@ const ProjectPage = ({ email }) => {
   };
 
   const priorityBadgeClass = (p) => `priority-badge priority-${p?.toLowerCase() || 'medium'}`;
-  const statusBadgeClass = (s) => `status-badge status-${s?.toLowerCase().replace(' ', '-') || 'not-started'}`;
 
   return (
     <div className="project-overlay animate-fade-in">
