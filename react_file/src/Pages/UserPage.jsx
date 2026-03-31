@@ -8,6 +8,7 @@ import {
   LogOut,
   Settings,
   HelpCircle,
+  Calendar as CalendarIcon,
   Menu,
   X
 } from "lucide-react";
