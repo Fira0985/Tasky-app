@@ -1,6 +1,6 @@
 const express = require("express")
 const path = require("path")
-const Connect = require("./config/db")
+const Connect = require("../config/db")
 const Cors = require("cors")
 const session = require("express-session")
 const MongoStore = require("connect-mongo").default
@@ -54,7 +54,7 @@ const port = process.env.PORT || 4000
 
 Connect();
 
-app.use('/', require('./Router/route'));
+app.use('/', require('../Router/route'));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
