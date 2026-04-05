@@ -15,22 +15,33 @@ app.use((req, res, next) => {
 
 app.use(Cors({
   origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. server-to-server or curl)
+    if (!origin) return callback(null, true);
+    
     const allowedOrigins = [
       process.env.FRONTEND_URL,
       'https://tasky-app-gilt.vercel.app',
+      'https://tasky-app-inky.vercel.app', // Adding the new origin explicitly
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:3002',
       'http://127.0.0.1:3000'
     ].filter(Boolean);
     
-    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+    const isAllowed = allowedOrigins.includes(origin) || 
+                      origin.endsWith('.vercel.app') ||
+                      origin.includes('localhost') ||
+                      origin.includes('127.0.0.1');
+
+    if (isAllowed) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.log('CORS blocked origin:', origin);
+      callback(null, false);
     }
   },
-  credentials: true
+  credentials: true,
+  optionsSuccessStatus: 200
 }))
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true }))
