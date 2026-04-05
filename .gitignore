@@ -1,1 +1,3 @@
 Backend/bin/mongosh.exe
+.vercel
+.env*.local
