@@ -1,15 +1,12 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "Backend/Backend/api/index.js",
-      "use": "@vercel/node"
+  "functions": {
+    "Backend/Backend/api/index.js": {
+      "runtime": "@vercel/node"
     }
-  ],
+  },
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/Backend/Backend/api/index.js"
-    }
+    { "source": "/api/(.*)", "destination": "/Backend/Backend/api/index.js" },
+    { "source": "/(.*)", "destination": "/Backend/Backend/api/index.js" }
   ]
 }
